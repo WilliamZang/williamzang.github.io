@@ -3,9 +3,9 @@
 # ----------------------- #
 
 url: http://WilliamZang.github.io/myBlog
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+title: 臧成威的博客
+subtitle: 不要让惯性影响你的未来
+author: 臧成威
 simple_search: https://www.google.com/search
 description:
 
@@ -51,7 +51,7 @@ titlecase: true       # Converts page and post titles to titlecase
 
 # list each of the sidebar modules you want to include, in the order you want them to appear.
 # To add custom asides, create files in /source/_includes/custom/asides/ and add them to the list like 'custom/asides/custom_aside_name.html'
-default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]
+default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html, custom/asides/recent_comments.html]
 
 # Each layout uses the default asides, but they can have their own asides instead. Simply uncomment the lines below
 # and add an array with the asides you want to use.
@@ -91,8 +91,18 @@ delicious_user:
 delicious_count: 3
 
 # Disqus Comments
-disqus_short_name: zangcw
-disqus_show_comment_count: true
+disqus_short_name: 
+disqus_show_comment_count: false
+
+# duoshuo comments
+duoshuo_comments: true
+duoshuo_short_name: WilliamZang
+duoshuo_asides_num: 10      # 侧边栏评论显示条目数
+duoshuo_asides_avatars: 0   # 侧边栏评论是否显示头像
+duoshuo_asides_time: 0      # 侧边栏评论是否显示时间
+duoshuo_asides_title: 0     # 侧边栏评论是否显示标题
+duoshuo_asides_admin: 0     # 侧边栏评论是否显示作者评论
+duoshuo_asides_length: 18   # 侧边栏评论截取的长度
 
 # Google Analytics
 google_analytics_tracking_id:
