@@ -3,7 +3,9 @@ layout: post
 title: "介绍一下开源项目FastAnimationWithPOP"
 date: 2014-07-23 16:07:04 +0800
 comments: true
-categories: 
+categories: iOS 开源介绍
+description: 我的开源项目FastAnimationWithPOP介绍
+keywords: Github POP iOS
 ---
 
 这是一个很简单的动画框架，基于Facebook的POP库。使用它你就可以在故事版中以0行代码的代价来添加动画了。

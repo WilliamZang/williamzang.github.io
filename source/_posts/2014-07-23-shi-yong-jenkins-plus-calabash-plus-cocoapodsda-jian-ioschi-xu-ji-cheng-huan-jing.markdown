@@ -3,7 +3,9 @@ layout: post
 title: "使用jenkins+calabash+cocoapods搭建ios持续集成环境"
 date: 2014-07-23 16:19:58 +0800
 comments: true
-categories: 
+categories: 杂谈 教程
+description: 持续集成的介绍
+keywords: BDD Jenkins iOS Test
 ---
 
 ## 持续集成
