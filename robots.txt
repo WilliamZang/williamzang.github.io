@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://blog.williamzang.com//sitemap.xml 
+Sitemap: http://WilliamZang.github.io/sitemap.xml 

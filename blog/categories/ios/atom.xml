@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Ios | 臧成威的博客]]></title>
-  <link href="http://blog.williamzang.com//blog/categories/ios/atom.xml" rel="self"/>
-  <link href="http://blog.williamzang.com//"/>
-  <updated>2014-08-16T14:50:25+08:00</updated>
-  <id>http://blog.williamzang.com//</id>
+  <link href="http://WilliamZang.github.io/blog/categories/ios/atom.xml" rel="self"/>
+  <link href="http://WilliamZang.github.io/"/>
+  <updated>2014-08-16T15:01:54+08:00</updated>
+  <id>http://WilliamZang.github.io/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
     
@@ -15,38 +15,20 @@
   
   <entry>
     <title type="html"><![CDATA[介绍一下开源项目FastAnimationWithPOP]]></title>
-    <link href="http://blog.williamzang.com//blog/2014/07/23/jie-shao-yi-xia-kai-yuan-xiang-mu-fastanimationwithpop/"/>
+    <link href="http://WilliamZang.github.io/blog/2014/07/23/jie-shao-yi-xia-kai-yuan-xiang-mu-fastanimationwithpop/"/>
     <updated>2014-07-23T16:07:04+08:00</updated>
-    <id>http://blog.williamzang.com//blog/2014/07/23/jie-shao-yi-xia-kai-yuan-xiang-mu-fastanimationwithpop</id>
+    <id>http://WilliamZang.github.io/blog/2014/07/23/jie-shao-yi-xia-kai-yuan-xiang-mu-fastanimationwithpop</id>
     <content type="html"><![CDATA[<p>这是一个很简单的动画框架，基于Facebook的POP库。使用它你就可以在故事版中以0行代码的代价来添加动画了。</p>
-
-
-
 
 <p>Github上地址是 <a href="https://github.com/WilliamZang/FastAnimationWithPOP">这里</a>.</p>
 
-
-
-
 <p>你可以从<a href="https://github.com/WilliamZang/FastAnimationWithPopDemo">这里</a>下载DEMO查看效果.</p>
-
-
-
 
 <p><strong>如果你觉得不错，欢迎在到<a href="https://github.com/WilliamZang/FastAnimationWithPOP">这里</a>点个赞，方便让更多人注意到它</strong></p>
 
-
-
-
 <p><img src="https://raw.githubusercontent.com/WilliamZang/FastAnimationWithPOP/master/Docs/demo.gif" alt="Demo" /></p>
 
-
-
-
 <h2>功能</h2>
-
-
-
 
 <ul>
 <li>使用属性来添加一个动画到任意的View。</li>
@@ -58,32 +40,15 @@
 </ul>
 
 
-
-
 <h2>环境要求</h2>
-
-
-
 
 <p>iOS SDK: iOS 6.0+</p>
 
-
-
-
 <p>XCode版本: 5.0+</p>
-
-
-
 
 <h2>如何安装</h2>
 
-
-
-
 <p>最好的办法是使用<a href="http://cocoadocs.org">CocoaPods</a>:</p>
-
-
-
 
 <ol>
 <li><p>添加这行到你的<code>podfile</code>文件 <code>pod 'FastAnimation'</code></p></li>
@@ -91,47 +56,21 @@
 </ol>
 
 
-
-
 <p>如果想要尝试最新的版本，你可以添加这个<code>pod 'FastAnimation', :head</code>.</p>
-
-
-
 
 <h2>使用指导</h2>
 
-
-
-
 <h3>1. 在故事板里使用</h3>
-
-
-
 
 <p>你可以通过设置用户自定义运行时属性(user defined runtime attributes)给View添加一个动画。</p>
 
-
-
-
 <p><img src="https://raw.githubusercontent.com/WilliamZang/FastAnimationWithPOP/master/Docs/stroyBoard1.png" alt="StroyBoard1" /></p>
-
-
-
 
 <p><img src="https://raw.githubusercontent.com/WilliamZang/FastAnimationWithPOP/master/Docs/stroyBoard2.png" alt="StroyBoard2" /></p>
 
-
-
-
 <p>下面是一些属性的含义：</p>
 
-
-
-
 <h4>UIView的属性</h4>
-
-
-
 
 <ul>
 <li><p>animationType</p>
@@ -146,17 +85,19 @@
 </ul>
 
 
-<p><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="cp">#define kSpringBounciness   (@&quot;animationParams.springBounciness&quot;)</span>
-</span><span class='line'><span class="cp">#define kSpringSpeed        (@&quot;animationParams.springSpeed&quot;)</span>
-</span><span class='line'><span class="cp">#define kDynamicsTension    (@&quot;animationParams.dynamicsTension&quot;)</span>
-</span><span class='line'><span class="cp">#define kDynamicsFriction   (@&quot;animationParams.dynamicsFriction&quot;)</span>
-</span><span class='line'><span class="cp">#define kDynamicsMass       (@&quot;animationParams.dynamicsMass&quot;)</span>
-</span></code></pre></td></tr></table></div></figure></p>
+<p>&#8220;`objective-c</p>
+
+<h1>define kSpringBounciness   (@&ldquo;animationParams.springBounciness&rdquo;)</h1>
+
+<h1>define kSpringSpeed        (@&ldquo;animationParams.springSpeed&rdquo;)</h1>
+
+<h1>define kDynamicsTension    (@&ldquo;animationParams.dynamicsTension&rdquo;)</h1>
+
+<h1>define kDynamicsFriction   (@&ldquo;animationParams.dynamicsFriction&rdquo;)</h1>
+
+<h1>define kDynamicsMass       (@&ldquo;animationParams.dynamicsMass&rdquo;)</h1>
+
+<p>&#8220;`</p>
 
 <ul>
 <li><p>startAnimationWhenAwakeFromNib</p>
@@ -165,12 +106,7 @@
 </ul>
 
 
-
-
 <h4>UIControl的属性</h4>
-
-
-
 
 <ul>
 <li><p>bindingAnimationType</p>
@@ -179,170 +115,100 @@
 </ul>
 
 
-
-
 <h3>2. 代码写View的应用</h3>
-
-
-
 
 <p>在代码写View中使用FastAnimation同样方便。</p>
 
-
-
-
 <p>你可以设置动画类型等属性，然后执行<code>- (void)startFAAnimation</code>即可。就像这样：</p>
 
-
-<p><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">UIView</span> <span class="o">*</span><span class="n">view</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">initWithFrame</span><span class="o">:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)];</span>
-</span><span class='line'><span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">redColor</span><span class="p">];</span>
-</span><span class='line'><span class="n">view</span><span class="p">.</span><span class="n">animationType</span> <span class="o">=</span> <span class="s">@&quot;Shake&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="n">view</span><span class="p">.</span><span class="n">animationParams</span><span class="p">[</span><span class="s">@&quot;velocity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">@</span><span class="o">&ndash;</span><span class="mi">7000</span><span class="p">;</span>
-</span><span class='line'><span class="c1">// You can also set params like this</span>
-</span><span class='line'><span class="c1">// [view setValue:@-7000 forKeyPath:kShakeVelocity];</span>
-</span><span class='line'><span class="p">[</span><span class="n">view</span> <span class="n">startFAAnimation</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure></p>
+<p><code>objective-c
+UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+view.backgroundColor = [UIColor redColor];
+view.animationType = @"Shake";
+view.animationParams[@"velocity"] = @-7000;
+// You can also set params like this
+// [view setValue:@-7000 forKeyPath:kShakeVelocity];
+[view startFAAnimation];
+</code></p>
 
 <p>还有这些扩展的用法：</p>
 
-
-<p><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// In UIView instance.</span>
-</span><span class='line'><span class="k">&ndash;</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startFAAnimation</span><span class="p">;</span>
-</span><span class='line'><span class="k">&ndash;</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">reverseFAAnimation</span><span class="p">;</span>
-</span><span class='line'><span class="c1">// In UIControl instance.</span>
-</span><span class='line'><span class="k">&ndash;</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">bindingFAAnimation</span><span class="p">;</span>
-</span><span class='line'><span class="k">&ndash;</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">unbindingFAAnimation</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure></p>
+<p><code>objective-c
+// In UIView instance.
+- (void)startFAAnimation;
+- (void)reverseFAAnimation;
+// In UIControl instance.
+- (void)bindingFAAnimation;
+- (void)unbindingFAAnimation;
+</code></p>
 
 <h3>3. 定义一个新的动画扩展</h3>
 
-
-
-
 <p>轻松的扩展新的动画，只需要实现<code>FastAnimationProtocol</code>、<code>ControlFastAnimationProtocol</code> 和 <code>FastAnimationReverseProtocol</code>这几个协议.</p>
-
-
-
 
 <p>就像这样：</p>
 
+<p>&#8220;`objective-c
+// new_animation.h
+@interface FAAnimationNewAnimation : NSObject&lt;FastAnimationProtocol,
+FastAnimationReverseProtocol> // Maybe only FastAnimationProtocol</p>
 
-<p><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// new_animation.h</span>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">FAAnimationNewAnimation</span> : <span class="nc">NSObject</span><span class="o">&lt;</span><span class="n">FastAnimationProtocol</span><span class="p">,</span>
-</span><span class='line'><span class="n">FastAnimationReverseProtocol</span><span class="o">&gt;</span> <span class="c1">// Maybe only FastAnimationProtocol</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'><span class="c1">// new_animation.m</span>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">FAAnimationBounceRight</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">performAnimation:</span><span class="p">(</span><span class="n">UIView</span> <span class="o"><em></span><span class="p">)</span><span class="nv">view</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// some thing you like.</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stopAnimation:</span><span class="p">(</span><span class="n">UIView</span> <span class="o"></em></span><span class="p">)</span><span class="nv">view</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// some thing you like.</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">reverseAnimation:</span><span class="p">(</span><span class="n">UIView</span> <span class="o"><em></span><span class="p">)</span><span class="nv">view</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>     <span class="c1">// some thing you like.</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stopReverse:</span><span class="p">(</span><span class="n">UIView</span> <span class="o"></em></span><span class="p">)</span><span class="nv">view</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>     <span class="c1">// some thing you like.</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure></p>
+<p>@end
+// new_animation.m
+@implementation FAAnimationBounceRight</p>
+
+<ul>
+<li><p>(void)performAnimation:(UIView *)view
+{
+  // some thing you like.
+}</p></li>
+<li><p>(void)stopAnimation:(UIView *)view
+{
+  // some thing you like.
+}</p></li>
+<li><p>(void)reverseAnimation:(UIView *)view
+{
+   // some thing you like.
+}</p></li>
+<li><p>(void)stopReverse:(UIView *)view
+{
+   // some thing you like.
+}
+@end</p></li>
+</ul>
+
+
+<p>&#8220;`</p>
 
 <h3>4. 一些控制动画的操作</h3>
-
-
-
 
 <ul>
 <li>停止动画：</li>
 </ul>
 
 
-
-
 <p>如果想要手动体制，使用下面的方法：</p>
 
-
-<p><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">&ndash;</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stopFAAnimation</span><span class="p">;</span>
-</span><span class='line'><span class="k">&ndash;</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stopReverseFAAnimation</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure></p>
+<p><code>objective-c
+- (void)stopFAAnimation;
+- (void)stopReverseFAAnimation;
+</code></p>
 
 <ul>
 <li>嵌套动画：</li>
 </ul>
 
 
-
-
 <p>使用如下方法处理嵌套：</p>
 
-
-<p><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">&ndash;</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startFAAnimationNested</span><span class="p">;</span>
-</span><span class='line'><span class="k">&ndash;</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stopFAAnimationNested</span><span class="p">;</span>
-</span><span class='line'><span class="k">&ndash;</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">reverseFAAnimationNested</span><span class="p">;</span>
-</span><span class='line'><span class="k">&ndash;</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stopReverseFAAnimationNested</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure></p>
+<p><code>objective-c
+- (void)startFAAnimationNested;
+- (void)stopFAAnimationNested;
+- (void)reverseFAAnimationNested;
+- (void)stopReverseFAAnimationNested;
+</code></p>
 
 <h3>目前已经拥有的动画:</h3>
-
-
-
 
 <ul>
 <li>反弹动画（4方向）: <code>BounceLeft</code>,<code>BounceRight</code>,<code>BounceUp</code>,<code>BounceDown</code></li>
@@ -355,12 +221,7 @@
 </ul>
 
 
-
-
 <h2>下一步要做的事</h2>
-
-
-
 
 <ul>
 <li>把DEMO和库项目和到同一个Workspace里。</li>
@@ -371,8 +232,6 @@
 <li>把核心部分和效果部分分离，效果按照iOS5 6 7+来打成不同的包.</li>
 <li>支持Swift写扩展.</li>
 </ul>
-
-
 
 ]]></content>
   </entry>
