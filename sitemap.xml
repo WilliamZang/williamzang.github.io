@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  
+  <url>
+    <loc>http://blog.williamzang.com//blog/2014/08/15/2014-8-15-zhou-wu-duo-yun/</loc>
+    <lastmod>2014-08-15T10:53:40+08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://blog.williamzang.com//blog/2014/08/14/2014-8-14-zhou-si-qing/</loc>
+    <lastmod>2014-08-14T11:24:34+08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://blog.williamzang.com//blog/2014/07/23/shi-yong-jenkins-plus-calabash-plus-cocoapodsda-jian-ioschi-xu-ji-cheng-huan-jing/</loc>
+    <lastmod>2014-07-23T16:19:58+08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://blog.williamzang.com//blog/2014/07/23/jie-shao-yi-xia-kai-yuan-xiang-mu-fastanimationwithpop/</loc>
+    <lastmod>2014-07-23T16:07:04+08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
+  
+  <url>
+    <loc>http://blog.williamzang.com//blog/archives/</loc>
+    <lastmod>2014-08-16T14:50:25+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>http://blog.williamzang.com//</loc>
+    <lastmod>2014-08-16T14:50:25+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  
+</urlset>
