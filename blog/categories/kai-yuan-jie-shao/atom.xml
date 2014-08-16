@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 开源介绍 | 臧成威的博客]]></title>
-  <link href="http://WilliamZang.github.io/blog/categories/kai-yuan-jie-shao/atom.xml" rel="self"/>
-  <link href="http://WilliamZang.github.io/"/>
-  <updated>2014-08-16T15:04:09+08:00</updated>
-  <id>http://WilliamZang.github.io/</id>
+  <link href="http://williamzang.com/blog/categories/kai-yuan-jie-shao/atom.xml" rel="self"/>
+  <link href="http://williamzang.com/"/>
+  <updated>2014-08-16T23:08:31+08:00</updated>
+  <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[介绍一下开源项目FastAnimationWithPOP]]></title>
-    <link href="http://WilliamZang.github.io/blog/2014/07/23/jie-shao-yi-xia-kai-yuan-xiang-mu-fastanimationwithpop/"/>
+    <link href="http://williamzang.com/blog/2014/07/23/jie-shao-yi-xia-kai-yuan-xiang-mu-fastanimationwithpop/"/>
     <updated>2014-07-23T16:07:04+08:00</updated>
-    <id>http://WilliamZang.github.io/blog/2014/07/23/jie-shao-yi-xia-kai-yuan-xiang-mu-fastanimationwithpop</id>
+    <id>http://williamzang.com/blog/2014/07/23/jie-shao-yi-xia-kai-yuan-xiang-mu-fastanimationwithpop</id>
     <content type="html"><![CDATA[<p>这是一个很简单的动画框架，基于Facebook的POP库。使用它你就可以在故事版中以0行代码的代价来添加动画了。</p>
 
 <p>Github上地址是 <a href="https://github.com/WilliamZang/FastAnimationWithPOP">这里</a>.</p>

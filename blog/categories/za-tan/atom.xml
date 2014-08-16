@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: 杂谈 | 臧成威的博客]]></title>
-  <link href="http://WilliamZang.github.io/blog/categories/za-tan/atom.xml" rel="self"/>
-  <link href="http://WilliamZang.github.io/"/>
-  <updated>2014-08-16T15:04:09+08:00</updated>
-  <id>http://WilliamZang.github.io/</id>
+  <link href="http://williamzang.com/blog/categories/za-tan/atom.xml" rel="self"/>
+  <link href="http://williamzang.com/"/>
+  <updated>2014-08-16T23:08:31+08:00</updated>
+  <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[使用jenkins+calabash+cocoapods搭建ios持续集成环境]]></title>
-    <link href="http://WilliamZang.github.io/blog/2014/07/23/shi-yong-jenkins-plus-calabash-plus-cocoapodsda-jian-ioschi-xu-ji-cheng-huan-jing/"/>
+    <link href="http://williamzang.com/blog/2014/07/23/shi-yong-jenkins-plus-calabash-plus-cocoapodsda-jian-ioschi-xu-ji-cheng-huan-jing/"/>
     <updated>2014-07-23T16:19:58+08:00</updated>
-    <id>http://WilliamZang.github.io/blog/2014/07/23/shi-yong-jenkins-plus-calabash-plus-cocoapodsda-jian-ioschi-xu-ji-cheng-huan-jing</id>
+    <id>http://williamzang.com/blog/2014/07/23/shi-yong-jenkins-plus-calabash-plus-cocoapodsda-jian-ioschi-xu-ji-cheng-huan-jing</id>
     <content type="html"><![CDATA[<h2>持续集成</h2>
 
 <p>持续集成究竟是什么呢？根据敏捷大师Martin Fowler的定义:</p>
