@@ -3,6 +3,12 @@
   
   
   <url>
+    <loc>http://williamzang.com/blog/2014/08/18/2014-8-18-zhou-yi-qing/</loc>
+    <lastmod>2014-08-18T11:28:38+08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
     <loc>http://williamzang.com/blog/2014/08/15/2014-8-15-zhou-wu-duo-yun/</loc>
     <lastmod>2014-08-15T10:53:40+08:00</lastmod>
     <priority>0.8</priority>
@@ -29,14 +35,14 @@
   
   <url>
     <loc>http://williamzang.com/blog/archives/</loc>
-    <lastmod>2014-08-16T23:08:31+08:00</lastmod>
+    <lastmod>2014-08-18T12:24:15+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>http://williamzang.com/</loc>
-    <lastmod>2014-08-16T23:08:31+08:00</lastmod>
+    <lastmod>2014-08-18T12:24:15+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
