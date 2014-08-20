@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 程序员日记 | 臧成威的博客]]></title>
   <link href="http://williamzang.com/blog/categories/cheng-xu-yuan-ri-ji/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2014-08-20T14:14:00+08:00</updated>
+  <updated>2014-08-20T14:14:56+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -75,7 +75,7 @@ API又变了这么多，不晓得又有多少BUG<br/>
 
 <p>很多时候，你的代码会变得极其相似。但是又有略微不同，这时你就会想，如果我可以把不同的部分分离出来该多好，但是往往事与愿违。你仍会发现很多的透传代码挡在你的面前，就算不停的优化，接口还是要一个一个导过去。</p>
 
-<p>```objective-c
+<p>&#8220;`objective-c
 // 类OrdersViewModel
 &ndash; (BOOL)hasOrder
 {</p>
@@ -98,13 +98,13 @@ API又变了这么多，不晓得又有多少BUG<br/>
 
 
 <p>// 以下略很多的透传
-```</p>
+&#8220;`</p>
 
 <p>这样的封装很好的接口，却因为很多的透传让代码变得臃肿不堪。还存在一些后续维护的问题，当internalOrderManager的接口变化的时候，还需要记得把外面OrdersViewModel这个类也一起变了。</p>
 
 <p>这时就是动态特性大显身手的时候了，如果我们不实现这些方法，运行时会调用一系列的方法来寻求解决方案，这个例子里，最简单的方法就是<code>- (id)forwardingTargetForSelector:(SEL)aSelector</code>，也被称为快速转发，下面是实现。</p>
 
-<p>```objective-c
+<p>&#8220;`objective-c
 // 类OrdersViewModel
 &ndash; (id)forwardingTargetForSelector:(SEL)aSelector
 {</p>
@@ -116,26 +116,26 @@ return nil;
 </code></pre>
 
 <p>}
-```</p>
+&#8220;`</p>
 
 <p><em>这只是本人的一个日记而已，所以相关技术点请大家去Google一下吧。</em></p>
 
 <p>这么做之后，发现了一个小问题，就是类OrdersViewModel由于没有实现<code>hasOrder</code>,<code>orderCount</code>和<code>orderNameForIndex:</code>这三个方法所以有了Warning。消除的方法就是使用类别</p>
 
-<p>```objective-c
+<p>&#8220;`objective-c
 @interface OrdersViewModel(Extended)
 &ndash; (BOOL)hasOrder;
 &ndash; (NSInteger)orderCount;
 &ndash; (NSString *)orderNameForIndex:(NSInteger)index;
 @end</p>
 
-<p>```</p>
+<p>&#8220;`</p>
 
 <p>这样就好了。</p>
 
 <p>然而很多时候，没有这么乐观和简单，例如下面的例子：</p>
 
-<p>```objective-c
+<p>&#8220;`objective-c
 // 类OrdersViewModel
 &ndash; (NSString *)orderNameForIndex:(NSInteger)index
 {</p>
@@ -162,7 +162,7 @@ return nil;
 </ul>
 
 
-<p>```</p>
+<p>&#8220;`</p>
 
 <p>这个看起来，又是如此的相似，但是老办法却搞不定，难道我们注定就要透传和维护下去么？当然不是的。</p>
 
@@ -176,7 +176,7 @@ return nil;
 
 <p>首先来实现<code>- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector</code>这个方法</p>
 
-<p>```objective-c
+<p>&#8220;`objective-c
 &ndash; (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
 {</p>
 
@@ -210,13 +210,13 @@ return signature;
   [newSelectorName deleteCharactersInRange:[@&ldquo;order&rdquo; rangeOfString:className options:NSCaseInsensitiveSearch]];
   return NSSelectorFromString(newSelectorName.uncapitalizedString); // uncapitalizedString是我通过类别加的新方法，就是把首字母小写，大家试的时候，随便实现以下就可以了。
 }
-```</li>
+&#8220;`</li>
 </ul>
 
 
 <p>大功告成，我们先用Predicate匹配了是否以order开头，以forIndex或者ForIndex结尾，然后还把order和forIndex去掉，得到了正确的selector，并取得了新的signature。然后是调用部分。</p>
 
-<p>```objective-c
+<p>&#8220;`objective-c
 &ndash; (void)forwardInvocation:(NSInvocation *)anInvocation
 {</p>
 
@@ -249,7 +249,7 @@ if ([self selectorNameCheck:selectorName] ) {
 </code></pre>
 
 <p>}
-```</p>
+&#8220;`</p>
 
 <p>调用的时候，先取得参数的个数，然后get最后一个参数，我们知道这个参数就是index，然后取得instance。并生成新的invocation，传递参数，传递返回值。一切看起都那么美好。<strong>但是，它是不工作的。</strong></p>
 
@@ -257,7 +257,7 @@ if ([self selectorNameCheck:selectorName] ) {
 
 <p>这里有一个难题，就是我们需要找到正确的签名，而参数的个数又是不确定的。我用了一个折中的办法，生成了许多假的方法，涵盖了许多的签名。</p>
 
-<p>```objective-c
+<p>&#8220;`objective-c
 &ndash; (void)voidMethodforIndex:(NSInteger)index {}
 &ndash; (void)voidMethodParam:(id)<em>0 forIndex:(NSInteger)index {}
 &ndash; (void)voidMethodParam:(id)</em>0 Param:(id)<em>1 forIndex:(NSInteger)index {}
@@ -287,11 +287,11 @@ if ([self selectorNameCheck:selectorName] ) {
 </ul>
 
 
-<p>```</p>
+<p>&#8220;`</p>
 
 <p>看起来好眼晕的说，哈哈。这种方法在C++的模板里也有类似的应用，就是预生成一些内容，考虑一个假定临界值，把所有的可能写出来。有了这些我们就可以这样修改<code>- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector</code>这个方法了。</p>
 
-<p>```objective-c
+<p>&#8220;`objective-c
 &ndash; (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
 {</p>
 
@@ -325,7 +325,7 @@ return signature;
 </code></pre>
 
 <p>}
-```</p>
+&#8220;`</p>
 
 <p>拿到正确的signature之后，我们根据返回值的类型和参数的个数，生成一个selector的字符串，并根据这个得到新的signature。至此，这个改造总算完成了。我们的新的方法可以不用修改代码而实现了。</p>
 
