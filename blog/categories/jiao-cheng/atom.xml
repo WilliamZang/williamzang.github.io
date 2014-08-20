@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 教程 | 臧成威的博客]]></title>
   <link href="http://williamzang.com/blog/categories/jiao-cheng/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2014-08-20T14:10:51+08:00</updated>
+  <updated>2014-08-20T14:14:00+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -135,12 +135,12 @@ pod init
 
 <p>之后会在项目根目录下创建好Podfile，修改下Podfile的内容</p>
 
-<p>&#8220;`
+<p>```
  # #为Podfile的注释行，Podfile实际上是一个ruby代码段
  platform :ios, &ldquo;6.0&rdquo; # platform后面跟平台和版本号，这里是ios6平台</p>
 
 <p> # pod &lsquo;MKNetworkKit&rsquo; 像这样写就可以引入第三方库了，为了简化，这里没有引入任何库
-&#8220;`</p>
+```</p>
 
 <p>在目录执行pod插件install命令</p>
 
@@ -222,14 +222,14 @@ end
 
 <p>屏幕会出现</p>
 
-<p>&#8220;`
+<p>```
 &mdash;&mdash;&mdash;&mdash;&mdash;Question&mdash;&mdash;&mdash;&mdash;&mdash;
 I&rsquo;m about to create a subdirectory called features.
 features will contain all your calabash tests.</p>
 
 <h2>Please hit return to confirm that&rsquo;s what you want.</h2>
 
-<p>&#8220;`</p>
+<p>```</p>
 
 <p>按回车确认，就生成了features文件夹，我们的用例和测试配置都在这里了。你可以把features这个文件夹拖到项目中，方便使用xcode直接编辑，<strong>注意不要选择任何目标</strong>，以为这些文件根本没有必要编译和存到app中。</p>
 
@@ -239,7 +239,7 @@ features will contain all your calabash tests.</p>
 
 <p>这里我们先写一个简单用例，修改features/my_first.feature</p>
 
-<p>&#8220;`</p>
+<p>```</p>
 
 <h1>language: zh-CN</h1>
 
@@ -251,7 +251,7 @@ features will contain all your calabash tests.</p>
 <p>场景: 基准测试
   假如 应用正在运行
   那么 我把应用切到后台3秒
-&#8220;`</p>
+```</p>
 
 <p>是的，就是这样的用例！你可以书写自然语言来描述一个功能，calabash就使用cucumber帮您测试了，神奇吧。</p>
 

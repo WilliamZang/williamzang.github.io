@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 开源介绍 | 臧成威的博客]]></title>
   <link href="http://williamzang.com/blog/categories/kai-yuan-jie-shao/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2014-08-20T14:10:51+08:00</updated>
+  <updated>2014-08-20T14:14:00+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -85,7 +85,7 @@
 </ul>
 
 
-<p>&#8220;`objective-c</p>
+<p>```objective-c</p>
 
 <h1>define kSpringBounciness   (@&ldquo;animationParams.springBounciness&rdquo;)</h1>
 
@@ -97,7 +97,7 @@
 
 <h1>define kDynamicsMass       (@&ldquo;animationParams.dynamicsMass&rdquo;)</h1>
 
-<p>&#8220;`</p>
+<p>```</p>
 
 <ul>
 <li><p>startAnimationWhenAwakeFromNib</p>
@@ -148,7 +148,7 @@ view.animationParams[@"velocity"] = @-7000;
 
 <p>就像这样：</p>
 
-<p>&#8220;`objective-c
+<p>```objective-c
 // new_animation.h
 @interface FAAnimationNewAnimation : NSObject&lt;FastAnimationProtocol,
 FastAnimationReverseProtocol> // Maybe only FastAnimationProtocol</p>
@@ -178,7 +178,7 @@ FastAnimationReverseProtocol> // Maybe only FastAnimationProtocol</p>
 </ul>
 
 
-<p>&#8220;`</p>
+<p>```</p>
 
 <h3>4. 一些控制动画的操作</h3>
 
