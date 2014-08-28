@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>聊一聊RAC - 臧成威的博客</title>
+  <title>2014-8-28 周四 晴 - 臧成威的博客</title>
   <meta name="author" content="臧成威">
 
   
-  <meta name="description" content="来讲一讲RAC">
-  <meta name="keywords" content="iOS ReactiveCocoa RAC 函数响应式编程">
+  <meta name="description" content="请大家不要忽视C语言">
+  <meta name="keywords" content="C Lanague 编程 语言">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://williamzang.com/blog/2014/08/20/talk-about-rac">
+  <link rel="canonical" href="http://williamzang.com/blog/2014/08/28/2014-8-28-zhou-si-qing">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="臧成威的博客" type="application/atom+xml">
@@ -65,7 +65,7 @@
   
   <header>
     
-      <h1 class="entry-title">聊一聊RAC</h1>
+      <h1 class="entry-title">2014-8-28 周四 晴</h1>
     
     
       <p class="meta">
@@ -81,39 +81,51 @@
   
 
 
-<time datetime="2014-08-20T11:17:32+08:00" pubdate data-updated="true"></time>
+<time datetime="2014-08-28T15:00:58+08:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>今天来聊一聊RAC，这个在Github上很火热的开源框架，相信很多关注iOS前沿开发的人都或多或少的知道。</p>
+<div class="entry-content"><h3>不要忽视C语言</h3>
 
-<p>关于RAC的介绍和一些概念，我这里就不再啰嗦了，大家可以看   <a href="http://limboy.me/about.html">limboy</a>的几篇关于RAC的介绍，很不错。</p>
+<p>看到过很多人发表过对C语言的抨击，称其看起来很难看，面向过程是一种旧时代的产物。</p>
 
-<blockquote><p><a href="http://limboy.me/ios/2013/06/19/frp-reactivecocoa.html">ReactiveCocoa与Functional Reactive Programming</a><br/>
-<a href="http://limboy.me/ios/2013/12/27/reactivecocoa-2.html">说说ReactiveCocoa 2</a><br/>
-<a href="http://limboy.me/ios/2014/01/05/ios-rest-client-implementation.html">基于AFNetworking2.0和ReactiveCocoa2.1的iOS REST Client</a><br/>
-<a href="http://limboy.me/tech/2014/06/06/deep-into-reactivecocoa2.html">ReactiveCocoa2实战</a></p></blockquote>
+<p>我想说的是，请不要忽视C语言。</p>
 
-<p>此外还有Cocoachina的一系列教程<a href="http://www.cocoachina.com/cms/plus/view.php?aid=8905">Reactive Cocoa详解</a></p>
+<p>几乎所有的学校都会以C语言作为一个入门的语言。我觉得有几点需要思考：</p>
 
-<p>写Blog，在我看来和开发一样，也要讲究重用，引用列位的信息即可，何必黏贴和表达类似的观点。这里我也仅说一下我自己的理解和看法。</p>
-
-<p>相信很多人都尝试过RAC用到一些小的DEMO或者项目中的一个小部分然后就浅尝辄止了。为什么呢？我觉得主要在于，RAC实际推行的一种新的概念大家还没有习惯，那就是函数响应式编程FRP。<a href="https://github.com/staltz">staltz</a>在一个Gist上倒是给了一个比较全面的解释<a href="https://gist.github.com/staltz/868e7e9bc2a7b8c1f754">The introduction to Reactive Programming you&rsquo;ve been missing</a>，可惜是英文的。</p>
-
-<p>这种FRP的核心就在于数据流，FRP把整个的程序认为是数据流的转换，既不是过程、也不是对象。一个系统先产生信号，转换信号，然后业务和界面再接收和响应信号的变化。所以，这是一个新的概念。如果使用别的概念套用，自然用起来就没那么顺手了。那么我们来看看，这样做的好处是什么呢？</p>
-
-<ul>
-<li>统一的流处理模式，使得不同的组件可以很好的结合起来，例如iOS的<code>UserDefault</code>、<code>NSNotificationCenter</code>、<code>KVO</code>这些，在RAC库下面，都是相同的封装，这样就使得上层的业务逻辑实现了<strong>大同</strong>，进而一切的信号转换合并都可以有效的结合在一起。</li>
-<li>处理异步，很多时候，我们对于异步再同步是比较头大的。而RAC中，一个信号的终止，是不局限在一个函数中的。这样我们可以把不同线程、不同时期的状态绑到一个信号上，使得使用者达到一种内聚。和这种内聚，在转换和迭代的过程中是很必要的。</li>
-<li>统一的错误处理，从古老的C时代的<code>int DoSomeThine(int input1, int *output1)</code>这种以返回值返回错误，到后来<code>SetErrorStatus(int ErrorCode, const char *message)</code>的线程栈内全局报错机制，还有现在try-catch机制，都有一个很要命的问题，就是错误处理，或者是可以被忽略，或者是让开发变得很烦恼。Java的try-catch机制，相信Java的开发者们一定深有感触。而RAC把错误变得简单了，它对于错误的处理，会随着变化一起传递到顶层，既不会忘记，也不用在中间环节中手动传递来传递去。</li>
-<li>逻辑的拆分，在FRP中，逻辑变得相对独立，通常是一个模块，根据一定的变化产生一个信号，亦或是一个模块，根据一个传入的信号，产生一定的转换。这就使得，我们可以只返回我们的直接结果，后期的加工和变更是分离的。对于上层模块，也只关注信号的类型，不关注处于那个线程还是何种手法。</li>
-</ul>
+<ol>
+<li><p>C的确是很“入门”的语言，因为他的学习曲线较为轻松，初学的时候既没有大量的库和框架，也没有复杂的语法概念（指针稍微麻烦一些），还没有很复杂的开发环境。面向过程的程序是最直观和易了解的。</p></li>
+<li><p>C语言很利于锻炼一个人的开发思想，实际解决问题的能力，C语言的考核应该是纯粹的能力考核，而不是对各种库和框架的熟悉程度。</p></li>
+<li><p>C语言是实现操作系统和数据结构的最佳语言，首先它没有太多的库的包袱，其次它可以方便的访问硬件。它不会让你觉得实现动态数组是很无聊的事（Ruby、Python党绝对不会想自己实现可变数组）。</p></li>
+<li><p>C语言被老师给认为太简单了，很多的教师和教学机构只让最菜的老师来教C语言，这直接导致大家没有学好C语言。</p></li>
+<li><p>C语言最精髓的部分被砍掉了，很多的学校C语言的学时通常不够，所以结构体、位段、高级指针、预编译等通常都被阉割了。第4条所说的老师们，又碍于面子，对学生提出的”指针的指针应该怎么用？”“为什么int a[3][5]和int **b不能互相转化？”的问题回答通常是“这个用不到。”。这就导致大家对C的普遍认知存在问题。</p></li>
+<li><p>C语言的教学目的是让入门者可以更快的掌握计算机开发的一些原理，并快速实践。但C语言绝不是只能面向过程设计的，几乎所有的C核心代码都是面向对象设计的，例如Linux、Win32内核、大家在iOS中的各种核心库如CoreGraphics、CoreText等。对于iOS开发者来说，如果你稍多了解就可以知道你是可以用C来生成ObjC的类和方法的，而这些几乎没有老师交代过。</p></li>
+</ol>
 
 
-<p>总而言之，RAC给与我们以数据的变化作为出发点，界面与之响应的一套框架。详细的一些技巧，我会在后续的blog中为大家慢慢介绍。</p>
+<p>首先背负着沉重的教育背景，C已经让绝大部分人忽视了，接下来的就业环节又让C被更加的忽视：</p>
+
+<ol>
+<li><p>没有多少公司用C</p></li>
+<li><p>很多的公司和老板觉得C没啥用，又干不了什么</p></li>
+<li><p>搞Java、Ruby、Objective-C的同学都看起来不错，搞C的同学都在嵌入式公司赚少量的钱（呵呵，我当年就是）</p></li>
+</ol>
+
+
+<p>最后我来说一说了解C的必要性：</p>
+
+<ol>
+<li><p>对内存和硬件的操作，是目前绝大部分高级语言所隐藏的，只有坚实C背景的同学，才可以考虑的更多，如果你想对原理有更多的了解，那么C其实是不可绕过的一个环节。</p></li>
+<li><p>想要缔造一个新的系统和语言，没有C是不行滴（或许C++勉强）。</p></li>
+<li><p>不管是OC的消息系统，Java的自动回收，Ruby的动态类扩充，这些花哨且时髦的东西，其实都可以用C来实现，而且很多都是用C来实现的，如果你想自己实施，看C吧。</p></li>
+<li><p>破解和分析程序，C可以起到很大的作用。C是可以人为创建Bug来破坏一个系统滴。</p></li>
+</ol>
+
+
+<blockquote><p>最后我引用我的一个大牛朋友的话：“请不要忽视C语言，它上可九天摘月，下可五洋捉鳖”。</p></blockquote>
 </div>
 
 
@@ -136,12 +148,12 @@
   
 
 
-<time datetime="2014-08-20T11:17:32+08:00" pubdate data-updated="true"></time>
+<time datetime="2014-08-28T15:00:58+08:00" pubdate data-updated="true"></time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/raczhuan-lan/'>rac专栏</a>
+    <a class='category' href='/blog/categories/cheng-xu-yuan-ri-ji/'>程序员日记</a>
   
 </span>
 
@@ -157,10 +169,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2014/08/18/2014-8-18-zhou-yi-qing/" title="Previous Post: 2014-8-18 周一 晴">&laquo; 2014-8-18 周一 晴</a>
+        <a class="basic-alignment left" href="/blog/2014/08/27/gong-ju-lian/" title="Previous Post: 工具链">&laquo; 工具链</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2014/08/27/gong-ju-lian/" title="Next Post: 工具链">工具链 &raquo;</a>
       
     </p>
   </footer>
@@ -170,7 +180,7 @@
   <section>
     <h1>Comments</h1>
     <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
-<div class="ds-thread" data-title="聊一聊RAC"></div>
+<div class="ds-thread" data-title="2014-8-28 周四 晴"></div>
 <script type="text/javascript">
   var duoshuoQuery = {short_name:"WilliamZang"};
   (function() {
