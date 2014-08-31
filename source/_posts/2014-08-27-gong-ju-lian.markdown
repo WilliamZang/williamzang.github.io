@@ -40,6 +40,7 @@ categories: 程序员日记 杂谈
 5. xctool----自动化集成
 6. vim-----文本编辑器
 7. calabash-----集成、UI测试工具
+8. mogenerator-------用来生成CoreData的子类，比Xcode实用
 
 Xcode的插件：
 
@@ -56,6 +57,7 @@ Xcode的插件：
 11. Specta-----specta测试代码模板
 12. VVDocumenter-Xcode---------代码注释生成器
 13. XVim------Xcode的Vim支持
+14. SCXcodeSwitchExpander------为枚举自动生成switch-case对
 
 最后是我在iOS中喜欢用的库：
 
