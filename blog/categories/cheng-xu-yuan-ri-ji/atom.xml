@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 程序员日记 | 臧成威的博客]]></title>
   <link href="http://williamzang.com/blog/categories/cheng-xu-yuan-ri-ji/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2014-08-28T15:33:49+08:00</updated>
+  <updated>2014-08-31T23:18:31+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -101,6 +101,7 @@
 <li>xctool&mdash;&mdash;自动化集成</li>
 <li>vim&mdash;&mdash;-文本编辑器</li>
 <li>calabash&mdash;&mdash;-集成、UI测试工具</li>
+<li>mogenerator&mdash;&mdash;&mdash;-用来生成CoreData的子类，比Xcode实用</li>
 </ol>
 
 
@@ -120,6 +121,7 @@
 <li>Specta&mdash;&mdash;-specta测试代码模板</li>
 <li>VVDocumenter-Xcode&mdash;&mdash;&mdash;&mdash;-代码注释生成器</li>
 <li>XVim&mdash;&mdash;&mdash;Xcode的Vim支持</li>
+<li>SCXcodeSwitchExpander&mdash;&mdash;&mdash;为枚举自动生成switch-case对</li>
 </ol>
 
 
