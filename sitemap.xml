@@ -3,6 +3,12 @@
   
   
   <url>
+    <loc>http://williamzang.com/blog/2014/09/05/guan-yu-yi-ge-xiao-wen-ti-yin-fa-de-gan-kai/</loc>
+    <lastmod>2014-09-05T16:09:55+08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
     <loc>http://williamzang.com/blog/2014/08/28/2014-8-28-zhou-si-qing/</loc>
     <lastmod>2014-08-28T15:00:58+08:00</lastmod>
     <priority>0.8</priority>
@@ -53,14 +59,14 @@
   
   <url>
     <loc>http://williamzang.com/blog/archives/</loc>
-    <lastmod>2014-08-31T23:18:31+08:00</lastmod>
+    <lastmod>2014-09-05T16:52:07+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>http://williamzang.com/</loc>
-    <lastmod>2014-08-31T23:18:31+08:00</lastmod>
+    <lastmod>2014-09-05T16:52:07+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
