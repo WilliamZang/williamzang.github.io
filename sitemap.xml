@@ -3,6 +3,12 @@
   
   
   <url>
+    <loc>http://williamzang.com/blog/2014/09/09/cong-ling-yi-ge-jiao-du-jie-shao-xia-block/</loc>
+    <lastmod>2014-09-09T10:27:24+08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
     <loc>http://williamzang.com/blog/2014/09/05/guan-yu-yi-ge-xiao-wen-ti-yin-fa-de-gan-kai/</loc>
     <lastmod>2014-09-05T16:09:55+08:00</lastmod>
     <priority>0.8</priority>
@@ -59,14 +65,14 @@
   
   <url>
     <loc>http://williamzang.com/blog/archives/</loc>
-    <lastmod>2014-09-05T16:56:46+08:00</lastmod>
+    <lastmod>2014-09-09T12:16:40+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>http://williamzang.com/</loc>
-    <lastmod>2014-09-05T16:56:46+08:00</lastmod>
+    <lastmod>2014-09-09T12:16:40+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>

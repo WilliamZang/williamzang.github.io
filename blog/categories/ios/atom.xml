@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ios | 臧成威的博客]]></title>
   <link href="http://williamzang.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2014-09-05T16:56:46+08:00</updated>
+  <updated>2014-09-09T12:16:40+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -12,6 +12,153 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[从另一个角度介绍下Block]]></title>
+    <link href="http://williamzang.com/blog/2014/09/09/cong-ling-yi-ge-jiao-du-jie-shao-xia-block/"/>
+    <updated>2014-09-09T10:27:24+08:00</updated>
+    <id>http://williamzang.com/blog/2014/09/09/cong-ling-yi-ge-jiao-du-jie-shao-xia-block</id>
+    <content type="html"><![CDATA[<p>群里有个小伙伴问我block的理解，我想网上那么多blog都写过iOS的block的介绍，说明，用法，如果还是不能理解，那就换个角度吧。所以，今天我们来聊一聊Block的前世今生，不谈block如何定义，不谈block有哪些坑，之谈它是怎么来的。</p>
+
+<p>首先block的使用，真的不必多说，想必大家google后也都会用。问题就在于，为什么要有block？有人觉得block方便，到底方便在哪里呢？这一切要从函数指针这个很老的概念谈起了。</p>
+
+<p>在C时代，面向过程一度成为程序开发的主流，在没有对象化的程序设计中，我们难免写出如下的程序：</p>
+
+<p>&#8220;`c
+extern const char <em>GetMenu0();
+extern const char </em>GetMenu1();
+extern const char <em>GetMenu2();
+extern const char </em>GetMenu3();
+extern const char <em>GetMenu4();
+extern const char </em>GetMenu5();</p>
+
+<p>const char *GetMenuShow(int pos) {</p>
+
+<pre><code>switch (pos) {
+    case 0: return GetMenu0();
+    case 1: return GetMenu1();
+    case 2: return GetMenu2();
+    case 3: return GetMenu3();
+    case 4: return GetMenu4();
+    case 5: return GetMenu5();
+    default:
+        return NULL;
+}
+</code></pre>
+
+<p>}
+&#8220;`</p>
+
+<p>随着程序的复杂度提高，这样的程序变得越来越长，这时函数指针可以来帮忙，于是函数就变成了这样：</p>
+
+<p>&#8220;`c
+extern const char <em>GetMenu0();
+extern const char </em>GetMenu1();
+extern const char <em>GetMenu2();
+extern const char </em>GetMenu3();
+extern const char <em>GetMenu4();
+extern const char </em>GetMenu5();</p>
+
+<p>typedef const char <em>(</em>MenuMethodType)();</p>
+
+<p>static MenuMethodType g_methods[] = {
+  &amp;GetMenu0,
+  &amp;GetMenu1,
+  &amp;GetMenu2,
+  &amp;GetMenu3,
+  &amp;GetMenu4,
+  &amp;GetMenu5
+};</p>
+
+<p>const char *GetMenuShow(int pos) {</p>
+
+<pre><code>if (pos &lt; 0 || pos &gt;= (sizeof(g_methods) / sizeof(MenuMethodType))) {
+    return NULL;
+}
+return g_methods[pos]();
+</code></pre>
+
+<p>}
+&#8220;`</p>
+
+<p>这种写法也叫做跳转表，好处是以后GetMenu*这种函数的增长可以放到GetMenuShow这个函数外，减少了耦合。函数指针的另一个妙用就是回调函数，这个非常的普遍，也不需要再举例子了。</p>
+
+<p>函数指针给我们带来的新的开发思想，就是行为的变量化，因此，我们可以将不同的行为封装到统一的流程之外，作为可替换的组件。总之，它允许你把可变化的行为，注入到稳定的过程中，我们便获得了更好的扩展，把开发的中心放到变化而不是重复上。</p>
+
+<p>到了OC时代，OC有了一种比函数指针还高效而简单的东西，那就是selector。这个被称为选择器的工具，不仅可以让我们得到函数指针的一切便利，还可以动态的替换其指向的内容。于是我们有了很多<code>addTarget:action:</code>这样的API，使得我们可以把行为注入到已经非常稳定的Cocoa或CocoaTouch框架中。</p>
+
+<p>虽然有了一定的便利，但是程序员是不容易满足的。我们逐渐发现，这种基于action的写法有时很麻烦。主要是以下几点：</p>
+
+<ol>
+<li>就是很多时候，你注入的内容可能就一次，搞一个函数或者方法，浪费了不少的时间。</li>
+<li>你还要起名字，要知道，Phil Karlton就说过:“在计算机科学领域,有两大难题,如何验证缓存和如何给各种东西命名。”</li>
+<li>使得你原本可以在一个函数里实现的逻辑，分散到不同的部分，你难以专注的一次把你的逻辑写完。</li>
+</ol>
+
+
+<p>这时，我们的主角block就来帮助大家了。</p>
+
+<p>其实block还有很多别名，其中一个就是匿名函数。利用block，你可以在一个函数中，写上一小段代码，不用起名字，就可以传递过去。函数指针的用法，几乎都可以用匿名函数来替换。一举解决了碎片化，命名等问题。我们便有了这样的代码：</p>
+
+<p>&#8220;`objective-c
+AFHTTPRequestOperationManager <em>manager = [AFHTTPRequestOperationManager manager];
+[manager GET:@&ldquo;<a href="http://example.com/resources.json">http://example.com/resources.json</a>&rdquo; parameters:nil success:^(AFHTTPRequestOperation </em>operation, id responseObject) {</p>
+
+<pre><code>NSLog(@"JSON: %@", responseObject);
+</code></pre>
+
+<p>} failure:^(AFHTTPRequestOperation <em>operation, NSError </em>error) {</p>
+
+<pre><code>NSLog(@"Error: %@", error);
+</code></pre>
+
+<p>}];</p>
+
+<p>&#8220;`</p>
+
+<p>贪婪的程序员不仅仅满足于少起个名字和把代码写到一起，一旦程序员们发现，把一个函数写在另一个函数里很爽，就开始频繁的尝试。这时，又发现了几个小问题（以下仅是匿名函数的问题，block解决了这些问题）：</p>
+
+<ol>
+<li>匿名函数，到底还是一个函数，这个括号外面世界的变量，是不可以在里面使用的。</li>
+<li>由于只能传递一个函数，我们就没有了可操作的对象（即没有了self）。</li>
+</ol>
+
+
+<p>其实这两个是一样的问题，都是因为没有变量的传递。如果可以把self传递下来，第二个问题也解决了。</p>
+
+<p>想要解决这个问题，最简单的方法就是搞到全局域，于是代码就写成了这样：</p>
+
+<p>&#8220;`objective-c
+static int g_sum = 0;</p>
+
+<ul>
+<li><p>(BOOL)application:(UIApplication <em>)application didFinishLaunchingWithOptions:(NSDictionary </em>)launchOptions
+{
+  g_sum = 0;
+  [@[@1, @2, @3] enumerateObjectsUsingBlock:^(NSNumber <em>obj, NSUInteger idx, BOOL </em>stop) {
+      int val = [obj intValue];
+      g_sum += val;
+  }];
+  NSLog(@&ldquo;sum = %d&rdquo;, g_sum);</p>
+
+<p>  // Override point for customization after application launch.
+  return YES;
+}
+&#8220;`</p></li>
+</ul>
+
+
+<p>把想要在匿名函数中的部分先存到全局变量，然后再到匿名函数中取出来。我们原本想解决的碎片化问题，又回来了。这样情况下，我们不得不搞出好多的全局变量，给全局变量起名字的问题也回来了。聪明的工程师们很快发现了，这种传递有着很规律的行为，于是把这些行为封装起来，做成库。这种手段叫做“闭包”，block的又一个名字。</p>
+
+<p>把外面的对象，包在匿名函数中，封装起来，以备不时之需。OC利用编译器，在静态检查的时候，把用到的外部变量，都封装到block中。</p>
+
+<p>这使得匿名函数，有了新的活力。在大量的尝试后，发现这简直就是一种神奇，闭包不单使得你的逻辑更加的紧凑，还使得开发变得越来越有趣。nodejs尝试用大量的闭包铸成了一种单线程异步的神奇的库。ReactiveCocoa也用block改变了大家开发iOS的思路。</p>
+
+<p>有了block，我们可以更好的把变化抽取出来，可以更专注的实现逻辑，将异步的，碎片化的需求，快速的整合到一起。相比这些优点，block稍许复杂的语法，和一些可能出现的问题，是可以被原谅的。swift中，我们看到更多的闭包，可以看出block的写法对于开发有着多么深远的影响。</p>
+
+<p>此篇只是一个引子，block有很多需要学习的地方，用好容易，用得精巧，还需要大家更多的开阔思维。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[聊一聊RAC]]></title>
