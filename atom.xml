@@ -4,7 +4,7 @@
   <title><![CDATA[臧成威的博客]]></title>
   <link href="http://williamzang.com/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2015-08-18T12:29:17+08:00</updated>
+  <updated>2015-08-18T13:58:46+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -14,9 +14,233 @@
 
   
   <entry>
-    <title type="html"><![CDATA[细说ReactiveCocoa的冷信号与热信号（一）]]></title>
+    <title type="html"><![CDATA[Talk About Reactivecocoas Hot Signal and Cold Signal Part 2]]></title>
+    <link href="http://williamzang.com/blog/2015/08/18/talk-about-reactivecocoas-hot-signal-and-cold-signal-part-2/"/>
+    <updated>2015-08-18T00:00:00+08:00</updated>
+    <id>http://williamzang.com/blog/2015/08/18/talk-about-reactivecocoas-hot-signal-and-cold-signal-part-2</id>
+    <content type="html"><![CDATA[<h2>为什么要区分冷信号与热信号</h2>
+
+<p>也许你看到前一章节的时候就有疑问，为什么RAC要搞如此复杂的一个概念，直接搞成一种信号不就好了么？要解释这个问题需要绕一些弯路。（前方可能比较难懂，如果不能很好理解，请自行查阅各类文档。）</p>
+
+<p>最前面提到了RAC是一套基于Cocoa的FRP框架，那就来说说FRP，FRP全写是Functional Reactive Programming，中文译作函数响应式编程，是RP（Reactive Programm，响应式编程）的FP（Functional Programming，函数式编程）实现。说起来很拗口。太多的细节不多讨论，我们先关注下它是FP的情况。</p>
+
+<p>FP有几个很重要的概念是和我们的主题相关的：</p>
+
+<p><a href="https://en.wikipedia.org/wiki/Functional_programming#Pure_functions">纯函数</a>是指一个函数或者一个表达式不存在任何的<a href="https://en.wikipedia.org/wiki/Side_effect_(computer_science)">副作用</a>，就如同数学中的函数：</p>
+
+<blockquote><p>f(x) = 5x + 1</p></blockquote>
+
+<p>这个函数在调用的过程中产生除了返回值以外的任何作用，也不受任何外界因素的影响。那么副作用都有哪些呢？我来列举以下几个情况：</p>
+
+<ul>
+<li>函数的处理过程中，修改了外部的变量，例如全局变量。一个特殊点的例子，就是如果把OC的一个方法看做一个函数，所有的成员变量的赋值都是对外部变量的修改。是的，从FP的角度看OOP是充满副作用的。</li>
+<li>函数的处理过程中，触发了一些额外的动作，例如发送的全局的一个Notification，在console里面输出的结果，保存了文件，触发了网络，更新的屏幕等。</li>
+<li>函数的处理过程中，受到外部变量的影响，例如全局变量，方法里面用到的成员变量。注意block中捕获的外部变量也算副作用。</li>
+<li>函数的处理过程中，受到线程锁的影响算副作用。</li>
+</ul>
+
+
+<p>由此我们可以看出，在目前的iOS编程中，我们是很难的摆脱副作用的。或者换一种说法，我们iOS编程的目的其实是副作用。（基于用户触摸的外界因素，最终反馈到网络变化和屏幕变化上。）</p>
+
+<p>接下来我们来分析下副作用与冷热信号的关系。既然iOS编程中少不了副作用，那么RAC在实际的使用中也不可避免的接触副作用，下面我列举个业务场景，来看下冷信号中副作用的坑：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">sessionManager</span> <span class="o">=</span> <span class="p">[[</span><span class="n">AFHTTPSessionManager</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithBaseURL</span><span class="p">:[</span><span class="bp">NSURL</span> <span class="nl">URLWithString</span><span class="p">:</span><span class="s">@&quot;http://api.xxxx.com&quot;</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">sessionManager</span><span class="p">.</span><span class="n">requestSerializer</span> <span class="o">=</span> <span class="p">[</span><span class="n">AFJSONRequestSerializer</span> <span class="n">serializer</span><span class="p">];</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">sessionManager</span><span class="p">.</span><span class="n">responseSerializer</span> <span class="o">=</span> <span class="p">[</span><span class="n">AFJSONResponseSerializer</span> <span class="n">serializer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">@</span><span class="n">weakify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">RACSignal</span> <span class="o">*</span><span class="n">fetchData</span> <span class="o">=</span> <span class="p">[</span><span class="n">RACSignal</span> <span class="nl">createSignal</span><span class="p">:</span><span class="o">^</span><span class="n">RACDisposable</span> <span class="o">*</span><span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">RACSubscriber</span><span class="o">&gt;</span> <span class="n">subscriber</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">NSURLSessionDataTask</span> <span class="o">*</span><span class="n">task</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">sessionManager</span> <span class="nl">GET</span><span class="p">:</span><span class="s">@&quot;fetchData&quot;</span> <span class="nl">parameters</span><span class="p">:</span><span class="l">@{</span><span class="s">@&quot;someParameter&quot;</span><span class="o">:</span> <span class="s">@&quot;someValue&quot;</span><span class="l">}</span> <span class="nl">success</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSURLSessionDataTask</span> <span class="o">*</span><span class="n">task</span><span class="p">,</span> <span class="kt">id</span> <span class="n">responseObject</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">subscriber</span> <span class="nl">sendNext</span><span class="p">:</span><span class="n">responseObject</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">subscriber</span> <span class="n">sendCompleted</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span> <span class="nl">failure</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSURLSessionDataTask</span> <span class="o">*</span><span class="n">task</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">subscriber</span> <span class="nl">sendError</span><span class="p">:</span><span class="n">error</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}];</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">[</span><span class="n">RACDisposable</span> <span class="nl">disposableWithBlock</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">task</span><span class="p">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">NSURLSessionTaskStateCompleted</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="p">[</span><span class="n">task</span> <span class="n">cancel</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}];</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">RACSignal</span> <span class="o">*</span><span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="n">fetchData</span> <span class="nl">flattenMap</span><span class="p">:</span><span class="o">^</span><span class="n">RACSignal</span> <span class="o">*</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">([</span><span class="n">value</span><span class="p">[</span><span class="s">@&quot;title&quot;</span><span class="p">]</span> <span class="nl">isKindOfClass</span><span class="p">:[</span><span class="bp">NSString</span> <span class="k">class</span><span class="p">]])</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="p">[</span><span class="n">RACSignal</span> <span class="k">return</span><span class="o">:</span><span class="n">value</span><span class="p">[</span><span class="s">@&quot;title&quot;</span><span class="p">]];</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="p">[</span><span class="n">RACSignal</span> <span class="nl">error</span><span class="p">:[</span><span class="bp">NSError</span> <span class="nl">errorWithDomain</span><span class="p">:</span><span class="s">@&quot;some error&quot;</span> <span class="nl">code</span><span class="p">:</span><span class="mi">400</span> <span class="nl">userInfo</span><span class="p">:</span><span class="l">@{</span><span class="s">@&quot;originData&quot;</span><span class="o">:</span> <span class="n">value</span><span class="l">}</span><span class="p">]];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">RACSignal</span> <span class="o">*</span><span class="n">desc</span> <span class="o">=</span> <span class="p">[</span><span class="n">fetchData</span> <span class="nl">flattenMap</span><span class="p">:</span><span class="o">^</span><span class="n">RACSignal</span> <span class="o">*</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">([</span><span class="n">value</span><span class="p">[</span><span class="s">@&quot;desc&quot;</span><span class="p">]</span> <span class="nl">isKindOfClass</span><span class="p">:[</span><span class="bp">NSString</span> <span class="k">class</span><span class="p">]])</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="p">[</span><span class="n">RACSignal</span> <span class="k">return</span><span class="o">:</span><span class="n">value</span><span class="p">[</span><span class="s">@&quot;desc&quot;</span><span class="p">]];</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="p">[</span><span class="n">RACSignal</span> <span class="nl">error</span><span class="p">:[</span><span class="bp">NSError</span> <span class="nl">errorWithDomain</span><span class="p">:</span><span class="s">@&quot;some error&quot;</span> <span class="nl">code</span><span class="p">:</span><span class="mi">400</span> <span class="nl">userInfo</span><span class="p">:</span><span class="l">@{</span><span class="s">@&quot;originData&quot;</span><span class="o">:</span> <span class="n">value</span><span class="l">}</span><span class="p">]];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">RACSignal</span> <span class="o">*</span><span class="n">renderedDesc</span> <span class="o">=</span> <span class="p">[</span><span class="n">desc</span> <span class="nl">flattenMap</span><span class="p">:</span><span class="o">^</span><span class="n">RACStream</span> <span class="o">*</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">RenderManager</span> <span class="o">*</span><span class="n">renderManager</span> <span class="o">=</span> <span class="p">[[</span><span class="n">RenderManager</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>        <span class="bp">NSAttributedString</span> <span class="o">*</span><span class="n">rendered</span> <span class="o">=</span> <span class="p">[</span><span class="n">renderManager</span> <span class="nl">renderText</span><span class="p">:</span><span class="n">value</span> <span class="nl">error</span><span class="p">:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="p">[</span><span class="n">RACSignal</span> <span class="nl">error</span><span class="p">:</span><span class="n">error</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="p">[</span><span class="n">RACSignal</span> <span class="k">return</span><span class="o">:</span><span class="n">rendered</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">RAC</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">someLablel</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span> <span class="o">=</span> <span class="p">[[</span><span class="n">title</span> <span class="nl">catchTo</span><span class="p">:[</span><span class="n">RACSignal</span> <span class="k">return</span><span class="o">:</span><span class="s">@&quot;Error&quot;</span><span class="p">]]</span>  <span class="nl">startWith</span><span class="p">:</span><span class="s">@&quot;Loading...&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">RAC</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">originTextView</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span> <span class="o">=</span> <span class="p">[[</span><span class="n">desc</span> <span class="nl">catchTo</span><span class="p">:[</span><span class="n">RACSignal</span> <span class="k">return</span><span class="o">:</span><span class="s">@&quot;Error&quot;</span><span class="p">]]</span> <span class="nl">startWith</span><span class="p">:</span><span class="s">@&quot;Loading...&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">RAC</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">renderedTextView</span><span class="p">,</span> <span class="n">attributedText</span><span class="p">)</span> <span class="o">=</span> <span class="p">[[</span><span class="n">renderedDesc</span> <span class="nl">catchTo</span><span class="p">:[</span><span class="n">RACSignal</span> <span class="k">return</span><span class="o">:</span><span class="p">[[</span><span class="bp">NSAttributedString</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithString</span><span class="p">:</span><span class="s">@&quot;Error&quot;</span><span class="p">]]]</span> <span class="nl">startWith</span><span class="p">:[[</span><span class="bp">NSAttributedString</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithString</span><span class="p">:</span><span class="s">@&quot;Loading...&quot;</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[[</span><span class="n">RACSignal</span> <span class="nl">merge</span><span class="p">:</span><span class="l">@[</span><span class="n">title</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">renderedDesc</span><span class="l">]</span><span class="p">]</span> <span class="nl">subscribeError</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="bp">UIAlertView</span> <span class="o">*</span><span class="n">alertView</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle</span><span class="p">:</span><span class="s">@&quot;Error&quot;</span> <span class="nl">message</span><span class="p">:</span><span class="n">error</span><span class="p">.</span><span class="n">domain</span> <span class="nl">delegate</span><span class="p">:</span><span class="nb">nil</span> <span class="nl">cancelButtonTitle</span><span class="p">:</span><span class="s">@&quot;OK&quot;</span> <span class="nl">otherButtonTitles</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">alertView</span> <span class="n">show</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不晓得大家有没有被这么一大段的代码吓到，我想要表达的是，在真正的工程中，我们的业务逻辑是很复杂的，而一些坑就隐藏在如此看似复杂但是又很合理的代码之下。所以我尽量模拟了一些需求，使得代码看起来更丰富，下面我们还是来仔细看下这段代码的逻辑吧：</p>
+
+<ol>
+<li>创建了一个<code>AFHTTPSessionManager</code>用来做网络接口的数据获取。</li>
+<li>创建了一个名为<code>fetchData</code>的信号来通过网络获取信息。</li>
+<li>创建一个名为<code>title</code>的信号从获取的<code>data</code>中取得<code>title</code>字段，如果没有该字段则反馈一个错误。</li>
+<li>创建一个名为<code>desc</code>的信号从获取的<code>data</code>中取得<code>desc</code>字段，如果没有该字段则反馈一个错误。</li>
+<li>针对<code>desc</code>这个信号做一个渲染，得到一个名为<code>renderedDesc</code>的新信号，该信号会在渲染失败的时候反馈一个错误。</li>
+<li>把<code>title</code>信号所有的错误转换为字符串<code>@"Error"</code>并且在没有获取值之前以字符串<code>@"Loading..."</code>占位，之后与<code>self.someLablel</code>的<code>text</code>属性绑定。</li>
+<li>把<code>desc</code>信号所有的错误转换为字符串<code>@"Error"</code>并且在没有获取值之前以字符串<code>@"Loading..."</code>占位，之后与<code>self.originTextView</code>的<code>text</code>属性绑定。</li>
+<li>把<code>renderedDesc</code>信号所有的错误转换为属性字符串<code>@"Error"</code>并且在没有获取值之前以属性字符串<code>@"Loading..."</code>占位，之后与<code>self.renderedTextView</code>的<code>text</code>属性绑定。</li>
+<li>把<code>title</code>、<code>desc</code>、<code>renderedDesc</code>这三个信号的任何错误订阅，并且弹出<code>UIAlertView</code>。</li>
+</ol>
+
+
+<p>看到这里我相信很多熟悉RAC的同学应该是对这些代码表示认同的，它也体现了RAC的一些优势例如良好的错误处理和各种链式处理。但是很遗憾的告诉大家这段代码是有很严重的错误的。</p>
+
+<p>如果你去尝试运行这段代码，并且打开Charles查看，你会惊奇的发现，这个网络请求发送了6次。没错，是6次请求。我们也可以想象到类似的代码在其他副作用的问题，重新刷新了6次屏幕，写入6次文件，发了6个全局通知。</p>
+
+<p>下面来分析下，为什么是6次网络请求呢？首先根据上面的知识，我们可以推断出名为<code>fetchData</code>信号是一个冷信号。那么这个信号在订阅的时候就会执行里面的过程。那这个信号是在什么时候被订阅了呢？仔细回看了代码，我们发现并没有订阅这个信号，只是调用这个信号的<code>flattenMap</code>产生了两个新的信号。</p>
+
+<p><strong>这里有一个很重要的概念，就是任何的信号转换即是对原有的信号进行订阅从而产生新的信号。</strong>我们可以写出flattenMap的伪代码如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">flattenMap_:</span><span class="p">(</span><span class="n">RACStream</span> <span class="o">*</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="kt">id</span> <span class="n">value</span><span class="p">))</span><span class="nv">block</span> <span class="p">{</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">RACSignal</span> <span class="nl">createSignal</span><span class="p">:</span><span class="o">^</span><span class="n">RACDisposable</span> <span class="o">*</span><span class="p">(</span><span class="kt">id</span><span class="o">&lt;</span><span class="n">RACSubscriber</span><span class="o">&gt;</span> <span class="n">subscriber</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>       <span class="k">return</span> <span class="p">[</span><span class="nb">self</span> <span class="nl">subscribeNext</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>           <span class="n">RACSignal</span> <span class="o">*</span><span class="n">signal</span> <span class="o">=</span> <span class="p">(</span><span class="n">RACSignal</span> <span class="o">*</span><span class="p">)</span><span class="n">block</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+</span><span class='line'>           <span class="p">[</span><span class="n">signal</span> <span class="nl">subscribeNext</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>               <span class="p">[</span><span class="n">subscriber</span> <span class="nl">sendNext</span><span class="p">:</span><span class="n">x</span><span class="p">];</span>
+</span><span class='line'>           <span class="p">}</span> <span class="nl">error</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>               <span class="p">[</span><span class="n">subscriber</span> <span class="nl">sendError</span><span class="p">:</span><span class="n">error</span><span class="p">];</span>
+</span><span class='line'>           <span class="p">}</span> <span class="nl">completed</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>               <span class="p">[</span><span class="n">subscriber</span> <span class="n">sendCompleted</span><span class="p">];</span>
+</span><span class='line'>           <span class="p">}];</span>
+</span><span class='line'>       <span class="p">}</span> <span class="nl">error</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>           <span class="p">[</span><span class="n">subscriber</span> <span class="nl">sendError</span><span class="p">:</span><span class="n">error</span><span class="p">];</span>
+</span><span class='line'>       <span class="p">}</span> <span class="nl">completed</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>           <span class="p">[</span><span class="n">subscriber</span> <span class="n">sendCompleted</span><span class="p">];</span>
+</span><span class='line'>       <span class="p">}];</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>除了没有高度复用和缺少一些disposable的处理以外，上述代码可以大致的给我们<code>flattenMap</code>的直观处理，我们可以看到其实是在调用这个方法的时候，生成了一个新的信号，在这个新的信号的执行过程中对<code>self</code>进行的了<strong>订阅</strong>。我们还需要注意一个细节，就是这个返回信号在未来订阅的时候，才会间接的订阅了<code>self</code>。后续的<code>startWith</code>、<code>catchTo</code>等都可以这样理解。</p>
+
+<p>回到我们的问题，那就是说，在<code>fetchData</code>被<code>flattenMap</code>之后，它就会因为名为<code>title</code>和<code>desc</code>信号的订阅而订阅。而后续我们对<code>desc</code>也进行了<code>flattenMap</code>得到了<code>renderedDesc</code>，那也说明了未来<code>renderedDesc</code>被订阅的时候，<code>fetchData</code>也会被间接订阅。所以我们解释了在后续我们用RAC宏进行绑定的时候，引发的<strong>3次</strong><code>fetchData</code>的订阅。由于<code>fetchData</code>是冷信号，所以3次订阅意味着它的过程被执行了3次，也就是网络的3次请求。</p>
+
+<p>另外的3次订阅来自<code>RACSignal</code>类的<code>merge</code>方法。根据上述的描述，我们也可以猜测<code>merge</code>方法也一定是创建了一个新的信号，在这个信号被订阅的时候，把它包含的所有信号订阅。所以我们又得到了额外的3次网络请求。</p>
+
+<p>由此我们可以深刻的看到不熟悉冷热信号对业务造成的影响。我们可以想象对用户流量的影响，对服务器负载的影响，对统计的影响，如果这是一个点赞的接口，会不会造成多次点赞？后果是不堪的。而着一些都可以通过把<code>fetchData</code>转换为热信号来解决。</p>
+
+<p>接下来也许你会问，如果我的整个计算过程中都没有副作用，是否就不会有这个问题，答案是肯定的，试想下刚才那段代码如果没有网络请求，换成一些标准化的计算会怎样。可以肯定的是我们不会出现bug，但是不要忽视的就是其中的运算我们执行了多次。刚才在介绍纯函数的时候，还有一个概念就是<a href="https://en.wikipedia.org/wiki/Referential_transparency_(computer_science)">引用透明</a>，我们可以在纯函数式语言（例如<a href="https://www.haskell.org">Haskell</a>）上进行一定的优化，<strong>也就是说纯函数的调用在相同参数下的返回值第二次不需要计算</strong>，所以在纯函数式语言里面的FRP并没有冷信号的担忧。然而Objective-C语言中并未对纯函数进行优化。所以拥有大规模运算的冷信号对性能也是有一定影响的。</p>
+
+<p>所以如果我们想更好的掌握RAC这个框架，区分冷信号与热信号是十分重要的。下一部分我会讲述如何正确理解冷信号与热信号。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Talk About Reactivecocoas Cold Signal and Hot Signal Part 1]]></title>
     <link href="http://williamzang.com/blog/2015/08/18/talk-about-reactivecocoas-cold-signal-and-hot-signal-part-1/"/>
-    <updated>2015-08-18T12:21:28+08:00</updated>
+    <updated>2015-08-18T00:00:00+08:00</updated>
     <id>http://williamzang.com/blog/2015/08/18/talk-about-reactivecocoas-cold-signal-and-hot-signal-part-1</id>
     <content type="html"><![CDATA[<h2>背景</h2>
 
