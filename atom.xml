@@ -4,7 +4,7 @@
   <title><![CDATA[臧成威的博客]]></title>
   <link href="http://williamzang.com/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2015-08-18T13:58:46+08:00</updated>
+  <updated>2015-08-18T14:03:42+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -14,10 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Talk About Reactivecocoas Hot Signal and Cold Signal Part 2]]></title>
-    <link href="http://williamzang.com/blog/2015/08/18/talk-about-reactivecocoas-hot-signal-and-cold-signal-part-2/"/>
-    <updated>2015-08-18T00:00:00+08:00</updated>
-    <id>http://williamzang.com/blog/2015/08/18/talk-about-reactivecocoas-hot-signal-and-cold-signal-part-2</id>
+    <title type="html"><![CDATA[细说ReactiveCocoa的冷信号与热信号（二）]]></title>
+    <link href="http://williamzang.com/blog/2015/08/18/talk-about-reactivecocoas-cold-signal-and-hot-signal-part-2/"/>
+    <updated>2015-08-18T13:51:28+08:00</updated>
+    <id>http://williamzang.com/blog/2015/08/18/talk-about-reactivecocoas-cold-signal-and-hot-signal-part-2</id>
     <content type="html"><![CDATA[<h2>为什么要区分冷信号与热信号</h2>
 
 <p>也许你看到前一章节的时候就有疑问，为什么RAC要搞如此复杂的一个概念，直接搞成一种信号不就好了么？要解释这个问题需要绕一些弯路。（前方可能比较难懂，如果不能很好理解，请自行查阅各类文档。）</p>
@@ -238,9 +238,9 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Talk About Reactivecocoas Cold Signal and Hot Signal Part 1]]></title>
+    <title type="html"><![CDATA[细说ReactiveCocoa的冷信号与热信号（一）]]></title>
     <link href="http://williamzang.com/blog/2015/08/18/talk-about-reactivecocoas-cold-signal-and-hot-signal-part-1/"/>
-    <updated>2015-08-18T00:00:00+08:00</updated>
+    <updated>2015-08-18T12:21:28+08:00</updated>
     <id>http://williamzang.com/blog/2015/08/18/talk-about-reactivecocoas-cold-signal-and-hot-signal-part-1</id>
     <content type="html"><![CDATA[<h2>背景</h2>
 

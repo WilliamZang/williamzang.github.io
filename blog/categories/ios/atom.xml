@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ios | 臧成威的博客]]></title>
   <link href="http://williamzang.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2015-08-18T13:58:46+08:00</updated>
+  <updated>2015-08-18T14:03:42+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -12,6 +12,292 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[细说ReactiveCocoa的冷信号与热信号（二）]]></title>
+    <link href="http://williamzang.com/blog/2015/08/18/talk-about-reactivecocoas-cold-signal-and-hot-signal-part-2/"/>
+    <updated>2015-08-18T13:51:28+08:00</updated>
+    <id>http://williamzang.com/blog/2015/08/18/talk-about-reactivecocoas-cold-signal-and-hot-signal-part-2</id>
+    <content type="html"><![CDATA[<h2>为什么要区分冷信号与热信号</h2>
+
+<p>也许你看到前一章节的时候就有疑问，为什么RAC要搞如此复杂的一个概念，直接搞成一种信号不就好了么？要解释这个问题需要绕一些弯路。（前方可能比较难懂，如果不能很好理解，请自行查阅各类文档。）</p>
+
+<p>最前面提到了RAC是一套基于Cocoa的FRP框架，那就来说说FRP，FRP全写是Functional Reactive Programming，中文译作函数响应式编程，是RP（Reactive Programm，响应式编程）的FP（Functional Programming，函数式编程）实现。说起来很拗口。太多的细节不多讨论，我们先关注下它是FP的情况。</p>
+
+<p>FP有几个很重要的概念是和我们的主题相关的：</p>
+
+<p><a href="https://en.wikipedia.org/wiki/Functional_programming#Pure_functions">纯函数</a>是指一个函数或者一个表达式不存在任何的<a href="https://en.wikipedia.org/wiki/Side_effect_(computer_science)">副作用</a>，就如同数学中的函数：</p>
+
+<blockquote><p>f(x) = 5x + 1</p></blockquote>
+
+<p>这个函数在调用的过程中产生除了返回值以外的任何作用，也不受任何外界因素的影响。那么副作用都有哪些呢？我来列举以下几个情况：</p>
+
+<ul>
+<li>函数的处理过程中，修改了外部的变量，例如全局变量。一个特殊点的例子，就是如果把OC的一个方法看做一个函数，所有的成员变量的赋值都是对外部变量的修改。是的，从FP的角度看OOP是充满副作用的。</li>
+<li>函数的处理过程中，触发了一些额外的动作，例如发送的全局的一个Notification，在console里面输出的结果，保存了文件，触发了网络，更新的屏幕等。</li>
+<li>函数的处理过程中，受到外部变量的影响，例如全局变量，方法里面用到的成员变量。注意block中捕获的外部变量也算副作用。</li>
+<li>函数的处理过程中，受到线程锁的影响算副作用。</li>
+</ul>
+
+
+<p>由此我们可以看出，在目前的iOS编程中，我们是很难的摆脱副作用的。或者换一种说法，我们iOS编程的目的其实是副作用。（基于用户触摸的外界因素，最终反馈到网络变化和屏幕变化上。）</p>
+
+<p>接下来我们来分析下副作用与冷热信号的关系。既然iOS编程中少不了副作用，那么RAC在实际的使用中也不可避免的接触副作用，下面我列举个业务场景，来看下冷信号中副作用的坑：</p>
+
+<pre><code class="objective-c">
+    self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://api.xxxx.com"]];
+
+    self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
+    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+
+    @weakify(self)
+    RACSignal *fetchData = [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) {
+        @strongify(self)
+        NSURLSessionDataTask *task = [self.sessionManager GET:@"fetchData" parameters:@{@"someParameter": @"someValue"} success:^(NSURLSessionDataTask *task, id responseObject) {
+            [subscriber sendNext:responseObject];
+            [subscriber sendCompleted];
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            [subscriber sendError:error];
+        }];
+        return [RACDisposable disposableWithBlock:^{
+            if (task.state != NSURLSessionTaskStateCompleted) {
+                [task cancel];
+            }
+        }];
+    }];
+
+    RACSignal *title = [fetchData flattenMap:^RACSignal *(NSDictionary *value) {
+        if ([value[@"title"] isKindOfClass:[NSString class]]) {
+            return [RACSignal return:value[@"title"]];
+        } else {
+            return [RACSignal error:[NSError errorWithDomain:@"some error" code:400 userInfo:@{@"originData": value}]];
+        }
+    }];
+
+    RACSignal *desc = [fetchData flattenMap:^RACSignal *(NSDictionary *value) {
+        if ([value[@"desc"] isKindOfClass:[NSString class]]) {
+            return [RACSignal return:value[@"desc"]];
+        } else {
+            return [RACSignal error:[NSError errorWithDomain:@"some error" code:400 userInfo:@{@"originData": value}]];
+        }
+    }];
+
+    RACSignal *renderedDesc = [desc flattenMap:^RACStream *(NSString *value) {
+        NSError *error = nil;
+        RenderManager *renderManager = [[RenderManager alloc] init];
+        NSAttributedString *rendered = [renderManager renderText:value error:&amp;error];
+        if (error) {
+            return [RACSignal error:error];
+        } else {
+            return [RACSignal return:rendered];
+        }
+    }];
+
+    RAC(self.someLablel, text) = [[title catchTo:[RACSignal return:@"Error"]]  startWith:@"Loading..."];
+    RAC(self.originTextView, text) = [[desc catchTo:[RACSignal return:@"Error"]] startWith:@"Loading..."];
+    RAC(self.renderedTextView, attributedText) = [[renderedDesc catchTo:[RACSignal return:[[NSAttributedString alloc] initWithString:@"Error"]]] startWith:[[NSAttributedString alloc] initWithString:@"Loading..."]];
+
+    [[RACSignal merge:@[title, desc, renderedDesc]] subscribeError:^(NSError *error) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:error.domain delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alertView show];
+    }];
+</code></pre>
+
+<p>不晓得大家有没有被这么一大段的代码吓到，我想要表达的是，在真正的工程中，我们的业务逻辑是很复杂的，而一些坑就隐藏在如此看似复杂但是又很合理的代码之下。所以我尽量模拟了一些需求，使得代码看起来更丰富，下面我们还是来仔细看下这段代码的逻辑吧：</p>
+
+<ol>
+<li>创建了一个<code>AFHTTPSessionManager</code>用来做网络接口的数据获取。</li>
+<li>创建了一个名为<code>fetchData</code>的信号来通过网络获取信息。</li>
+<li>创建一个名为<code>title</code>的信号从获取的<code>data</code>中取得<code>title</code>字段，如果没有该字段则反馈一个错误。</li>
+<li>创建一个名为<code>desc</code>的信号从获取的<code>data</code>中取得<code>desc</code>字段，如果没有该字段则反馈一个错误。</li>
+<li>针对<code>desc</code>这个信号做一个渲染，得到一个名为<code>renderedDesc</code>的新信号，该信号会在渲染失败的时候反馈一个错误。</li>
+<li>把<code>title</code>信号所有的错误转换为字符串<code>@"Error"</code>并且在没有获取值之前以字符串<code>@"Loading..."</code>占位，之后与<code>self.someLablel</code>的<code>text</code>属性绑定。</li>
+<li>把<code>desc</code>信号所有的错误转换为字符串<code>@"Error"</code>并且在没有获取值之前以字符串<code>@"Loading..."</code>占位，之后与<code>self.originTextView</code>的<code>text</code>属性绑定。</li>
+<li>把<code>renderedDesc</code>信号所有的错误转换为属性字符串<code>@"Error"</code>并且在没有获取值之前以属性字符串<code>@"Loading..."</code>占位，之后与<code>self.renderedTextView</code>的<code>text</code>属性绑定。</li>
+<li>把<code>title</code>、<code>desc</code>、<code>renderedDesc</code>这三个信号的任何错误订阅，并且弹出<code>UIAlertView</code>。</li>
+</ol>
+
+
+<p>看到这里我相信很多熟悉RAC的同学应该是对这些代码表示认同的，它也体现了RAC的一些优势例如良好的错误处理和各种链式处理。但是很遗憾的告诉大家这段代码是有很严重的错误的。</p>
+
+<p>如果你去尝试运行这段代码，并且打开Charles查看，你会惊奇的发现，这个网络请求发送了6次。没错，是6次请求。我们也可以想象到类似的代码在其他副作用的问题，重新刷新了6次屏幕，写入6次文件，发了6个全局通知。</p>
+
+<p>下面来分析下，为什么是6次网络请求呢？首先根据上面的知识，我们可以推断出名为<code>fetchData</code>信号是一个冷信号。那么这个信号在订阅的时候就会执行里面的过程。那这个信号是在什么时候被订阅了呢？仔细回看了代码，我们发现并没有订阅这个信号，只是调用这个信号的<code>flattenMap</code>产生了两个新的信号。</p>
+
+<p><strong>这里有一个很重要的概念，就是任何的信号转换即是对原有的信号进行订阅从而产生新的信号。</strong>我们可以写出flattenMap的伪代码如下：</p>
+
+<pre><code class="objective-c">
+- (instancetype)flattenMap_:(RACStream * (^)(id value))block {
+{
+    return [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) {
+       return [self subscribeNext:^(id x) {
+           RACSignal *signal = (RACSignal *)block(x);
+           [signal subscribeNext:^(id x) {
+               [subscriber sendNext:x];
+           } error:^(NSError *error) {
+               [subscriber sendError:error];
+           } completed:^{
+               [subscriber sendCompleted];
+           }];
+       } error:^(NSError *error) {
+           [subscriber sendError:error];
+       } completed:^{
+           [subscriber sendCompleted];
+       }];
+    }];
+}
+</code></pre>
+
+<p>除了没有高度复用和缺少一些disposable的处理以外，上述代码可以大致的给我们<code>flattenMap</code>的直观处理，我们可以看到其实是在调用这个方法的时候，生成了一个新的信号，在这个新的信号的执行过程中对<code>self</code>进行的了<strong>订阅</strong>。我们还需要注意一个细节，就是这个返回信号在未来订阅的时候，才会间接的订阅了<code>self</code>。后续的<code>startWith</code>、<code>catchTo</code>等都可以这样理解。</p>
+
+<p>回到我们的问题，那就是说，在<code>fetchData</code>被<code>flattenMap</code>之后，它就会因为名为<code>title</code>和<code>desc</code>信号的订阅而订阅。而后续我们对<code>desc</code>也进行了<code>flattenMap</code>得到了<code>renderedDesc</code>，那也说明了未来<code>renderedDesc</code>被订阅的时候，<code>fetchData</code>也会被间接订阅。所以我们解释了在后续我们用RAC宏进行绑定的时候，引发的<strong>3次</strong><code>fetchData</code>的订阅。由于<code>fetchData</code>是冷信号，所以3次订阅意味着它的过程被执行了3次，也就是网络的3次请求。</p>
+
+<p>另外的3次订阅来自<code>RACSignal</code>类的<code>merge</code>方法。根据上述的描述，我们也可以猜测<code>merge</code>方法也一定是创建了一个新的信号，在这个信号被订阅的时候，把它包含的所有信号订阅。所以我们又得到了额外的3次网络请求。</p>
+
+<p>由此我们可以深刻的看到不熟悉冷热信号对业务造成的影响。我们可以想象对用户流量的影响，对服务器负载的影响，对统计的影响，如果这是一个点赞的接口，会不会造成多次点赞？后果是不堪的。而着一些都可以通过把<code>fetchData</code>转换为热信号来解决。</p>
+
+<p>接下来也许你会问，如果我的整个计算过程中都没有副作用，是否就不会有这个问题，答案是肯定的，试想下刚才那段代码如果没有网络请求，换成一些标准化的计算会怎样。可以肯定的是我们不会出现bug，但是不要忽视的就是其中的运算我们执行了多次。刚才在介绍纯函数的时候，还有一个概念就是<a href="https://en.wikipedia.org/wiki/Referential_transparency_(computer_science)">引用透明</a>，我们可以在纯函数式语言（例如<a href="https://www.haskell.org">Haskell</a>）上进行一定的优化，<strong>也就是说纯函数的调用在相同参数下的返回值第二次不需要计算</strong>，所以在纯函数式语言里面的FRP并没有冷信号的担忧。然而Objective-C语言中并未对纯函数进行优化。所以拥有大规模运算的冷信号对性能也是有一定影响的。</p>
+
+<p>所以如果我们想更好的掌握RAC这个框架，区分冷信号与热信号是十分重要的。下一部分我会讲述如何正确理解冷信号与热信号。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[细说ReactiveCocoa的冷信号与热信号（一）]]></title>
+    <link href="http://williamzang.com/blog/2015/08/18/talk-about-reactivecocoas-cold-signal-and-hot-signal-part-1/"/>
+    <updated>2015-08-18T12:21:28+08:00</updated>
+    <id>http://williamzang.com/blog/2015/08/18/talk-about-reactivecocoas-cold-signal-and-hot-signal-part-1</id>
+    <content type="html"><![CDATA[<h2>背景</h2>
+
+<p><a href="http://www.github.com/ReactiveCocoa/ReactiveCocoa">ReactiveCocoa</a>（简称RAC）是一套基于Cocoa的FRP框架，在我们美团客户端中，我们大量使用了这个框架。而在使用的过程中我们发现，冷信号与热信号的概念很容易混淆并且容易造成一定的问题，相信各位在使用的过程中也可能遇到此类问题。所以我在这里与大家讨论下RAC中冷信号与热信号的相关知识点，希望可以加深大家对冷热信号的理解。</p>
+
+<p>p.s. 以下代码和示例基于<a href="https://github.com/ReactiveCocoa/ReactiveCocoa/releases/tag/v2.5">ReactiveCocoa v2.5</a></p>
+
+<h2>什么是冷信号与热信号</h2>
+
+<p>冷热信号的概念源于C#的MVVM框架<a href="https://msdn.microsoft.com/en-us/library/hh242985.aspx">Reactive Extensions</a>中的Hot Observables和Cold Observables:</p>
+
+<blockquote><p>Hot Observables和Cold Observables的区别：</p>
+
+<ol>
+<li><p>Hot Observables是主动的，尽管你并没有订阅事件，但是它会时刻推送，就像鼠标移动；而Cold Observables是被动的，只有当你订阅的时候，它才会发布消息。</p></li>
+<li><p>Hot Observables可以有多个订阅者，是一对多，集合可以与订阅者共享信息；而Cold Observables只能一对一，当有不同的订阅者，消息是重新完整发送。</p></li>
+</ol>
+</blockquote>
+
+<p>这里面的Observables可以理解为RACSignal。为了加深理解，请大家关注这样的几组代码：</p>
+
+<pre><code class="objective-c">    RACSignal *signal = [RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) {
+        [subscriber sendNext:@1];
+        [subscriber sendNext:@2];
+        [subscriber sendNext:@3];
+        [subscriber sendCompleted];
+        return nil;
+    }];
+    NSLog(@"Signal was created.");
+    [[RACScheduler mainThreadScheduler] afterDelay:0.1 schedule:^{
+        [signal subscribeNext:^(id x) {
+            NSLog(@"Subscriber 1 recveive: %@", x);
+        }];
+    }];
+
+    [[RACScheduler mainThreadScheduler] afterDelay:1 schedule:^{
+        [signal subscribeNext:^(id x) {
+            NSLog(@"Subscriber 2 recveive: %@", x);
+        }];
+    }];    
+</code></pre>
+
+<p>以上简单的创建了一个信号，并且依次发送@1，@2，@3作为值。下面分别有两个订阅者在不同的时间段进行了订阅，运行的结果如下：</p>
+
+<pre><code>2015-08-11 18:33:21.681 RACDemos[6505:1125196] Signal was created.
+2015-08-11 18:33:21.793 RACDemos[6505:1125196] Subscriber 1 recveive: 1
+2015-08-11 18:33:21.793 RACDemos[6505:1125196] Subscriber 1 recveive: 2
+2015-08-11 18:33:21.793 RACDemos[6505:1125196] Subscriber 1 recveive: 3
+2015-08-11 18:33:22.683 RACDemos[6505:1125196] Subscriber 2 recveive: 1
+2015-08-11 18:33:22.683 RACDemos[6505:1125196] Subscriber 2 recveive: 2
+2015-08-11 18:33:22.683 RACDemos[6505:1125196] Subscriber 2 recveive: 3
+</code></pre>
+
+<p>我们可以看到，信号在18:33:21.681时被创建，18:33:21.793依次接到1、2、3三个值，而在18:33:22.683再依次接到1、2、3三个值。说明了变量名为<code>signal</code>的这个信号，在两个不同时间段的订阅过程中，分别完整的发送了所有的消息。</p>
+
+<p>我们再对这段代码进行一个小的改动：</p>
+
+<pre><code class="objective-c">    RACMulticastConnection *connection = [[RACSignal createSignal:^RACDisposable *(id&lt;RACSubscriber&gt; subscriber) {
+        [[RACScheduler mainThreadScheduler] afterDelay:1 schedule:^{
+            [subscriber sendNext:@1];
+        }];
+
+        [[RACScheduler mainThreadScheduler] afterDelay:2 schedule:^{
+            [subscriber sendNext:@2];
+        }];
+
+        [[RACScheduler mainThreadScheduler] afterDelay:3 schedule:^{
+            [subscriber sendNext:@3];
+        }];
+
+        [[RACScheduler mainThreadScheduler] afterDelay:4 schedule:^{
+            [subscriber sendCompleted];
+        }];
+        return nil;
+    }] publish];
+    [connection connect];
+    RACSignal *signal = connection.signal;
+
+    NSLog(@"Signal was created.");
+    [[RACScheduler mainThreadScheduler] afterDelay:1.1 schedule:^{
+        [signal subscribeNext:^(id x) {
+            NSLog(@"Subscriber 1 recveive: %@", x);
+        }];
+    }];
+
+    [[RACScheduler mainThreadScheduler] afterDelay:2.1 schedule:^{
+        [signal subscribeNext:^(id x) {
+            NSLog(@"Subscriber 2 recveive: %@", x);
+        }];
+    }];
+</code></pre>
+
+<p>稍微有些复杂，我们来一一分析下：</p>
+
+<ul>
+<li>创建了一个信号，在1秒、2秒、3秒分别发送1、2、3这三个值，4秒发送结束信号。</li>
+<li>对这个信号调用publish方法得到一个RACMulticastConnection。</li>
+<li>将connection进行连接操作。</li>
+<li>获得connection的信号。</li>
+<li>分别在0.1秒和2秒订阅获得的信号。</li>
+</ul>
+
+
+<p>抛开RACMulticastConnection是个什么东东，我们先来看下结果：</p>
+
+<pre><code>2015-08-12 11:07:49.943 RACDemos[9418:1186344] Signal was created.
+2015-08-12 11:07:52.088 RACDemos[9418:1186344] Subscriber 1 recveive: 2
+2015-08-12 11:07:53.044 RACDemos[9418:1186344] Subscriber 1 recveive: 3
+2015-08-12 11:07:53.044 RACDemos[9418:1186344] Subscriber 2 recveive: 3
+</code></pre>
+
+<p>首先告诉大家<code>-[RACSignal publish]</code>、<code>- [RACMulticastConnection connect]</code>、<code>- [RACMulticastConnection signal]</code>这几个操作生成了一个热信号。
+我们再来关注下输出结果的一些细节：</p>
+
+<ul>
+<li>信号在11:07:49.943被创建</li>
+<li>11:07:52.088时订阅者1才收到2这个值，说明1这个值没有接收到，时间间隔是2秒多</li>
+<li>11:07:53.044时订阅者1和订阅者2同时收到3这个值，时间间隔是3秒多</li>
+</ul>
+
+
+<p>参考一开始的Hot Observables的论述和两段小程序的输出结果，我们可以确定冷热信号的如下特点：</p>
+
+<ul>
+<li>一、热信号是主动的，即使你没有订阅事件，它仍然会时刻推送。（如第二个例子，信号在50秒被创建，51秒的时候1这个值就推送出来了，但是当时还没有订阅者。）而冷信号是被动的，只有当你订阅的时候，它才会发送消息。（如第一个例子。）</li>
+<li>二、热信号可以有多个订阅者，是一对多，信号可以与订阅者共享信息（如第二个例子，订阅者1和订阅者2是共享的，他们都能在同一时间接收到3这个值。）而冷信号只能一对一，当有不同的订阅者，消息会从新完整发送。（如第一个例子，我们可以观察到两个订阅者没有联系，都是基于各自的订阅时间开始接收消息的。）</li>
+</ul>
+
+
+<p>好的，至此我们知道了什么是冷信号与热信号，了解了它们的特点。下一部分我们来看看为什么要区分冷信号与热信号。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[从另一个角度介绍下Block]]></title>
