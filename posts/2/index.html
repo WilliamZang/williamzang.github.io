@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>介绍一下开源项目FastAnimationWithPOP - 臧成威的博客</title>
+  <title>臧成威的博客</title>
   <meta name="author" content="臧成威">
 
   
-  <meta name="description" content="我的开源项目FastAnimationWithPOP介绍">
-  <meta name="keywords" content="Github POP iOS">
+  <meta name="description" content="这是一个很简单的动画框架，基于Facebook的POP库。使用它你就可以在故事版中以0行代码的代价来添加动画了。 Github上地址是 这里. 你可以从这里下载DEMO查看效果. 如果你觉得不错，欢迎在到这里点个赞，方便让更多人注意到它 功能 使用属性来添加一个动画到任意的View。 &hellip;">
+  
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://williamzang.com/blog/2014/07/23/jie-shao-yi-xia-kai-yuan-xiang-mu-fastanimationwithpop">
+  <link rel="canonical" href="http://williamzang.com/posts/2">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="臧成威的博客" type="application/atom+xml">
@@ -60,12 +60,15 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div>
-<article class="hentry" role="article">
+      <div class="blog-index">
   
+  
+  
+    <article>
+      
   <header>
     
-      <h1 class="entry-title">介绍一下开源项目FastAnimationWithPOP</h1>
+      <h1 class="entry-title"><a href="/blog/2014/07/23/jie-shao-yi-xia-kai-yuan-xiang-mu-fastanimationwithpop/">介绍一下开源项目FastAnimationWithPOP</a></h1>
     
     
       <p class="meta">
@@ -88,7 +91,7 @@
   </header>
 
 
-<div class="entry-content"><p>这是一个很简单的动画框架，基于Facebook的POP库。使用它你就可以在故事版中以0行代码的代价来添加动画了。</p>
+  <div class="entry-content"><p>这是一个很简单的动画框架，基于Facebook的POP库。使用它你就可以在故事版中以0行代码的代价来添加动画了。</p>
 
 <p>Github上地址是 <a href="https://github.com/WilliamZang/FastAnimationWithPOP">这里</a>.</p>
 
@@ -155,7 +158,7 @@
 </ul>
 
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -165,7 +168,7 @@
 </span><span class='line'><span class="cp">#define kDynamicsTension    (@&quot;animationParams.dynamicsTension&quot;)</span>
 </span><span class='line'><span class="cp">#define kDynamicsFriction   (@&quot;animationParams.dynamicsFriction&quot;)</span>
 </span><span class='line'><span class="cp">#define kDynamicsMass       (@&quot;animationParams.dynamicsMass&quot;)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <ul>
@@ -190,7 +193,7 @@
 
 <p>你可以设置动画类型等属性，然后执行<code>- (void)startFAAnimation</code>即可。就像这样：</p>
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -204,12 +207,12 @@
 </span><span class='line'><span class="c1">// You can also set params like this</span>
 </span><span class='line'><span class="c1">// [view setValue:@-7000 forKeyPath:kShakeVelocity];</span>
 </span><span class='line'><span class="p">[</span><span class="n">view</span> <span class="n">startFAAnimation</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>还有这些扩展的用法：</p>
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -221,7 +224,7 @@
 </span><span class='line'><span class="c1">// In UIControl instance.</span>
 </span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">bindingFAAnimation</span><span class="p">;</span>
 </span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">unbindingFAAnimation</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>3. 定义一个新的动画扩展</h3>
@@ -230,7 +233,7 @@
 
 <p>就像这样：</p>
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -286,7 +289,7 @@
 </span><span class='line'>     <span class="c1">// some thing you like.</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>4. 一些控制动画的操作</h3>
@@ -298,11 +301,11 @@
 
 <p>如果想要手动体制，使用下面的方法：</p>
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stopFAAnimation</span><span class="p">;</span>
 </span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stopReverseFAAnimation</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <ul>
@@ -312,7 +315,7 @@
 
 <p>使用如下方法处理嵌套：</p>
 
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -320,7 +323,7 @@
 </span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stopFAAnimationNested</span><span class="p">;</span>
 </span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">reverseFAAnimationNested</span><span class="p">;</span>
 </span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stopReverseFAAnimationNested</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>目前已经拥有的动画:</h3>
@@ -349,76 +352,20 @@
 </ul>
 
 </div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">臧成威</span></span>
-
-      
-
-
-
-
-
-
-
-
   
 
 
-<time datetime="2014-07-23T16:07:04+08:00" pubdate data-updated="true"></time>
-      
-
-<span class="categories">
+    </article>
   
-    <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/kai-yuan-jie-shao/'>开源介绍</a>
-  
-</span>
-
-
-    </p>
+  <div class="pagination">
     
-      <div class="sharing">
-  
-  
-  
-</div>
-
+    <a href="/blog/archives">Blog Archives</a>
     
-    <p class="meta">
-      
-      
-        <a class="basic-alignment right" href="/blog/2014/07/23/shi-yong-jenkins-plus-calabash-plus-cocoapodsda-jian-ioschi-xu-ji-cheng-huan-jing/" title="Next Post: 使用jenkins+calabash+cocoapods搭建ios持续集成环境">使用jenkins+calabash+cocoapods搭建ios持续集成环境 &raquo;</a>
-      
-    </p>
-  </footer>
-</article>
-
-
-  <section>
-    <h1>Comments</h1>
-    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
-<div class="ds-thread" data-title="介绍一下开源项目FastAnimationWithPOP"></div>
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"WilliamZang"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = 'http://static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
-    || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script>
-<!-- Duoshuo Comment END --></div>
-  </section>
-
+    <a class="next" href="1">Newer &rarr;</a>
+    
+  </div>
 </div>
-
 <aside class="sidebar">
   
     <section>
@@ -460,6 +407,19 @@
 <h1>最近评论</h1>
 <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
 
+<!--多说js加载开始，一个页面只需要加载一次 -->
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"WilliamZang"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!--多说js加载结束，一个页面只需要加载一次 -->
+
 </section><section> 
   <h1>文章分类</h1> 
   <ul id="categories"> 
@@ -474,7 +434,6 @@
 </section>
   
 </aside>
-
 
     </div>
   </div>

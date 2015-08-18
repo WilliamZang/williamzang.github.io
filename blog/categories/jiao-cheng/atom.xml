@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 教程 | 臧成威的博客]]></title>
   <link href="http://williamzang.com/blog/categories/jiao-cheng/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2014-09-09T12:25:04+08:00</updated>
+  <updated>2015-08-18T12:29:17+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -135,12 +135,11 @@ pod init
 
 <p>之后会在项目根目录下创建好Podfile，修改下Podfile的内容</p>
 
-<p>&#8220;`
- # #为Podfile的注释行，Podfile实际上是一个ruby代码段
- platform :ios, &ldquo;6.0&rdquo; # platform后面跟平台和版本号，这里是ios6平台</p>
+<pre><code> # #为Podfile的注释行，Podfile实际上是一个ruby代码段
+ platform :ios, "6.0" # platform后面跟平台和版本号，这里是ios6平台
 
-<p> # pod &lsquo;MKNetworkKit&rsquo; 像这样写就可以引入第三方库了，为了简化，这里没有引入任何库
-&#8220;`</p>
+ # pod 'MKNetworkKit' 像这样写就可以引入第三方库了，为了简化，这里没有引入任何库
+</code></pre>
 
 <p>在目录执行pod插件install命令</p>
 
@@ -204,11 +203,10 @@ pod init
 
 <p>修改Podfile文件，加入新的pod</p>
 
-<p><code>
-target 'integration_test-cal', exclusive: false do
+<pre><code>target 'integration_test-cal', exclusive: false do
   pod 'Calabash'
 end
-</code></p>
+</code></pre>
 
 <p>到命令行里，进入到自己的目录，执行</p>
 
@@ -222,14 +220,12 @@ end
 
 <p>屏幕会出现</p>
 
-<p>&#8220;`
-&mdash;&mdash;&mdash;&mdash;&mdash;Question&mdash;&mdash;&mdash;&mdash;&mdash;
-I&rsquo;m about to create a subdirectory called features.
-features will contain all your calabash tests.</p>
-
-<h2>Please hit return to confirm that&rsquo;s what you want.</h2>
-
-<p>&#8220;`</p>
+<pre><code>----------Question----------
+I'm about to create a subdirectory called features.
+features will contain all your calabash tests.
+Please hit return to confirm that's what you want.
+---------------------------
+</code></pre>
 
 <p>按回车确认，就生成了features文件夹，我们的用例和测试配置都在这里了。你可以把features这个文件夹拖到项目中，方便使用xcode直接编辑，<strong>注意不要选择任何目标</strong>，以为这些文件根本没有必要编译和存到app中。</p>
 
@@ -239,19 +235,16 @@ features will contain all your calabash tests.</p>
 
 <p>这里我们先写一个简单用例，修改features/my_first.feature</p>
 
-<p>&#8220;`</p>
-
-<h1>language: zh-CN</h1>
-
-<p>功能: 运行基准测试
+<pre><code># language: zh-CN  
+功能: 运行基准测试
   做为一个iOS开发者
   我希望有一个简单的基准测试
-  使我可以快速的开启测试</p>
+  使我可以快速的开启测试
 
-<p>场景: 基准测试
+场景: 基准测试
   假如 应用正在运行
   那么 我把应用切到后台3秒
-&#8220;`</p>
+</code></pre>
 
 <p>是的，就是这样的用例！你可以书写自然语言来描述一个功能，calabash就使用cucumber帮您测试了，神奇吧。</p>
 
@@ -264,7 +257,7 @@ features will contain all your calabash tests.</p>
 
 <h3>执行用例</h3>
 
-<p>激动人心的时刻终于到了，首先编译integration_test-cal这个scheme，然后使用模拟器运行一下，在模拟器打开Accessibility Inspector。模拟器->设置(Settings)&ndash;>通用(General)&ndash;>辅助功能(Accessibity)&ndash;>Accessibility Inspector开启。</p>
+<p>激动人心的时刻终于到了，首先编译integration_test-cal这个scheme，然后使用模拟器运行一下，在模拟器打开Accessibility Inspector。模拟器->设置(Settings)->通用(General)->辅助功能(Accessibity)->Accessibility Inspector开启。</p>
 
 <p>打开命令行，进到目录中执行命令</p>
 
@@ -328,7 +321,7 @@ features will contain all your calabash tests.</p>
 <pre><code>open ~/Library/LaunchAgents/homebrew.mxcl.jenkins.plist
 </code></pre>
 
-<p>想要让局域网都可以访问，需要把&mdash;httpListenAddress=127.0.0.1改成自己的局域网IP</p>
+<p>想要让局域网都可以访问，需要把&ndash;httpListenAddress=127.0.0.1改成自己的局域网IP</p>
 
 <p>手动启动启动项可以执行</p>
 
@@ -383,12 +376,11 @@ Cucumber Test Result Plugin     #解析Cucumber的测试报告
 </ul>
 
 
-<p><code>
-cd $WORKSPACE
+<pre><code>cd $WORKSPACE
 /usr/local/bin/xctool -workspace integration_test.xcworkspace -scheme integration_test-cal -sdk iphonesimulator7.1 clean build
 mkdir -p test-reports
 cucumber --format json -o test-reports/cucumber.json
-</code></p>
+</code></pre>
 
 <ul>
 <li>构建后的操作，选择Publish Cucumber test result report，指定报告的目录<code>test-reports/cucumber.json</code></li>

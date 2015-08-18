@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 开源介绍 | 臧成威的博客]]></title>
   <link href="http://williamzang.com/blog/categories/kai-yuan-jie-shao/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2014-09-09T12:25:04+08:00</updated>
+  <updated>2015-08-18T12:29:17+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -85,19 +85,12 @@
 </ul>
 
 
-<p>&#8220;`objective-c</p>
-
-<h1>define kSpringBounciness   (@&ldquo;animationParams.springBounciness&rdquo;)</h1>
-
-<h1>define kSpringSpeed        (@&ldquo;animationParams.springSpeed&rdquo;)</h1>
-
-<h1>define kDynamicsTension    (@&ldquo;animationParams.dynamicsTension&rdquo;)</h1>
-
-<h1>define kDynamicsFriction   (@&ldquo;animationParams.dynamicsFriction&rdquo;)</h1>
-
-<h1>define kDynamicsMass       (@&ldquo;animationParams.dynamicsMass&rdquo;)</h1>
-
-<p>&#8220;`</p>
+<pre><code class="objective-c">#define kSpringBounciness   (@"animationParams.springBounciness")
+#define kSpringSpeed        (@"animationParams.springSpeed")
+#define kDynamicsTension    (@"animationParams.dynamicsTension")
+#define kDynamicsFriction   (@"animationParams.dynamicsFriction")
+#define kDynamicsMass       (@"animationParams.dynamicsMass")
+</code></pre>
 
 <ul>
 <li><p>startAnimationWhenAwakeFromNib</p>
@@ -121,26 +114,24 @@
 
 <p>你可以设置动画类型等属性，然后执行<code>- (void)startFAAnimation</code>即可。就像这样：</p>
 
-<p><code>objective-c
-UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+<pre><code class="objective-c">UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
 view.backgroundColor = [UIColor redColor];
 view.animationType = @"Shake";
 view.animationParams[@"velocity"] = @-7000;
 // You can also set params like this
 // [view setValue:@-7000 forKeyPath:kShakeVelocity];
 [view startFAAnimation];
-</code></p>
+</code></pre>
 
 <p>还有这些扩展的用法：</p>
 
-<p><code>objective-c
-// In UIView instance.
+<pre><code class="objective-c">// In UIView instance.
 - (void)startFAAnimation;
 - (void)reverseFAAnimation;
 // In UIControl instance.
 - (void)bindingFAAnimation;
 - (void)unbindingFAAnimation;
-</code></p>
+</code></pre>
 
 <h3>3. 定义一个新的动画扩展</h3>
 
@@ -148,37 +139,35 @@ view.animationParams[@"velocity"] = @-7000;
 
 <p>就像这样：</p>
 
-<p>&#8220;`objective-c
-// new_animation.h
-@interface FAAnimationNewAnimation : NSObject&lt;FastAnimationProtocol,
-FastAnimationReverseProtocol> // Maybe only FastAnimationProtocol</p>
+<pre><code class="objective-c">// new_animation.h
+@interface FAAnimationNewAnimation : NSObject&lt;FastAnimationProtocol, 
+FastAnimationReverseProtocol&gt; // Maybe only FastAnimationProtocol
 
-<p>@end
+@end
 // new_animation.m
-@implementation FAAnimationBounceRight</p>
+@implementation FAAnimationBounceRight
 
-<ul>
-<li><p>(void)performAnimation:(UIView *)view
++ (void)performAnimation:(UIView *)view
 {
-  // some thing you like.
-}</p></li>
-<li><p>(void)stopAnimation:(UIView *)view
-{
-  // some thing you like.
-}</p></li>
-<li><p>(void)reverseAnimation:(UIView *)view
-{
-   // some thing you like.
-}</p></li>
-<li><p>(void)stopReverse:(UIView *)view
-{
-   // some thing you like.
+    // some thing you like.
 }
-@end</p></li>
-</ul>
 
++ (void)stopAnimation:(UIView *)view
+{
+    // some thing you like.
+}
 
-<p>&#8220;`</p>
++ (void)reverseAnimation:(UIView *)view
+{
+     // some thing you like.
+}
+
++ (void)stopReverse:(UIView *)view
+{
+     // some thing you like.
+}
+@end
+</code></pre>
 
 <h3>4. 一些控制动画的操作</h3>
 
@@ -189,10 +178,9 @@ FastAnimationReverseProtocol> // Maybe only FastAnimationProtocol</p>
 
 <p>如果想要手动体制，使用下面的方法：</p>
 
-<p><code>objective-c
-- (void)stopFAAnimation;
+<pre><code class="objective-c">- (void)stopFAAnimation;
 - (void)stopReverseFAAnimation;
-</code></p>
+</code></pre>
 
 <ul>
 <li>嵌套动画：</li>
@@ -201,12 +189,11 @@ FastAnimationReverseProtocol> // Maybe only FastAnimationProtocol</p>
 
 <p>使用如下方法处理嵌套：</p>
 
-<p><code>objective-c
-- (void)startFAAnimationNested;
+<pre><code class="objective-c">- (void)startFAAnimationNested;
 - (void)stopFAAnimationNested;
 - (void)reverseFAAnimationNested;
 - (void)stopReverseFAAnimationNested;
-</code></p>
+</code></pre>
 
 <h3>目前已经拥有的动画:</h3>
 

@@ -126,13 +126,13 @@
 </span><span class='line'>
 </span><span class='line'><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="nf">GetMenuShow</span><span class="p">(</span><span class="kt">int</span> <span class="n">pos</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">switch</span> <span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">case</span> <span class="mi">0</span>: <span class="k">return</span> <span class="n">GetMenu0</span><span class="p">();</span>
-</span><span class='line'>        <span class="k">case</span> <span class="mi">1</span>: <span class="k">return</span> <span class="n">GetMenu1</span><span class="p">();</span>
-</span><span class='line'>        <span class="k">case</span> <span class="mi">2</span>: <span class="k">return</span> <span class="n">GetMenu2</span><span class="p">();</span>
-</span><span class='line'>        <span class="k">case</span> <span class="mi">3</span>: <span class="k">return</span> <span class="n">GetMenu3</span><span class="p">();</span>
-</span><span class='line'>        <span class="k">case</span> <span class="mi">4</span>: <span class="k">return</span> <span class="n">GetMenu4</span><span class="p">();</span>
-</span><span class='line'>        <span class="k">case</span> <span class="mi">5</span>: <span class="k">return</span> <span class="n">GetMenu5</span><span class="p">();</span>
-</span><span class='line'>        <span class="nl">default:</span>
+</span><span class='line'>        <span class="k">case</span> <span class="mi">0</span><span class="o">:</span> <span class="k">return</span> <span class="n">GetMenu0</span><span class="p">();</span>
+</span><span class='line'>        <span class="k">case</span> <span class="mi">1</span><span class="o">:</span> <span class="k">return</span> <span class="n">GetMenu1</span><span class="p">();</span>
+</span><span class='line'>        <span class="k">case</span> <span class="mi">2</span><span class="o">:</span> <span class="k">return</span> <span class="n">GetMenu2</span><span class="p">();</span>
+</span><span class='line'>        <span class="k">case</span> <span class="mi">3</span><span class="o">:</span> <span class="k">return</span> <span class="n">GetMenu3</span><span class="p">();</span>
+</span><span class='line'>        <span class="k">case</span> <span class="mi">4</span><span class="o">:</span> <span class="k">return</span> <span class="n">GetMenu4</span><span class="p">();</span>
+</span><span class='line'>        <span class="k">case</span> <span class="mi">5</span><span class="o">:</span> <span class="k">return</span> <span class="n">GetMenu5</span><span class="p">();</span>
+</span><span class='line'>        <span class="k">default</span><span class="o">:</span>
 </span><span class='line'>            <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
@@ -220,9 +220,9 @@
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 </pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">AFHTTPRequestOperationManager</span> <span class="o">*</span><span class="n">manager</span> <span class="o">=</span> <span class="p">[</span><span class="n">AFHTTPRequestOperationManager</span> <span class="n">manager</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">manager</span> <span class="n">GET</span><span class="o">:</span><span class="s">@&quot;http://example.com/resources.json&quot;</span> <span class="n">parameters</span><span class="o">:</span><span class="nb">nil</span> <span class="n">success</span><span class="o">:^</span><span class="p">(</span><span class="n">AFHTTPRequestOperation</span> <span class="o">*</span><span class="n">operation</span><span class="p">,</span> <span class="kt">id</span> <span class="n">responseObject</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="p">[</span><span class="n">manager</span> <span class="nl">GET</span><span class="p">:</span><span class="s">@&quot;http://example.com/resources.json&quot;</span> <span class="nl">parameters</span><span class="p">:</span><span class="nb">nil</span> <span class="nl">success</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">AFHTTPRequestOperation</span> <span class="o">*</span><span class="n">operation</span><span class="p">,</span> <span class="kt">id</span> <span class="n">responseObject</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;JSON: %@&quot;</span><span class="p">,</span> <span class="n">responseObject</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span> <span class="n">failure</span><span class="o">:^</span><span class="p">(</span><span class="n">AFHTTPRequestOperation</span> <span class="o">*</span><span class="n">operation</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="p">}</span> <span class="nl">failure</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">AFHTTPRequestOperation</span> <span class="o">*</span><span class="n">operation</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Error: %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
 </span><span class='line'><span class="p">}];</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div>
@@ -256,10 +256,10 @@
 <span class='line-number'>14</span>
 </pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">static</span> <span class="kt">int</span> <span class="n">g_sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="bp">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="n">g_sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[@[</span><span class="mi">@1</span><span class="p">,</span> <span class="mi">@2</span><span class="p">,</span> <span class="mi">@3</span><span class="p">]</span> <span class="n">enumerateObjectsUsingBlock</span><span class="o">:^</span><span class="p">(</span><span class="n">NSNumber</span> <span class="o">*</span><span class="n">obj</span><span class="p">,</span> <span class="n">NSUInteger</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="l">@[</span><span class="mi">@1</span><span class="p">,</span> <span class="mi">@2</span><span class="p">,</span> <span class="mi">@3</span><span class="l">]</span> <span class="nl">enumerateObjectsUsingBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSNumber</span> <span class="o">*</span><span class="n">obj</span><span class="p">,</span> <span class="bp">NSUInteger</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="kt">int</span> <span class="n">val</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span> <span class="n">intValue</span><span class="p">];</span>
 </span><span class='line'>        <span class="n">g_sum</span> <span class="o">+=</span> <span class="n">val</span><span class="p">;</span>
 </span><span class='line'>    <span class="p">}];</span>
@@ -326,6 +326,8 @@
         <a class="basic-alignment left" href="/blog/2014/09/05/guan-yu-yi-ge-xiao-wen-ti-yin-fa-de-gan-kai/" title="Previous Post: 关于一个小问题引发的感慨">&laquo; 关于一个小问题引发的感慨</a>
       
       
+        <a class="basic-alignment right" href="/blog/2015/08/18/talk-about-reactivecocoas-cold-signal-and-hot-signal-part-1/" title="Next Post: 细说ReactiveCocoa的冷信号与热信号（一）">细说ReactiveCocoa的冷信号与热信号（一） &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -363,6 +365,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/08/18/talk-about-reactivecocoas-cold-signal-and-hot-signal-part-1/">细说ReactiveCocoa的冷信号与热信号（一）</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/09/09/cong-ling-yi-ge-jiao-du-jie-shao-xia-block/">从另一个角度介绍下Block</a>
       </li>
     
@@ -378,10 +384,6 @@
         <a href="/blog/2014/08/27/gong-ju-lian/">工具链</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2014/08/20/talk-about-rac/">聊一聊RAC</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -395,8 +397,8 @@
 </section><section> 
   <h1>文章分类</h1> 
   <ul id="categories"> 
-    <li class='category'><a href='/blog/categories/ios/'>ios (3)</a></li>
-<li class='category'><a href='/blog/categories/raczhuan-lan/'>rac专栏 (1)</a></li>
+    <li class='category'><a href='/blog/categories/ios/'>ios (4)</a></li>
+<li class='category'><a href='/blog/categories/raczhuan-lan/'>rac专栏 (2)</a></li>
 <li class='category'><a href='/blog/categories/kai-yuan-jie-shao/'>开源介绍 (1)</a></li>
 <li class='category'><a href='/blog/categories/jiao-cheng/'>教程 (1)</a></li>
 <li class='category'><a href='/blog/categories/za-tan/'>杂谈 (2)</a></li>
@@ -411,7 +413,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - 臧成威 -
+  Copyright &copy; 2015 - 臧成威 -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
