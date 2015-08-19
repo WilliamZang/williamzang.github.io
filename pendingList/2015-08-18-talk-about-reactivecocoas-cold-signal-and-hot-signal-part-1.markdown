@@ -4,7 +4,7 @@ title: "细说ReactiveCocoa的冷信号与热信号（一）"
 date: 2015-08-18 12:21:28 +0800
 comments: true
 categories: iOS RAC专栏
-description:ReactiveCocoa（简称RAC）是一套基于Cocoa的FRP框架，在我们美团客户端中，我们大量使用了这个框架。而在使用的过程中我们发现，冷信号与热信号的概念很容易混淆并且容易造成一定的问题，相信各位在使用的过程中也可能遇到此类问题。所以我在这里与大家讨论下RAC中冷信号与热信号的相关知识点，希望可以加深大家对冷热信号的理解。
+description: ReactiveCocoa（简称RAC）是一套基于Cocoa的FRP框架，在我们美团客户端中，我们大量使用了这个框架。而在使用的过程中我们发现，冷信号与热信号的概念很容易混淆并且容易造成一定的问题，相信各位在使用的过程中也可能遇到此类问题。所以我在这里与大家讨论下RAC中冷信号与热信号的相关知识点，希望可以加深大家对冷热信号的理解。先介绍下背景和什么是冷信号与热信号。
 keywords: iOS ReactiveCocoa RAC 函数响应式编程 hot cold signal
 ---
 
