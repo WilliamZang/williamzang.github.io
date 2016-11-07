@@ -323,6 +323,72 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2016/07/07/zhi-cheng-xu-yuan-de-jie-zhi-guan/">致程序员的价值观</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-07-07T23:04:29+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>近日来受招聘与管理问题的折磨，颇有思考。程序员的价值观依然不像当初般单纯，当技术与绩效、等级、金钱挂钩，似乎越来越多的人已经忘却了当初的初心。</p>
+
+<p>今天偶然间想起高中时的语文老师念给大家听的一小段文章，至今仍感动不已，也分享给大家。</p>
+
+<p>故事是用第一人称写的：</p>
+
+<blockquote><p>暴风雨过后的一个早晨，我在海边散步。只见许多小鱼被卷上岸后，困在了浅水洼里。太阳一出来，它们就得干死。
+浅水洼旁，一个小男孩不停地弯下腰去，捡起小鱼又用力地将它们扔回大海。
+我便忍不住走过去说：“孩子，这水洼里有几百几千条小鱼，你救不过来的。”
+“我知道。”小男孩头也不抬地回答我。
+我又接着说道：“那你为什么还在扔，你看大家都在忙别的，谁又在乎呢?”
+“但是这条小鱼在乎。”男孩一边回答，一边又拾起一条小鱼扔进大海。“这条在乎，这条也在乎!还有这一条，这一条……”</p></blockquote>
+
+<p>我知道现在仍然处于震撼和感动中，物欲横流的社会，谁又不是因为救不完就不救了；
+谁又不是因为别人不救就不救了；
+谁又不是因为没人在乎就不救了呢？</p>
+
+<p>唯有这个孩子，保持着初心，在有限的时间里，能拯救一个生命就拯救一个。单纯，有时也很伟大。</p>
+
+<p>回到我们的行业，大家重新审视下自己，我们是否因为某个行业前景好而去选择这个行业而不在乎是否自己有兴趣；
+我们是否为了面试而储备了很多知识而非为了提高；
+我们是否为了职级晋升而选择一个需求而非这个需求是客户所需；
+我们是否绩效而执行一个任务而非这个任务对团队和公司有益。</p>
+
+<p>我相信，每个程序员都曾经有过自己的程序像自己的孩子一样的归属感，并因此去捍卫自己的作品；
+每个程序员都曾有过追求技术和专精的年代，为了兴趣和提高自己不断的尝试和探索；
+每个程序员都有着来到一家公司的荣耀感与使命感，为了让产品变得更美好而倾注自己的时光。</p>
+
+<p>我见过很多的优秀的行业大牛，他们大都保持着初心，我相信这也是让他们成为大牛的一个很重要的原因。</p>
+
+<p>让我们重新唤起归属与探索、荣耀与使命，做一个有着正能量的骄傲的程序员吧！</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2016/06/27/ios-kai-fa-xia-de-han-shu-xiang-ying-shi-bian-cheng/">iOS开发下的函数响应式编程</a></h1>
     
     
@@ -3328,436 +3394,6 @@ API又变了这么多，不晓得又有多少BUG<br/>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/08/15/2014-8-15-zhou-wu-duo-yun/">2014-8-15 周五 多云</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-08-15T10:53:40+08:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>巧用Objc的动态特性，会使你的工作变得有趣并且减少很多未来的工作量。以前也在论坛里提及过Objc的一些动态特性，当时就有很多朋友讲到，单纯知道这些特性，但是不知道如何应用。那么，今天就把我可以想到的几个小例子分享一下。</p>
-
-<p>很多时候，你的代码会变得极其相似。但是又有略微不同，这时你就会想，如果我可以把不同的部分分离出来该多好，但是往往事与愿违。你仍会发现很多的透传代码挡在你的面前，就算不停的优化，接口还是要一个一个导过去。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// 类OrdersViewModel</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">hasOrder</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">internalOrderManager</span><span class="p">.</span><span class="n">hasOrder</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nf">orderCount</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">internalOrderManager</span><span class="p">.</span><span class="n">orderCount</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">orderNameForIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">[</span><span class="n">internalOrderManager</span> <span class="nl">orderNameForIndex</span><span class="p">:</span><span class="n">index</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 以下略很多的透传</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样的封装很好的接口，却因为很多的透传让代码变得臃肿不堪。还存在一些后续维护的问题，当internalOrderManager的接口变化的时候，还需要记得把外面OrdersViewModel这个类也一起变了。</p>
-
-<p>这时就是动态特性大显身手的时候了，如果我们不实现这些方法，运行时会调用一系列的方法来寻求解决方案，这个例子里，最简单的方法就是<code>- (id)forwardingTargetForSelector:(SEL)aSelector</code>，也被称为快速转发，下面是实现。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// 类OrdersViewModel</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">forwardingTargetForSelector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">aSelector</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="nb">self</span><span class="p">.</span><span class="n">internalOrderManager</span> <span class="nl">respondsToSelector</span><span class="p">:</span><span class="n">aSelector</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">return</span> <span class="nb">self</span><span class="p">.</span><span class="n">internalOrderManager</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><em>这只是本人的一个日记而已，所以相关技术点请大家去Google一下吧。</em></p>
-
-<p>这么做之后，发现了一个小问题，就是类OrdersViewModel由于没有实现<code>hasOrder</code>,<code>orderCount</code>和<code>orderNameForIndex:</code>这三个方法所以有了Warning。消除的方法就是使用类别</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">OrdersViewModel</span><span class="nl">(Extended)</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">hasOrder</span><span class="p">;</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nf">orderCount</span><span class="p">;</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">orderNameForIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span><span class="p">;</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样就好了。</p>
-
-<p>然而很多时候，没有这么乐观和简单，例如下面的例子：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// 类OrdersViewModel</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">orderNameForIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">orders</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="n">name</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">orderPriceForIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">orders</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="n">price</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">orderDescForIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">orders</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="n">desc</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">orderIncreasePrice:</span><span class="p">(</span><span class="bp">NSNumber</span> <span class="o">*</span><span class="p">)</span><span class="nv">value</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">orders</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="nl">increasePrice</span><span class="p">:</span><span class="n">value</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="c1">// 以下略更多的透传</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这个看起来，又是如此的相似，但是老办法却搞不定，难道我们注定就要透传和维护下去么？当然不是的。</p>
-
-<p>除了快速转发，还有标准消息转发，不过想要实现，还是需要费一番周章的。</p>
-
-<p>所谓的标准转发，就是实现<code>- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector</code>和<code>- (void)forwardInvocation:(NSInvocation *)anInvocation</code>这两个方法进行转发。</p>
-
-<p><code>NSMethodSignature</code>是方法签名，为什么要有这个腻？那是因为selector其实只是一个字符串，从它并不能知道参数的类型和返回值的类型，而方法签名实际上是用来描述参数的类型和返回值的类型的。也就是说，相同的返回值与参数的所有selector的签名其实是一致的。而Objc运行时要根据对象返回的这个签名来抓取参数，然后才会调用<code>- (void)forwardInvocation:(NSInvocation *)anInvocation</code>这个方法。</p>
-
-<p><code>NSInvocation</code>这个类，和我们平常用的<code>- (id)performSelector:(SEL)aSelector withObject:(id)object</code>的有相同的作用，不过更为多元化，可以管理参数和返回值。</p>
-
-<p>首先来实现<code>- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector</code>这个方法</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSMethodSignature</span> <span class="o">*</span><span class="p">)</span><span class="nf">methodSignatureForSelector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">aSelector</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="bp">NSMethodSignature</span><span class="o">*</span> <span class="n">signature</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">NSString</span> <span class="o">*</span><span class="n">selectorName</span> <span class="o">=</span> <span class="n">NSStringFromSelector</span><span class="p">(</span><span class="n">aSelector</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="nb">self</span> <span class="nl">selectorNameCheck</span><span class="p">:</span><span class="n">selectorName</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">signature</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="nl">targetMethodSignature</span><span class="p">:</span><span class="n">selectorName</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">signature</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">selectorNameCheck:</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">selectorName</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="bp">NSPredicate</span> <span class="o">*</span><span class="n">predicate</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSPredicate</span> <span class="nl">predicateWithFormat</span><span class="p">:</span><span class="s">@&quot;SELF BEGINSWITH &#39;order&#39; AND (SELF ENDSWITH &#39;forIndex:&#39; OR SELF ENDSWITH &#39;ForIndex:&#39;)&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">predicate</span> <span class="nl">evaluateWithObject</span><span class="p">:</span><span class="n">selectorName</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSMethodSignature</span> <span class="o">*</span><span class="p">)</span><span class="nf">targetMethodSignature:</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">selectorName</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">Order</span> <span class="nl">instanceMethodSignatureForSelector</span><span class="p">:[</span><span class="nb">self</span> <span class="nl">targetSelector</span><span class="p">:</span><span class="n">selectorName</span><span class="p">]];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nf">targetSelector:</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">selectorName</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="bp">NSMutableString</span> <span class="o">*</span><span class="n">newSelectorName</span> <span class="o">=</span> <span class="p">[</span><span class="n">selectorName</span> <span class="n">mutableCopy</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">newSelectorName</span> <span class="nl">deleteCharactersInRange</span><span class="p">:[</span><span class="n">selectorName</span> <span class="nl">rangeOfString</span><span class="p">:</span><span class="s">@&quot;forIndex:&quot;</span> <span class="nl">options</span><span class="p">:</span><span class="n">NSCaseInsensitiveSearch</span><span class="o">|</span><span class="n">NSBackwardsSearch</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">newSelectorName</span> <span class="nl">deleteCharactersInRange</span><span class="p">:[</span><span class="s">@&quot;order&quot;</span> <span class="nl">rangeOfString</span><span class="p">:</span><span class="n">className</span> <span class="nl">options</span><span class="p">:</span><span class="n">NSCaseInsensitiveSearch</span><span class="p">]];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">NSSelectorFromString</span><span class="p">(</span><span class="n">newSelectorName</span><span class="p">.</span><span class="n">uncapitalizedString</span><span class="p">);</span> <span class="c1">// uncapitalizedString是我通过类别加的新方法，就是把首字母小写，大家试的时候，随便实现以下就可以了。</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>大功告成，我们先用Predicate匹配了是否以order开头，以forIndex或者ForIndex结尾，然后还把order和forIndex去掉，得到了正确的selector，并取得了新的signature。然后是调用部分。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">forwardInvocation:</span><span class="p">(</span><span class="bp">NSInvocation</span> <span class="o">*</span><span class="p">)</span><span class="nv">anInvocation</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">SEL</span> <span class="n">seletor</span> <span class="o">=</span> <span class="p">[</span><span class="n">anInvocation</span> <span class="n">selector</span><span class="p">];</span>
-</span><span class='line'>    <span class="bp">NSString</span> <span class="o">*</span><span class="n">selectorName</span> <span class="o">=</span> <span class="n">NSStringFromSelector</span><span class="p">(</span><span class="n">seletor</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="nb">self</span> <span class="nl">selectorNameCheck</span><span class="p">:</span><span class="n">selectorName</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="bp">NSUInteger</span> <span class="n">argCount</span> <span class="o">=</span> <span class="p">[</span><span class="n">anInvocation</span> <span class="n">methodSignature</span><span class="p">].</span><span class="n">numberOfArguments</span><span class="p">;</span>
-</span><span class='line'>        <span class="bp">NSInteger</span> <span class="n">index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">anInvocation</span> <span class="nl">getArgument</span><span class="p">:</span><span class="o">&amp;</span><span class="n">index</span> <span class="nl">atIndex</span><span class="p">:</span><span class="n">argCount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="kt">id</span> <span class="n">instance</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">orders</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="bp">NSMethodSignature</span> <span class="o">*</span><span class="n">newSignature</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="nl">targetMethodSignature</span><span class="p">:</span><span class="n">selectorName</span><span class="p">];</span>
-</span><span class='line'>        <span class="bp">NSInvocation</span> <span class="o">*</span><span class="n">newInvocation</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSInvocation</span> <span class="nl">invocationWithMethodSignature</span><span class="p">:</span><span class="n">newSignature</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">newInvocation</span><span class="p">.</span><span class="n">selector</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="nl">targetSelector</span><span class="p">:</span><span class="n">selectorName</span><span class="p">];</span>
-</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">argCount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>           <span class="bp">NSObject</span> <span class="o">*</span><span class="n">obj</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>           <span class="p">[</span><span class="n">anInvocation</span> <span class="nl">getArgument</span><span class="p">:</span><span class="o">&amp;</span><span class="n">obj</span> <span class="nl">atIndex</span><span class="p">:</span><span class="n">i</span><span class="p">];</span>
-</span><span class='line'>           <span class="p">[</span><span class="n">newInvocation</span> <span class="nl">setArgument</span><span class="p">:</span><span class="o">&amp;</span><span class="n">obj</span> <span class="nl">atIndex</span><span class="p">:</span><span class="n">i</span><span class="p">];</span>
-</span><span class='line'>       <span class="p">}</span>
-</span><span class='line'>       <span class="p">[</span><span class="n">newInvocation</span> <span class="nl">invokeWithTarget</span><span class="p">:</span><span class="n">instance</span><span class="p">];</span>
-</span><span class='line'>       <span class="k">if</span> <span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">newSignature</span><span class="p">.</span><span class="n">methodReturnType</span><span class="p">,</span> <span class="s">&quot;@&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>           <span class="bp">NSObject</span> <span class="o">*</span><span class="n">returnValue</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>           <span class="p">[</span><span class="n">newInvocation</span> <span class="nl">getReturnValue</span><span class="p">:</span><span class="o">&amp;</span><span class="n">returnValue</span><span class="p">];</span>
-</span><span class='line'>           <span class="p">[</span><span class="n">anInvocation</span> <span class="nl">setReturnValue</span><span class="p">:</span><span class="o">&amp;</span><span class="n">returnValue</span><span class="p">];</span>
-</span><span class='line'>       <span class="p">}</span>
-</span><span class='line'>  
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>调用的时候，先取得参数的个数，然后get最后一个参数，我们知道这个参数就是index，然后取得instance。并生成新的invocation，传递参数，传递返回值。一切看起都那么美好。<strong>但是，它是不工作的。</strong></p>
-
-<p>如果你跑一遍就会发现了，argCount是不对的，就算强制改对，你也会发现index取不回来。这是为什么呢？原因就出在<code>- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector</code>的实现上。刚才说了，<strong>Objc运行时要根据对象返回的这个签名来抓取参数</strong>，我们返回的签名，显然没有最后一个参数，所以invocation生成的时候，就没传过来，自然不会生效。可是要怎么解决呢？</p>
-
-<p>这里有一个难题，就是我们需要找到正确的签名，而参数的个数又是不确定的。我用了一个折中的办法，生成了许多假的方法，涵盖了许多的签名。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">voidMethodforIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">voidMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">voidMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">voidMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">voidMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">voidMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_4</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">voidMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_4</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_5</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">voidMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_4</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_5</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_6</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">voidMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_4</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_5</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_6</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_7</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">voidMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_4</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_5</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_6</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_7</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_8</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">voidMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_4</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_5</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_6</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_7</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_8</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_9</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">voidMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_4</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_5</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_6</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_7</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_8</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_9</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_10</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">idMethodforIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">idMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">idMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">idMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">idMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">idMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_4</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">idMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_4</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_5</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">idMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_4</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_5</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_6</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">idMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_4</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_5</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_6</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_7</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">idMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_4</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_5</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_6</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_7</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_8</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">idMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_4</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_5</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_6</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_7</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_8</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_9</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;}</span>
-</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">idMethodParam:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_0</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_1</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_2</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_3</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_4</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_5</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_6</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_7</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_8</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_9</span> <span class="nf">Param:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">_10</span> <span class="nf">forIndex:</span><span class="p">(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="nv">index</span> <span class="p">{</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>看起来好眼晕的说，哈哈。这种方法在C++的模板里也有类似的应用，就是预生成一些内容，考虑一个假定临界值，把所有的可能写出来。有了这些我们就可以这样修改<code>- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector</code>这个方法了。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSMethodSignature</span> <span class="o">*</span><span class="p">)</span><span class="nf">methodSignatureForSelector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">aSelector</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="bp">NSMethodSignature</span><span class="o">*</span> <span class="n">signature</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="bp">NSString</span> <span class="o">*</span><span class="n">selectorName</span> <span class="o">=</span> <span class="n">NSStringFromSelector</span><span class="p">(</span><span class="n">aSelector</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="nb">self</span> <span class="nl">selectorNameCheck</span><span class="p">:</span><span class="n">selectorName</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">signature</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="nl">targetMethodSignature</span><span class="p">:</span><span class="n">selectorName</span><span class="p">];</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">signature</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="kt">int</span> <span class="n">argCount</span> <span class="o">=</span> <span class="n">signature</span><span class="p">.</span><span class="n">numberOfArguments</span><span class="p">;</span>
-</span><span class='line'>            <span class="bp">NSMutableString</span> <span class="o">*</span><span class="n">selfSelectorName</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>            <span class="bp">NSUInteger</span> <span class="n">insertLoc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">signature</span><span class="p">.</span><span class="n">methodReturnType</span><span class="p">,</span> <span class="s">&quot;v&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                <span class="n">selfSelectorName</span> <span class="o">=</span> <span class="s">@&quot;voidMethodforIndex:&quot;</span><span class="p">.</span><span class="n">mutableCopy</span><span class="p">;</span>
-</span><span class='line'>                <span class="n">insertLoc</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
-</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">signature</span><span class="p">.</span><span class="n">methodReturnType</span><span class="p">,</span> <span class="s">&quot;@&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                <span class="n">selfSelectorName</span> <span class="o">=</span> <span class="s">@&quot;idMethodforIndex:&quot;</span><span class="p">.</span><span class="n">mutableCopy</span><span class="p">;</span>
-</span><span class='line'>                <span class="n">insertLoc</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
-</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>                <span class="n">NSAssert</span><span class="p">(</span><span class="nb">NO</span><span class="p">,</span> <span class="s">@&quot;Class %@ method %@ return a value neither void or id&quot;</span><span class="p">,</span> <span class="n">NSStringFromClass</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">proxyClass</span><span class="p">),</span> <span class="n">selectorName</span><span class="p">);</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">argCount</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                <span class="p">[</span><span class="n">selfSelectorName</span> <span class="nl">insertString</span><span class="p">:</span><span class="s">@&quot;Param:&quot;</span> <span class="nl">atIndex</span><span class="p">:</span><span class="n">insertLoc</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>            <span class="n">signature</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="k">class</span> <span class="nl">instanceMethodSignatureForSelector</span><span class="p">:</span><span class="n">NSSelectorFromString</span><span class="p">(</span><span class="n">selfSelectorName</span><span class="p">)];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">signature</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>拿到正确的signature之后，我们根据返回值的类型和参数的个数，生成一个selector的字符串，并根据这个得到新的signature。至此，这个改造总算完成了。我们的新的方法可以不用修改代码而实现了。</p>
-
-<p>这时，可能你就会问了，这样搞起来，不是比原来的代码还多了么？事实确实如此，但是我们用这个应付了以后的种种变化。经过合理的封装，不难得到一个可以复用的例子，我也打算开一个新的开源项目<a href="https://github.com/WilliamZang/ZFastProxy">ZFastProxy</a>，把可复用的组件分享出去。</p>
-
-<p>很多时候，用动态特性可以让代码变得“神奇”起来，它更加的智能，也让你的开发变得越来越有趣，因为我们是为了未来而开发，而不是当下。以一种以不变应万变的思维来做事是快乐的，它同时也锻炼我们更高层次的抽象和提高了我们开发的技巧。</p>
-
-<p>希望我的例子可以起到抛砖引玉的作用，让更多的人创造出更好的可复用组件。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="2">&larr; Older</a>
@@ -3782,6 +3418,10 @@ API又变了这么多，不晓得又有多少BUG<br/>
       </li>
     
       <li class="post">
+        <a href="/blog/2016/07/07/zhi-cheng-xu-yuan-de-jie-zhi-guan/">致程序员的价值观</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/06/27/ios-kai-fa-xia-de-han-shu-xiang-ying-shi-bian-cheng/">iOS开发下的函数响应式编程</a>
       </li>
     
@@ -3791,10 +3431,6 @@ API又变了这么多，不晓得又有多少BUG<br/>
     
       <li class="post">
         <a href="/blog/2014/09/09/cong-ling-yi-ge-jiao-du-jie-shao-xia-block/">从另一个角度介绍下Block</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/09/05/guan-yu-yi-ge-xiao-wen-ti-yin-fa-de-gan-kai/">关于一个小问题引发的感慨</a>
       </li>
     
   </ul>
@@ -3828,7 +3464,7 @@ API又变了这么多，不晓得又有多少BUG<br/>
 <li class='category'><a href='/blog/categories/han-shu-shi-bian-cheng/'>函数式编程 (1)</a></li>
 <li class='category'><a href='/blog/categories/kai-yuan-jie-shao/'>开源介绍 (1)</a></li>
 <li class='category'><a href='/blog/categories/jiao-cheng/'>教程 (1)</a></li>
-<li class='category'><a href='/blog/categories/za-tan/'>杂谈 (2)</a></li>
+<li class='category'><a href='/blog/categories/za-tan/'>杂谈 (3)</a></li>
 <li class='category'><a href='/blog/categories/cheng-xu-yuan-ri-ji/'>程序员日记 (7)</a></li>
  
   </ul> 

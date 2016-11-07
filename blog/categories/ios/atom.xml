@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ios | 臧成威的博客]]></title>
   <link href="http://williamzang.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2016-11-07T22:35:23+08:00</updated>
+  <updated>2016-11-07T23:07:36+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -1287,7 +1287,7 @@ MapAndOutputErrorFunction transferToKeyChild(NSString *key)
 <p>执行顺序是这样的：</p>
 
 <ol>
-<li>创建一个冷信号：<code>coldSignal</code>。该信号声明了“订阅后1.5秒发送‘A’，3秒发送&#8217;B&#8217;，5秒发送完成事件”。</li>
+<li>创建一个冷信号：<code>coldSignal</code>。该信号声明了“订阅后1.5秒发送‘A’，3秒发送'B'，5秒发送完成事件”。</li>
 <li>创建一个RACSubject：<code>subject</code>。</li>
 <li>在2秒后使用这个<code>subject</code>订阅<code>coldSignal</code>。</li>
 <li>立即订阅这个<code>subject</code>。</li>
