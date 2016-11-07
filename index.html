@@ -9,7 +9,8 @@
   <meta name="author" content="臧成威">
 
   
-  <meta name="description" content="近日来受招聘与管理问题的折磨，颇有思考。程序员的价值观依然不像当初般单纯，当技术与绩效、等级、金钱挂钩，似乎越来越多的人已经忘却了当初的初心。 今天偶然间想起高中时的语文老师念给大家听的一小段文章，至今仍感动不已，也分享给大家。 故事是用第一人称写的： 暴风雨过后的一个早晨，我在海边散步。 &hellip;">
+  <meta name="description" content="首先给大家讲一个笑话： 有一只小白兔，跑到蔬菜店里问老板：“老板，有100个胡萝卜吗？”。老板说：“没有那么多啊。”，小白兔失望的说道：“哎，连100个胡萝卜都没有。。。”。
+第二天小白兔又来到蔬菜店问老板：“今天有100个胡萝卜了吧？”，老板尴尬的说：“今天还是缺点，明天就能好了。”， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -69,7 +70,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2016/07/17/zhi-cheng-xu-yuan-de-jie-zhi-guan/">致程序员的价值观</a></h1>
+      <h1 class="entry-title"><a href="/blog/2016/11/07/liao-yi-liao-ioskai-fa-zhong-de-duo-xing-ji-suan/">聊一聊iOS开发中的惰性计算</a></h1>
     
     
       <p class="meta">
@@ -85,49 +86,231 @@
   
 
 
-<time datetime="2016-07-17T00:54:16+08:00" pubdate data-updated="true"></time>
+<time datetime="2016-11-07T21:56:25+08:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>近日来受招聘与管理问题的折磨，颇有思考。程序员的价值观依然不像当初般单纯，当技术与绩效、等级、金钱挂钩，似乎越来越多的人已经忘却了当初的初心。</p>
+  <div class="entry-content"><p>首先给大家讲一个笑话：</p>
 
-<p>今天偶然间想起高中时的语文老师念给大家听的一小段文章，至今仍感动不已，也分享给大家。</p>
+<blockquote><p>有一只小白兔，跑到蔬菜店里问老板：“老板，有100个胡萝卜吗？”。老板说：“没有那么多啊。”，小白兔失望的说道：“哎，连100个胡萝卜都没有。。。”。<br/>
+第二天小白兔又来到蔬菜店问老板：“今天有100个胡萝卜了吧？”，老板尴尬的说：“今天还是缺点，明天就能好了。”，小白兔又很失望的走了。<br/>
+第三天小白兔刚一推门，老板就高兴的说道：“有了有了，从前天就进货的100个胡萝卜到货了。”，小白兔说：“太好了，我要买2根！”。。。</p></blockquote>
 
-<p>故事是用第一人称写的：</p>
+<p>不晓得笑话是否博您一笑，但是这里面确有一个点是和我们的主题惰性计算相关的。试想一下，假设蔬菜店是一个电商，你是老板，你挂商品数量的时候，是100个，1000个，还是真实的备货2个？显然做过淘宝的同学都知道这其中的玄机，就是先挂大的余量，有卖出再补货。所以，如果这个老板先回答有100个胡萝卜，再等它要2个的时候把自己备货的2个拿给它，是不是就免去了100个胡萝卜的物流？</p>
 
-<blockquote><p>暴风雨过后的一个早晨，我在海边散步。只见许多小鱼被卷上岸后，困在了浅水洼里。太阳一出来，它们就得干死。</p>
+<p>在程序开发中，我们也会经常的遇到这样的问题，明明创建了很大的一个对象，但是其实只用了一个字段；明明创建了一个500个的数组，其实只用了第0个和第1个元素。遇到这类问题，我们可以尝试使用惰性计算来解决。</p>
 
-<p>浅水洼旁，一个小男孩不停地弯下腰去，捡起小鱼又用力地将它们扔回大海。</p>
+<p>关于惰性计算，或者惰性求值。想必大家第一反应就是在getter里动态返回属性了。例如有一个很大的属性，你希望在有人调用的时候才创建，就可以这样写：</p>
 
-<p>我便忍不住走过去说：“孩子，这水洼里有几百几千条小鱼，你救不过来的。”</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">someBigProperty</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_someBigProperty</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="bp">NSMutableArray</span> <span class="o">*</span><span class="n">someBigProperty</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100000</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">someBigProperty</span> <span class="nl">addObject</span><span class="p">:</span><span class="l">@(</span><span class="n">i</span><span class="l">)</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">_someBigProperty</span> <span class="o">=</span> <span class="p">[</span><span class="n">someBigProperty</span> <span class="k">copy</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_someBigProperty</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>“我知道。”小男孩头也不抬地回答我。</p>
 
-<p>我又接着说道：“那你为什么还在扔，你看大家都在忙别的，谁又在乎呢?”</p>
+<p>本文当然不拘泥于大家耳熟能详的知识点进行阐述了。上述的代码虽然也能勉强叫惰性求值，但并非足够理想。为什么说是“勉强叫”呢？大家想想上面的笑话，其实这样做和老板的做法并无差别。首先店里没有100个胡萝卜，就好像这个对象没有<code>_someBigProperty</code>属性一样。一旦有人需要100个“胡萝卜”，就循环100000次创建这个<code>_someBigProperty</code>属性。然后可能使用者只需要第0个。</p>
 
-<p>“但是这条小鱼在乎。”男孩一边回答，一边又拾起一条小鱼扔进大海。“这条在乎，这条也在乎!还有这一条，这一条……”</p></blockquote>
+<p>另外在实际项目中这样的一个手段几乎被大家严重的乱用了，为什么说是乱用呢？除了创建非常大的属性、或者创建对象的时候有一些必要的副作用不能提前创建之外，几乎不应该使用惰性求值来处理类似逻辑。原因如下：</p>
 
-<p>我知道现在仍然处于震撼和感动中，物欲横流的社会，谁又不是因为救不完就不救了；
-谁又不是因为别人不救就不救了；
-谁又不是因为没人在乎就不救了呢？</p>
+<ul>
+<li>如果真的是很大的属性，一般它比较重要，很可能会被访问，要不要在getter中写出来意义不大。</li>
+<li>@property的atomic、nonatomic、copy、strong等描述在有getter方法的属性上会失效，后人修改代码的时候可能只改了@property声明，并不会记得改getter，于是隐患就这样埋下了。</li>
+<li>代码含有了隐私操作，尤其getter中再混杂了各种逻辑，使得程序出现问题非常不好排查。后人哪会想到<code>someObj.someProperty</code>这样一个简简单单的取属性发生了很多奇妙的事。</li>
+<li>代码多，本来代码只需要在<code>init</code>方法中创建用上一两行，结果用了至少7行的一个getter方法才能写出来，想想一个程序轻则数百个属性，都这么搞，得多出多少行代码？另外代码格式几乎完全一样，不符合DRY原则。好的程序员不应该总是写重复的代码，不是么？（某人说一个程序里面，20-30个属性已经算非常多了，只能是眼界问题了）</li>
+<li>性能损耗，对于属性取值可能会非常的频繁，如果所有的属性取值之前都经过一个<code>if</code>判断，这不是平白浪费的性能？</li>
+</ul>
 
-<p>唯有这个孩子，保持着初心，在有限的时间里，能拯救一个生命就拯救一个。单纯，有时也很伟大。</p>
 
-<p>回到我们的行业，大家重新审视下自己，我们是否因为某个行业前景好而去选择这个行业而不在乎是否自己有兴趣；
-我们是否为了面试而储备了很多知识而非为了提高；
-我们是否为了职级晋升而选择一个需求而非这个需求是客户所需；
-我们是否绩效而执行一个任务而非这个任务对团队和公司有益。</p>
+<p>我们回到正题。既然简单改写一下getter不但解决不了问题还有这么多隐患，那我们该如何能够正确优雅的把惰性计算写好？下面给大家一些建议。</p>
 
-<p>我相信，每个程序员都曾经有过自己的程序像自己的孩子一样的归属感，并因此去捍卫自己的作品；
-每个程序员都曾有过追求技术和专精的年代，为了兴趣和提高自己不断的尝试和探索；
-每个程序员都有着来到一家公司的荣耀感与使命感，为了让产品变得更美好而倾注自己的时光。</p>
+<p>观察上面的代码，你会发现_someBigProperty是一个非常规则的NSArray，它的item内容与下标相等。我们可以看出item的结果与index存在如下关系：</p>
 
-<p>我见过很多的优秀的行业大牛，他们大都保持着初心，我相信这也是让他们成为大牛的一个很重要的原因。</p>
+<blockquote><p>f(x) = x</p></blockquote>
 
-<p>让我们重新唤起归属与探索、荣耀与使命，做一个有着正能量的骄傲的程序员吧！</p>
+<p>类似的可以有很多，例如<code>&gt; 100</code>的为<code>@“world”</code>，<code>0 &lt;= x &lt;= 100</code>的为<code>@“hello”</code>；item为下标的平方；item为下标的数值转换成的字符串等。所以这类<code>NSArray</code>，基本需要一个count和一个函数就可以构成了。那我们现在就基于<code>NSArray</code>这个类簇，实现一个特殊的类吧！</p>
+
+<p>关于类簇，相信很多同学都有所了解，大概的说法是不可以直接继承一个<code>NSArray</code>、<code>NSNumber</code>、<code>NSString</code>这样的类。如果要继承需要实现全部的必要方法，在<code>NSArray</code>这个类簇来说，就是如下的方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="bp">NSArray</span><span class="o">&lt;</span><span class="n">__covariant</span> <span class="n">ObjectType</span><span class="o">&gt;</span> <span class="o">:</span> <span class="bp">NSObject</span> <span class="o">&lt;</span><span class="bp">NSCopying</span><span class="p">,</span> <span class="bp">NSMutableCopying</span><span class="p">,</span> <span class="bp">NSSecureCoding</span><span class="p">,</span> <span class="bp">NSFastEnumeration</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">readonly</span><span class="p">)</span> <span class="bp">NSUInteger</span> <span class="n">count</span><span class="p">;</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="n">ObjectType</span><span class="p">)</span><span class="nf">objectAtIndex:</span><span class="p">(</span><span class="bp">NSUInteger</span><span class="p">)</span><span class="nv">index</span><span class="p">;</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">init</span> <span class="n">NS_DESIGNATED_INITIALIZER</span><span class="p">;</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithObjects:</span><span class="p">(</span><span class="k">const</span> <span class="n">ObjectType</span> <span class="p">[])</span><span class="nv">objects</span> <span class="nf">count:</span><span class="p">(</span><span class="bp">NSUInteger</span><span class="p">)</span><span class="nv">cnt</span> <span class="n">NS_DESIGNATED_INITIALIZER</span><span class="p">;</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="n">nullable</span> <span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithCoder:</span><span class="p">(</span><span class="bp">NSCoder</span> <span class="o">*</span><span class="p">)</span><span class="nv">aDecoder</span> <span class="n">NS_DESIGNATED_INITIALIZER</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然除了<code>NSArray</code>类的基本方法，还有<code>NSCopying</code>、<code>NSMutableCopying</code>、<code>NSSecureCoding</code>这些协议需要实现，另外<code>NSFastEnumberation</code>协议已经默认实现完成，不需要额外处理。与惰性计算无关的细节大家可以自己填补，对于本例，我们只需要关心这几个方法的实现：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">typedef</span> <span class="nf">id</span><span class="p">(</span><span class="o">^</span><span class="n">ItemBlock</span><span class="p">)(</span><span class="bp">NSUInteger</span> <span class="n">index</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ZDynamicArray</span> : <span class="bp">NSArray</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithItemBlock:</span><span class="p">(</span><span class="n">ItemBlock</span><span class="p">)</span><span class="nv">block</span> <span class="nf">count:</span><span class="p">(</span><span class="bp">NSUInteger</span><span class="p">)</span><span class="nv">cnt</span><span class="p">;</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">objectAtIndex:</span><span class="p">(</span><span class="bp">NSUInteger</span><span class="p">)</span><span class="nv">index</span><span class="p">;</span>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSUInteger</span><span class="p">)</span><span class="nf">count</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>按照上文的说法，对于这样一个特殊的<code>NSArray</code>，我们真正要储存的数据只有一个count值外加一个函数，所以我们用这两个作为<code>init</code>参数。实现也很简单：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">ZDynamicArray</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">readonly</span><span class="p">)</span> <span class="n">ItemBlock</span> <span class="n">block</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">readonly</span><span class="p">)</span> <span class="bp">NSUInteger</span> <span class="n">cnt</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ZDynamicArray</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">initWithItemBlock:</span><span class="p">(</span><span class="n">ItemBlock</span><span class="p">)</span><span class="nv">block</span> <span class="nf">count:</span><span class="p">(</span><span class="bp">NSUInteger</span><span class="p">)</span><span class="nv">cnt</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="n">init</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_block</span> <span class="o">=</span> <span class="n">block</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">_cnt</span> <span class="o">=</span> <span class="n">cnt</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="bp">NSUInteger</span><span class="p">)</span><span class="nf">count</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">.</span><span class="n">cnt</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">objectAtIndex:</span><span class="p">(</span><span class="bp">NSUInteger</span><span class="p">)</span><span class="nv">index</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">block</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nb">self</span><span class="p">.</span><span class="n">block</span><span class="p">(</span><span class="n">index</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>瞧，就这么简单的写好了。让我们试一下吧！</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="n">ZDynamicArray</span> <span class="o">*</span><span class="n">array</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ZDynamicArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithItemBlock</span><span class="p">:</span><span class="o">^</span><span class="kt">id</span><span class="p">(</span><span class="bp">NSUInteger</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="l">@(</span><span class="n">index</span><span class="l">)</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span> <span class="nl">count</span><span class="p">:</span><span class="mi">100000</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">id</span> <span class="n">v</span> <span class="k">in</span> <span class="n">array</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">v</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">array</span><span class="p">[</span><span class="mi">15</span><span class="p">]);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一个看似10w数据的数组，其实占用空间微乎其微，但是作用和最开始那样的代码效果一样。很不错吧。大家也可以动手实践，写一些自己需要用到的惰性计算代码，例如一个<code>Model</code>的数组，并非所有的<code>Model</code>都需要用到，我们也可以做成这样的一个数组，等用到的时候再从<code>NSDicitonary</code>转换成<code>Model</code>。就像这样：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">NSArray</span> <span class="o">*</span><span class="n">downloadData</span> <span class="o">=</span> <span class="l">@[@{}</span><span class="p">,</span> <span class="l">@{}</span><span class="p">,</span> <span class="l">@{}</span><span class="p">,</span> <span class="l">@{}]</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="bp">NSArray</span> <span class="o">*</span><span class="n">modelArray</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ZDynamicArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithItemBlock</span><span class="p">:</span><span class="o">^</span><span class="kt">id</span><span class="p">(</span><span class="bp">NSUInteger</span> <span class="n">index</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">SomeModel</span> <span class="nl">modelFromDictionary</span><span class="p">:</span><span class="n">downloadData</span><span class="p">[</span><span class="n">index</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span> <span class="nl">count</span><span class="p">:</span><span class="n">downloadData</span><span class="p">.</span><span class="n">count</span><span class="p">];</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>好了，惰性计算就说到这里了。大家善加利用，一定可以写一些好玩的东西的。</p>
 </div>
   
   
@@ -3595,7 +3778,7 @@ API又变了这么多，不晓得又有多少BUG<br/>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2016/07/17/zhi-cheng-xu-yuan-de-jie-zhi-guan/">致程序员的价值观</a>
+        <a href="/blog/2016/11/07/liao-yi-liao-ioskai-fa-zhong-de-duo-xing-ji-suan/">聊一聊iOS开发中的惰性计算</a>
       </li>
     
       <li class="post">
@@ -3640,12 +3823,13 @@ API又变了这么多，不晓得又有多少BUG<br/>
 </section><section> 
   <h1>文章分类</h1> 
   <ul id="categories"> 
-    <li class='category'><a href='/blog/categories/ios/'>ios (5)</a></li>
+    <li class='category'><a href='/blog/categories/ios/'>ios (6)</a></li>
 <li class='category'><a href='/blog/categories/raczhuan-lan/'>rac专栏 (3)</a></li>
+<li class='category'><a href='/blog/categories/han-shu-shi-bian-cheng/'>函数式编程 (1)</a></li>
 <li class='category'><a href='/blog/categories/kai-yuan-jie-shao/'>开源介绍 (1)</a></li>
 <li class='category'><a href='/blog/categories/jiao-cheng/'>教程 (1)</a></li>
 <li class='category'><a href='/blog/categories/za-tan/'>杂谈 (2)</a></li>
-<li class='category'><a href='/blog/categories/cheng-xu-yuan-ri-ji/'>程序员日记 (8)</a></li>
+<li class='category'><a href='/blog/categories/cheng-xu-yuan-ri-ji/'>程序员日记 (7)</a></li>
  
   </ul> 
 </section>
