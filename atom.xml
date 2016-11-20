@@ -4,7 +4,7 @@
   <title><![CDATA[臧成威的博客]]></title>
   <link href="http://williamzang.com/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2016-11-21T00:36:16+08:00</updated>
+  <updated>2016-11-21T01:21:03+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -37,9 +37,9 @@
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='Swift'><span class='line'>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">].</span><span class="n">forEach</span> <span class="p">{</span> <span class="n">item</span> <span class="k">in</span>
-</span><span class='line'>      <span class="n">print</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">}</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">].</span><span class="n">forEach</span> <span class="p">{</span> <span class="n">item</span> <span class="k">in</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -55,16 +55,16 @@
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='Swift'><span class='line'>    <span class="n">Alamofire</span><span class="p">.</span><span class="n">request</span><span class="p">(</span><span class="s">&quot;https://httpbin.org/get&quot;</span><span class="p">).</span><span class="n">responseJSON</span> <span class="p">{</span> <span class="n">response</span> <span class="k">in</span>
-</span><span class='line'>      <span class="n">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">request</span><span class="p">)</span>  <span class="c1">// original URL request</span>
-</span><span class='line'>      <span class="n">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">response</span><span class="p">)</span> <span class="c1">// HTTP URL response</span>
-</span><span class='line'>      <span class="n">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>     <span class="c1">// server data</span>
-</span><span class='line'>      <span class="n">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">result</span><span class="p">)</span>   <span class="c1">// result of response serialization</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="n">Alamofire</span><span class="p">.</span><span class="n">request</span><span class="p">(</span><span class="s">&quot;https://httpbin.org/get&quot;</span><span class="p">).</span><span class="n">responseJSON</span> <span class="p">{</span> <span class="n">response</span> <span class="k">in</span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">request</span><span class="p">)</span>  <span class="c1">// original URL request  </span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">response</span><span class="p">)</span> <span class="c1">// HTTP URL response  </span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>     <span class="c1">// server data  </span>
+</span><span class='line'>    <span class="n">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">result</span><span class="p">)</span>   <span class="c1">// result of response serialization  </span>
 </span><span class='line'>
-</span><span class='line'>      <span class="k">if</span> <span class="k">let</span> <span class="n">JSON</span> <span class="o">=</span> <span class="n">response</span><span class="p">.</span><span class="n">result</span><span class="p">.</span><span class="n">value</span> <span class="p">{</span>
-</span><span class='line'>          <span class="n">print</span><span class="p">(</span><span class="s">&quot;JSON: \(JSON)&quot;</span><span class="p">)</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>    <span class="k">if</span> <span class="k">let</span> <span class="n">JSON</span> <span class="o">=</span> <span class="n">response</span><span class="p">.</span><span class="n">result</span><span class="p">.</span><span class="n">value</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">print</span><span class="p">(</span><span class="s">&quot;JSON: \(JSON)&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -135,13 +135,13 @@
 <span class='line-number'>30</span>
 <span class='line-number'>31</span>
 <span class='line-number'>32</span>
-</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="c1">// 实现在这里</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="c1">// 实现在这里  </span>
 </span><span class='line'><span class="k">class</span> <span class="n">SomeBuilder</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">var</span> <span class="nl">prop1</span><span class="p">:</span> <span class="n">Int</span>
 </span><span class='line'>    <span class="k">var</span> <span class="nl">prop2</span><span class="p">:</span> <span class="n">Bool</span>
 </span><span class='line'>    <span class="k">var</span> <span class="nl">prop3</span><span class="p">:</span> <span class="n">String</span>
 </span><span class='line'>    <span class="k">init</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// default value</span>
+</span><span class='line'>        <span class="c1">// default value  </span>
 </span><span class='line'>        <span class="n">prop1</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span class='line'>        <span class="n">prop2</span> <span class="o">=</span> <span class="nb">true</span>
 </span><span class='line'>        <span class="n">prop3</span> <span class="o">=</span> <span class="s">&quot;some string&quot;</span>
@@ -154,14 +154,14 @@
 </span><span class='line'>    <span class="n">private</span> <span class="k">var</span> <span class="nl">prop3</span><span class="p">:</span> <span class="n">String</span>
 </span><span class='line'>    <span class="k">init</span><span class="p">(</span><span class="n">_</span> <span class="nl">builderBlock</span><span class="p">:(</span><span class="n">SomeBuilder</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Void</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="k">let</span> <span class="n">someBuilder</span> <span class="o">=</span> <span class="n">SomeBuilder</span><span class="p">()</span>
-</span><span class='line'>        <span class="n">builderBlock</span><span class="p">(</span><span class="n">someBuilder</span><span class="p">)</span> <span class="c1">// noescape 入参的使用</span>
+</span><span class='line'>        <span class="n">builderBlock</span><span class="p">(</span><span class="n">someBuilder</span><span class="p">)</span> <span class="c1">// noescape 入参的使用  </span>
 </span><span class='line'>        <span class="n">prop1</span> <span class="o">=</span> <span class="n">someBuilder</span><span class="p">.</span><span class="n">prop1</span>
 </span><span class='line'>        <span class="n">prop2</span> <span class="o">=</span> <span class="n">someBuilder</span><span class="p">.</span><span class="n">prop2</span>
 </span><span class='line'>        <span class="n">prop3</span> <span class="o">=</span> <span class="n">someBuilder</span><span class="p">.</span><span class="n">prop3</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">// 使用的时候</span>
+</span><span class='line'><span class="c1">// 使用的时候  </span>
 </span><span class='line'><span class="k">let</span> <span class="n">someOjb</span> <span class="o">=</span> <span class="n">SomeObj</span> <span class="p">{</span> <span class="n">builder</span> <span class="k">in</span>
 </span><span class='line'>    <span class="n">builder</span><span class="p">.</span><span class="n">prop1</span> <span class="o">=</span> <span class="mi">15</span>
 </span><span class='line'>    <span class="n">builder</span><span class="p">.</span><span class="n">prop2</span> <span class="o">=</span> <span class="nb">false</span>
@@ -192,13 +192,15 @@
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
+<span class='line-number'>19</span>
 </pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">func</span> <span class="nf">updateTableView1</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">beginUpdates</span><span class="p">()</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">insertRows</span><span class="p">(</span><span class="nl">at</span><span class="p">:</span> <span class="p">[</span><span class="n">IndexPath</span><span class="p">(</span><span class="nl">row</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="nl">section</span><span class="p">:</span> <span class="mi">0</span><span class="p">)],</span> <span class="nl">with</span><span class="p">:</span> <span class="p">.</span><span class="n">fade</span><span class="p">)</span>
 </span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">deleteRows</span><span class="p">(</span><span class="nl">at</span><span class="p">:</span> <span class="p">[</span><span class="n">IndexPath</span><span class="p">(</span><span class="nl">row</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="nl">section</span><span class="p">:</span> <span class="mi">0</span><span class="p">)],</span> <span class="nl">with</span><span class="p">:</span> <span class="p">.</span><span class="n">fade</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">endUpdates</span><span class="p">()</span> <span class="c1">// 容易漏掉或者上面出现异常</span>
+</span><span class='line'>  <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">endUpdates</span><span class="p">()</span> <span class="c1">// 容易漏掉或者上面出现异常  </span>
+</span><span class='line'>  
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">func</span> <span class="nf">updateTableView2</span><span class="p">()</span> <span class="p">{</span>
@@ -233,7 +235,7 @@
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="c1">// 扩展一下UITableView</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="c1">// 扩展一下UITableView  </span>
 </span><span class='line'><span class="k">extension</span> <span class="bp">UITableView</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">func</span> <span class="n">updateCells</span><span class="p">(</span><span class="nl">updateBlock</span><span class="p">:</span> <span class="p">(</span><span class="bp">UITableView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Void</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="n">beginUpdates</span><span class="p">()</span>
@@ -245,7 +247,7 @@
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">func</span> <span class="n">updateTableView</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">// 使用的时候</span>
+</span><span class='line'>  <span class="c1">// 使用的时候  </span>
 </span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">updateCells</span> <span class="p">{</span> <span class="p">(</span><span class="n">tableView</span><span class="p">)</span> <span class="k">in</span>
 </span><span class='line'>        <span class="n">tableView</span><span class="p">.</span><span class="n">insertRows</span><span class="p">(</span><span class="nl">at</span><span class="p">:</span> <span class="p">[</span><span class="n">IndexPath</span><span class="p">(</span><span class="nl">row</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="nl">section</span><span class="p">:</span> <span class="mi">0</span><span class="p">)],</span> <span class="nl">with</span><span class="p">:</span> <span class="p">.</span><span class="n">fade</span><span class="p">)</span>
 </span><span class='line'>        <span class="n">tableView</span><span class="p">.</span><span class="n">deleteRows</span><span class="p">(</span><span class="nl">at</span><span class="p">:</span> <span class="p">[</span><span class="n">IndexPath</span><span class="p">(</span><span class="nl">row</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="nl">section</span><span class="p">:</span> <span class="mi">0</span><span class="p">)],</span> <span class="nl">with</span><span class="p">:</span> <span class="p">.</span><span class="n">fade</span><span class="p">)</span>
@@ -309,7 +311,7 @@
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="c1">// 一个返回(Int)-&gt;Bool的函数</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="c1">// 一个返回(Int)-&gt;Bool的函数  </span>
 </span><span class='line'><span class="k">func</span> <span class="n">biggerThanPow2With</span><span class="p">(</span><span class="nl">value</span><span class="p">:</span> <span class="n">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Bool</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="p">{</span> <span class="err">$</span><span class="mi">0</span> <span class="o">&gt;</span> <span class="n">value</span> <span class="o">*</span> <span class="n">value</span> <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
@@ -384,11 +386,15 @@
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
 </pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">func</span> <span class="n">not</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nl">origin_func</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Bool</span> <span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="p">{</span> <span class="o">!</span><span class="n">origin_func</span><span class="p">(</span><span class="err">$</span><span class="mi">0</span><span class="p">)</span> <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">let</span> <span class="n">array5</span> <span class="o">=</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="n">not</span><span class="p">(</span><span class="n">biggerThanPow2With</span><span class="p">(</span><span class="nl">value</span><span class="p">:</span> <span class="mi">9</span><span class="p">)))</span>
+</span><span class='line'>
+</span><span class='line'>
 </span></code></pre></td></tr></table></div></figure>
 
 

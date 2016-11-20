@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 函数式编程 | 臧成威的博客]]></title>
   <link href="http://williamzang.com/blog/categories/han-shu-shi-bian-cheng/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2016-11-21T00:36:16+08:00</updated>
+  <updated>2016-11-21T01:21:03+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -34,25 +34,23 @@
 
 <p>函数作为入参似乎无论在ObjC时代还是Swift时代都是司空见惯的事情，例如<code>AFNetworking</code>就用两个入参block分别回调成功与失败。Swift中更是加了一个尾闭包的语法（最后一个参数为函数，可以不写括号或者写到括号外面直接跟随方法名），例如下面这样：</p>
 
-<pre><code class="Swift">
-    [1, 2, 3].forEach { item in
-        print(item)
-    }
+<pre><code class="Swift">[1, 2, 3].forEach { item in  
+    print(item)  
+}  
 </code></pre>
 
 <p>我们可以将入参为函数的函数分为两类，escaping函数入参和noescape函数入参，区别在于这个入参的函数是在执行过程内被调用还是在执行过程外被调用。执行过程外被调用的一般用于callback用途，例如：</p>
 
-<pre><code class="Swift">
-    Alamofire.request("https://httpbin.org/get").responseJSON { response in
-        print(response.request)  // original URL request
-        print(response.response) // HTTP URL response
-        print(response.data)     // server data
-        print(response.result)   // result of response serialization
+<pre><code class="Swift">Alamofire.request("https://httpbin.org/get").responseJSON { response in  
+    print(response.request)  // original URL request  
+    print(response.response) // HTTP URL response  
+    print(response.data)     // server data  
+    print(response.result)   // result of response serialization  
 
-        if let JSON = response.result.value {
-            print("JSON: \(JSON)")
-        }
-    }
+    if let JSON = response.result.value {  
+        print("JSON: \(JSON)")  
+    }  
+}
 </code></pre>
 
 <p>这个response的入参函数就作为网络请求回来的一个callback，并不会在执行responseJSON这个函数的时候被调用。另外我们来观察<code>forEach</code>的代码，可以推断入参的函数一定会在<code>forEach</code>执行过程中使用，执行完就没有利用意义，这类就是noescape函数。</p>
@@ -63,11 +61,11 @@
 
 <p>看过GoF设计模式的同学不知道是否还记得构造器模式，Android中的构造器模式类似如下：</p>
 
-<pre><code class="Java">    new AlertDialog.Builder(this)
-      .setIcon(R.drawable.find_daycycle_icon)
-      .setTitle("提醒")
-      .create()
-      .show();
+<pre><code class="Java">new AlertDialog.Builder(this)  
+  .setIcon(R.drawable.find_daycycle_icon)  
+  .setTitle("提醒")  
+  .create()  
+  .show();
 </code></pre>
 
 <p>如果你想要做成这样的代码，你需要将<code>setIcon</code>、<code>setTitle</code>、<code>create</code>等方法都实现成返回<code>this</code>才行。这样就无法直接利用无返回值的<code>setter</code>了。
@@ -84,37 +82,37 @@
 
 <p>如果使用noescape入参函数还可以更简单的构造出这种代码，只需要传入一个入参为builder的对象就可以了，如下：</p>
 
-<pre><code class="Swift">// 实现在这里
-class SomeBuilder {
-    var prop1: Int
-    var prop2: Bool
-    var prop3: String
-    init() {
-        // default value
-        prop1 = 0
-        prop2 = true
-        prop3 = "some string"
-    }
-}
+<pre><code class="Swift">// 实现在这里  
+class SomeBuilder {  
+    var prop1: Int  
+    var prop2: Bool  
+    var prop3: String  
+    init() {  
+        // default value  
+        prop1 = 0  
+        prop2 = true  
+        prop3 = "some string"  
+    }  
+}  
 
-class SomeObj {
-    private var prop1: Int
-    private var prop2: Bool
-    private var prop3: String
-    init(_ builderBlock:(SomeBuilder) -&gt; Void) {
-        let someBuilder = SomeBuilder()
-        builderBlock(someBuilder) // noescape 入参的使用
-        prop1 = someBuilder.prop1
-        prop2 = someBuilder.prop2
-        prop3 = someBuilder.prop3
-    }
-}
+class SomeObj {  
+    private var prop1: Int  
+    private var prop2: Bool  
+    private var prop3: String  
+    init(_ builderBlock:(SomeBuilder) -&gt; Void) {  
+        let someBuilder = SomeBuilder()  
+        builderBlock(someBuilder) // noescape 入参的使用  
+        prop1 = someBuilder.prop1  
+        prop2 = someBuilder.prop2  
+        prop3 = someBuilder.prop3  
+    }  
+}  
 
-// 使用的时候
-let someOjb = SomeObj { builder in
-    builder.prop1 = 15
-    builder.prop2 = false
-    builder.prop3 = "haha"
+// 使用的时候  
+let someOjb = SomeObj { builder in  
+    builder.prop1 = 15  
+    builder.prop2 = false  
+    builder.prop3 = "haha"  
 }
 </code></pre>
 
@@ -122,46 +120,47 @@ let someOjb = SomeObj { builder in
 
 <p>很多时候，我们开发过程中都会遇到必须配对才能正常工作的API，例如打开文件和关闭文件、进入edit模式退出edit模式等。虽然swift语言给我们defer这样的语法糖避免大家忘记配对操作，但是代码看起来还是不那么顺眼</p>
 
-<pre><code class="Swift">func updateTableView1() {
-    self.tableView.beginUpdates()
+<pre><code class="Swift">func updateTableView1() {  
+    self.tableView.beginUpdates()  
 
-    self.tableView.insertRows(at: [IndexPath(row: 2, section: 0)], with: .fade)
-    self.tableView.deleteRows(at: [IndexPath(row: 5, section: 0)], with: .fade)
+    self.tableView.insertRows(at: [IndexPath(row: 2, section: 0)], with: .fade)  
+    self.tableView.deleteRows(at: [IndexPath(row: 5, section: 0)], with: .fade)  
 
-    self.tableView.endUpdates() // 容易漏掉或者上面出现异常
-}
+    self.tableView.endUpdates() // 容易漏掉或者上面出现异常  
 
-func updateTableView2() {
-    self.tableView.beginUpdates()
-    defer {
-        self.tableView.endUpdates()
-    }
+}  
 
-    self.tableView.insertRows(at: [IndexPath(row: 2, section: 0)], with: .fade)
-    self.tableView.deleteRows(at: [IndexPath(row: 5, section: 0)], with: .fade)
-}
+func updateTableView2() {  
+    self.tableView.beginUpdates()  
+    defer {  
+        self.tableView.endUpdates()  
+    }  
+
+    self.tableView.insertRows(at: [IndexPath(row: 2, section: 0)], with: .fade)  
+    self.tableView.deleteRows(at: [IndexPath(row: 5, section: 0)], with: .fade)  
+}  
 </code></pre>
 
 <p>利用noescape入参，我们可以将要操作的过程封装起来，使得上层看起来更规整</p>
 
-<pre><code class="Swift">// 扩展一下UITableView
-extension UITableView {
-    func updateCells(updateBlock: (UITableView) -&gt; Void) {
-        beginUpdates()
-        defer {
-            endUpdates()
-        }
-        updateBlock(self)
-    }
-}
+<pre><code class="Swift">// 扩展一下UITableView  
+extension UITableView {  
+    func updateCells(updateBlock: (UITableView) -&gt; Void) {  
+        beginUpdates()  
+        defer {  
+            endUpdates()  
+        }  
+        updateBlock(self)  
+    }  
+}  
 
-func updateTableView() {
-    // 使用的时候
-    self.tableView.updateCells { (tableView) in
-        tableView.insertRows(at: [IndexPath(row: 2, section: 0)], with: .fade)
-        tableView.deleteRows(at: [IndexPath(row: 5, section: 0)], with: .fade)
-    }
-}
+func updateTableView() {  
+    // 使用的时候  
+    self.tableView.updateCells { (tableView) in  
+        tableView.insertRows(at: [IndexPath(row: 2, section: 0)], with: .fade)  
+        tableView.deleteRows(at: [IndexPath(row: 5, section: 0)], with: .fade)  
+    }  
+}  
 </code></pre>
 
 <p>函数作为入参就简单介绍到这里，下面看看函数作为返回值。</p>
@@ -172,37 +171,37 @@ func updateTableView() {
 
 <p>首先没有争议的就是我们有很多的API都是需要函数作为入参的，无论是上一节提到过的escaping入参还是noescape入参。所以很多的时候，大家写的代码重复率会很高，例如：</p>
 
-<pre><code class="Swift">let array = [1, 3, 55, 47, 92, 77, 801]
+<pre><code class="Swift">let array = [1, 3, 55, 47, 92, 77, 801]  
 
-let array1 = array.filter { $0 &gt; 3 * 3}
-let array2 = array.filter { $0 &gt; 4 * 4}
-let array3 = array.filter { $0 &gt; 2 * 2}
-let array4 = array.filter { $0 &gt; 5 * 5}
+let array1 = array.filter { $0 &gt; 3 * 3}  
+let array2 = array.filter { $0 &gt; 4 * 4}  
+let array3 = array.filter { $0 &gt; 2 * 2}  
+let array4 = array.filter { $0 &gt; 5 * 5}  
 </code></pre>
 
 <p>一段从数组中找到大于某个数平方的代码，如果不封装，看起来应该是这样的。为了简化，通常会封装成如下的两个样子：</p>
 
-<pre><code class="Swift">func biggerThanPowWith(array: [Int], value: Int) -&gt; [Int] {
-    return array.filter { $0 &gt; value * value}
-}
+<pre><code class="Swift">func biggerThanPowWith(array: [Int], value: Int) -&gt; [Int] {  
+    return array.filter { $0 &gt; value * value}  
+}  
 
-let array1 = biggerThanPowWith(array: array, value: 3)
-let array2 = biggerThanPowWith(array: array, value: 4)
-let array3 = biggerThanPowWith(array: array, value: 2)
-let array4 = biggerThanPowWith(array: array, value: 5)
+let array1 = biggerThanPowWith(array: array, value: 3)  
+let array2 = biggerThanPowWith(array: array, value: 4)  
+let array3 = biggerThanPowWith(array: array, value: 2)  
+let array4 = biggerThanPowWith(array: array, value: 5)  
 </code></pre>
 
 <p>如果用高阶函数的返回值函数，可以做成这样一个高阶函数：</p>
 
-<pre><code class="Swift">// 一个返回(Int)-&gt;Bool的函数
-func biggerThanPow2With(value: Int) -&gt; (Int) -&gt; Bool {
-    return { $0 &gt; value * value }
-}
+<pre><code class="Swift">// 一个返回(Int)-&gt;Bool的函数  
+func biggerThanPow2With(value: Int) -&gt; (Int) -&gt; Bool {  
+    return { $0 &gt; value * value }  
+}  
 
-let array1 = array.filter(biggerThanPow2With(value: 3))
-let array2 = array.filter(biggerThanPow2With(value: 4))
-let array3 = array.filter(biggerThanPow2With(value: 2))
-let array4 = array.filter(biggerThanPow2With(value: 5))
+let array1 = array.filter(biggerThanPow2With(value: 3))  
+let array2 = array.filter(biggerThanPow2With(value: 4))  
+let array3 = array.filter(biggerThanPow2With(value: 2))  
+let array4 = array.filter(biggerThanPow2With(value: 5))  
 </code></pre>
 
 <p>你一定会说，两者看起来没啥区别。所以这里面需要讲一下使用高阶返回函数的几点好处</p>
@@ -219,26 +218,26 @@ let array4 = array.filter(biggerThanPow2With(value: 5))
 
 <p>这也是最关键的一点，更细粒度的高阶函数，可以更方便的复用，例如我们知道Set<Int>也是有<code>filter</code>这个方法的，复用起来就这样：</p>
 
-<pre><code class="Swift">let set = Set&lt;Int&gt;(arrayLiteral: 1, 3, 7, 9, 17, 55, 47, 92, 77, 801)
-let set1 = set.filter(biggerThanPow2With(value: 3))
-let set2 = set.filter(biggerThanPow2With(value: 9)) 
+<pre><code class="Swift">let set = Set&lt;Int&gt;(arrayLiteral: 1, 3, 7, 9, 17, 55, 47, 92, 77, 801)  
+let set1 = set.filter(biggerThanPow2With(value: 3))  
+let set2 = set.filter(biggerThanPow2With(value: 9))   
 </code></pre>
 
 <p>回忆下上面的简单封装，是不是就无法重用了呢？</p>
 
 <p>类似的返回函数的高阶函数还可以有很多例子，例如上面说过的builder，假如每次都需要定制成特殊的样子，但是某个字段不同，就可以用高阶函数很容易打造出来：</p>
 
-<pre><code class="Swift">func builerWithDifferentProp3(prop3: String) -&gt; (SomeBuilder) -&gt; Void {
-    return { builder in
-        builder.prop1 = 15
-        builder.prop2 = true
-        builder.prop3 = prop3
-    }
-}
+<pre><code class="Swift">func builerWithDifferentProp3(prop3: String) -&gt; (SomeBuilder) -&gt; Void {  
+    return { builder in  
+        builder.prop1 = 15  
+        builder.prop2 = true  
+        builder.prop3 = prop3  
+    }  
+}  
 
-let someObj1 = SomeObj.init(builerWithDifferentProp3(prop3: "a"))
-let someObj2 = SomeObj.init(builerWithDifferentProp3(prop3: "b"))
-let someObj3 = SomeObj.init(builerWithDifferentProp3(prop3: "c"))
+let someObj1 = SomeObj.init(builerWithDifferentProp3(prop3: "a"))  
+let someObj2 = SomeObj.init(builerWithDifferentProp3(prop3: "b"))  
+let someObj3 = SomeObj.init(builerWithDifferentProp3(prop3: "c"))  
 </code></pre>
 
 <p>介绍完入参与返回值，还有另外的一个组合模式，那就是入参是一个函数，返回值也是一个函数的情况，我们来看看这种情况。</p>
@@ -247,25 +246,24 @@ let someObj3 = SomeObj.init(builerWithDifferentProp3(prop3: "c"))
 
 <p>这样的一个函数看起来会很恐怖，swift会声明成<code>func someFunc&lt;A, B, C, D&gt;(_ a: (A) -&gt; B)-&gt; (C) -&gt; D</code>，objective-c会声明成<code>- (id (^)(id))someFunc:(id (^)(id))block</code>。让我们先从一个小的例子来讲起，回忆一下我们刚刚做的<code>biggerThanPow2With</code>这个函数，如果我们要一个<code>notBiggerThanPow2With</code>怎么办呢？你知道我一定不会说再写一个。所以我告诉你我会这样写：</p>
 
-<pre><code class="Swift">
-func not&lt;T&gt;(_ origin_func: @escaping (T) -&gt; Bool) -&gt; (T) -&gt; Bool {
-    return { !origin_func($0) }
-}
+<pre><code class="Swift">func not&lt;T&gt;(_ origin_func: @escaping (T) -&gt; Bool) -&gt; (T) -&gt; Bool {  
+    return { !origin_func($0) }  
+}  
 
-let array5 = array.filter(not(biggerThanPow2With(value: 9)))
+let array5 = array.filter(not(biggerThanPow2With(value: 9)))  
 </code></pre>
 
 <p>并不需要一个<code>notBiggerThanPow2With</code>函数，我们只需要实现一个<code>not</code>就可以了。它的入参是一个<code>(T) -&gt; Bool</code>，返回值也是<code>(T) -&gt; Bool</code>，只需要在执行block内部的时候用个取反就可以了。这样不单可以解决刚才的问题，还可以解决任何<code>(T) -&gt; Bool</code>类型函数的取反问题，比如我们有一个<code>odd(_: int)</code>方法来过滤奇数，那我们就可以用<code>even=not(odd)</code>得到一个过滤偶数的函数了。</p>
 
-<pre><code class="Swift">func odd(_ value: Int) -&gt; Bool {
-    return value % 2 == 1
-}
+<pre><code class="Swift">func odd(_ value: Int) -&gt; Bool {  
+    return value % 2 == 1  
+}  
 
-let array6 = array.filter(odd)
-let array7 = array.filter(not(odd))
+let array6 = array.filter(odd)  
+let array7 = array.filter(not(odd))  
 
-let even = not(odd)
-let array8 = array.filter(even)
+let even = not(odd)  
+let array8 = array.filter(even)  
 </code></pre>
 
 <p>大家可以看下上面的<code>biggerThanPow2With</code>时我们讨论过的，如果<code>biggerThanPow2With</code>不是一个返回函数的高阶函数，那它就不太容易用<code>not</code>函数来加工了。</p>
@@ -274,20 +272,18 @@ let array8 = array.filter(even)
 
 <p>下面再展示给大家两个函数，一个交换参数的函数<code>exchangeParam</code>，另一个是柯里化函数<code>currying</code>：</p>
 
-<pre><code class="Swift">
-func exchangeParam&lt;A, B, C&gt;(_ block: @escaping (A, B) -&gt; C) -&gt; (B, A) -&gt; C {
-    return { block($1, $0) }
-}
+<pre><code class="Swift">func exchangeParam&lt;A, B, C&gt;(_ block: @escaping (A, B) -&gt; C) -&gt; (B, A) -&gt; C {  
+    return { block($1, $0) }  
+}  
 
-func currying&lt;A, B, C&gt;(_ block: @escaping (A, B) -&gt; C, _ value: A) -&gt; (B) -&gt; C {
-    return { block(value, $0) }
-}
+func currying&lt;A, B, C&gt;(_ block: @escaping (A, B) -&gt; C, _ value: A) -&gt; (B) -&gt; C {  
+    return { block(value, $0) }  
+}  
 </code></pre>
 
 <p>第一个函数<code>exchangeParam</code>是交换一个函数的两个参数，第二个函数<code>currying</code>是给一个带两个参数的函数和一个参数，返回一个带一个参数的函数。那这两个函数究竟有什么用途呢？看一下下面的例子：</p>
 
-<pre><code class="Swift">
-let array9 = array.filter(currying(exchangeParam(&gt;), 9))
+<pre><code class="Swift">let array9 = array.filter(currying(exchangeParam(&gt;), 9))
 </code></pre>
 
 <p>swift语言里面<code>&gt;</code>是一个入参(a, b)的函数，所以<code>&gt;(5, 3) == true</code>。我们使用<code>exchangeParam</code>交换参数就变成了(b, a)，这时<code>exchangeParam(&gt;)(5, 3)</code>就等于<code>false</code>了。</p>
