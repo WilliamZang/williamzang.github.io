@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://williamzang.com/blog/2016/11/08/ba-wan-gao-jie-han-shu/</loc>
+<lastmod>2016-11-08T13:19:42+08:00</lastmod>
+</url>
+<url>
 <loc>http://williamzang.com/blog/2016/11/07/liao-yi-liao-ioskai-fa-zhong-de-duo-xing-ji-suan/</loc>
 <lastmod>2016-11-07T21:56:25+08:00</lastmod>
 </url>
@@ -63,9 +67,6 @@
 <loc>http://williamzang.com/</loc>
 </url>
 <url>
-<loc>http://williamzang.com/new-page/</loc>
-</url>
-<url>
 <loc>http://williamzang.com/blog/categories/ios/</loc>
 </url>
 <url>
@@ -85,8 +86,5 @@
 </url>
 <url>
 <loc>http://williamzang.com/blog/categories/han-shu-shi-bian-cheng/</loc>
-</url>
-<url>
-<loc>http://williamzang.com/posts/2/</loc>
 </url>
 </urlset>

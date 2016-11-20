@@ -1,0 +1,682 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>把玩高阶函数 - 臧成威的博客</title>
+  <meta name="author" content="臧成威">
+
+  
+  <meta name="description" content="聊一聊iOS开发中的高阶函数">
+  <meta name="keywords" content="高阶函数 iOS 函数式编程">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://williamzang.com/blog/2016/11/08/ba-wan-gao-jie-han-shu">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
+  <link href="/atom.xml" rel="alternate" title="臧成威的博客" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/jquery.min.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/stylesheets/google-fonts.css"rel="stylesheet"type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">臧成威的博客</a></h1>
+  
+    <h2>不要让惯性影响你的未来</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:williamzang.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">首页</a></li>
+  <li><a href="/blog/archives">归档</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">把玩高阶函数</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-11-08T13:19:42+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>如果你开始接触函数式编程，你一定听说过高阶函数。在维基百科它的中文解释是这样的：</p>
+
+<blockquote><p>在数学和计算机科学中，高阶函数是至少满足下列一个条件的函数：</p>
+
+<ul>
+<li><p>接受一个或多个函数作为输入</p></li>
+<li><p>输出一个函数</p></li>
+</ul>
+</blockquote>
+
+<p>看起它就是ObjC语言中入参或者返回值为block的block或者函数，在Swift语言中即为入参或者返回值为函数的函数。那它们在实际的开发过程中究竟起着什么样的作用呢？我们将从入参、返回值和综合使用三部分来看这个问题：</p>
+
+<h2>函数作为入参</h2>
+
+<p>函数作为入参似乎无论在ObjC时代还是Swift时代都是司空见惯的事情，例如<code>AFNetworking</code>就用两个入参block分别回调成功与失败。Swift中更是加了一个尾闭包的语法（最后一个参数为函数，可以不写括号或者写到括号外面直接跟随方法名），例如下面这样：</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">].</span><span class="n">forEach</span> <span class="p">{</span> <span class="n">item</span> <span class="k">in</span>
+</span><span class='line'>      <span class="n">print</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<p>我们可以将入参为函数的函数分为两类，escaping函数入参和noescape函数入参，区别在于这个入参的函数是在执行过程内被调用还是在执行过程外被调用。执行过程外被调用的一般用于callback用途，例如：</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'>    <span class="n">Alamofire</span><span class="p">.</span><span class="n">request</span><span class="p">(</span><span class="s">&quot;https://httpbin.org/get&quot;</span><span class="p">).</span><span class="n">responseJSON</span> <span class="p">{</span> <span class="n">response</span> <span class="k">in</span>
+</span><span class='line'>      <span class="n">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">request</span><span class="p">)</span>  <span class="c1">// original URL request</span>
+</span><span class='line'>      <span class="n">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">response</span><span class="p">)</span> <span class="c1">// HTTP URL response</span>
+</span><span class='line'>      <span class="n">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>     <span class="c1">// server data</span>
+</span><span class='line'>      <span class="n">print</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">result</span><span class="p">)</span>   <span class="c1">// result of response serialization</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="k">let</span> <span class="n">JSON</span> <span class="o">=</span> <span class="n">response</span><span class="p">.</span><span class="n">result</span><span class="p">.</span><span class="n">value</span> <span class="p">{</span>
+</span><span class='line'>          <span class="n">print</span><span class="p">(</span><span class="s">&quot;JSON: \(JSON)&quot;</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<p>这个response的入参函数就作为网络请求回来的一个callback，并不会在执行responseJSON这个函数的时候被调用。另外我们来观察<code>forEach</code>的代码，可以推断入参的函数一定会在<code>forEach</code>执行过程中使用，执行完就没有利用意义，这类就是noescape函数。</p>
+
+<p>callback的用法大家应该比较熟悉了，介绍给大家noescape入参的一些用法：</p>
+
+<h3>1. 自由构造器</h3>
+
+<p>看过GoF设计模式的同学不知道是否还记得构造器模式，Android中的构造器模式类似如下：</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='Java'><span class='line'><span class="k">new</span> <span class="n">AlertDialog</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="k">this</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">.</span><span class="na">setIcon</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">drawable</span><span class="o">.</span><span class="na">find_daycycle_icon</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="s">&quot;提醒&quot;</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">.</span><span class="na">create</span><span class="o">()</span>
+</span><span class='line'>  <span class="o">.</span><span class="na">show</span><span class="o">();</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<p>如果你想要做成这样的代码，你需要将<code>setIcon</code>、<code>setTitle</code>、<code>create</code>等方法都实现成返回<code>this</code>才行。这样就无法直接利用无返回值的<code>setter</code>了。
+为什么需要这样的方式呢？如果你同时有如下需求：</p>
+
+<ol>
+<li>构造一个对象需要很多的参数</li>
+<li>这些参数里面很多有默认值</li>
+<li>这些参数对应的属性未来不希望被修改</li>
+</ol>
+
+
+<p>那么用这样的模式就可以直观又精巧的展示构建过程。</p>
+
+<p>如果使用noescape入参函数还可以更简单的构造出这种代码，只需要传入一个入参为builder的对象就可以了，如下：</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="c1">// 实现在这里</span>
+</span><span class='line'><span class="k">class</span> <span class="n">SomeBuilder</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nl">prop1</span><span class="p">:</span> <span class="n">Int</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nl">prop2</span><span class="p">:</span> <span class="n">Bool</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nl">prop3</span><span class="p">:</span> <span class="n">String</span>
+</span><span class='line'>    <span class="k">init</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// default value</span>
+</span><span class='line'>        <span class="n">prop1</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="n">prop2</span> <span class="o">=</span> <span class="nb">true</span>
+</span><span class='line'>        <span class="n">prop3</span> <span class="o">=</span> <span class="s">&quot;some string&quot;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="n">SomeObj</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">private</span> <span class="k">var</span> <span class="nl">prop1</span><span class="p">:</span> <span class="n">Int</span>
+</span><span class='line'>    <span class="n">private</span> <span class="k">var</span> <span class="nl">prop2</span><span class="p">:</span> <span class="n">Bool</span>
+</span><span class='line'>    <span class="n">private</span> <span class="k">var</span> <span class="nl">prop3</span><span class="p">:</span> <span class="n">String</span>
+</span><span class='line'>    <span class="k">init</span><span class="p">(</span><span class="n">_</span> <span class="nl">builderBlock</span><span class="p">:(</span><span class="n">SomeBuilder</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Void</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">let</span> <span class="n">someBuilder</span> <span class="o">=</span> <span class="n">SomeBuilder</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">builderBlock</span><span class="p">(</span><span class="n">someBuilder</span><span class="p">)</span> <span class="c1">// noescape 入参的使用</span>
+</span><span class='line'>        <span class="n">prop1</span> <span class="o">=</span> <span class="n">someBuilder</span><span class="p">.</span><span class="n">prop1</span>
+</span><span class='line'>        <span class="n">prop2</span> <span class="o">=</span> <span class="n">someBuilder</span><span class="p">.</span><span class="n">prop2</span>
+</span><span class='line'>        <span class="n">prop3</span> <span class="o">=</span> <span class="n">someBuilder</span><span class="p">.</span><span class="n">prop3</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 使用的时候</span>
+</span><span class='line'><span class="k">let</span> <span class="n">someOjb</span> <span class="o">=</span> <span class="n">SomeObj</span> <span class="p">{</span> <span class="n">builder</span> <span class="k">in</span>
+</span><span class='line'>    <span class="n">builder</span><span class="p">.</span><span class="n">prop1</span> <span class="o">=</span> <span class="mi">15</span>
+</span><span class='line'>    <span class="n">builder</span><span class="p">.</span><span class="n">prop2</span> <span class="o">=</span> <span class="nb">false</span>
+</span><span class='line'>    <span class="n">builder</span><span class="p">.</span><span class="n">prop3</span> <span class="o">=</span> <span class="s">&quot;haha&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<h3>2. 自动配对操作</h3>
+
+<p>很多时候，我们开发过程中都会遇到必须配对才能正常工作的API，例如打开文件和关闭文件、进入edit模式退出edit模式等。虽然swift语言给我们defer这样的语法糖避免大家忘记配对操作，但是代码看起来还是不那么顺眼</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">func</span> <span class="nf">updateTableView1</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">beginUpdates</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">insertRows</span><span class="p">(</span><span class="nl">at</span><span class="p">:</span> <span class="p">[</span><span class="n">IndexPath</span><span class="p">(</span><span class="nl">row</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="nl">section</span><span class="p">:</span> <span class="mi">0</span><span class="p">)],</span> <span class="nl">with</span><span class="p">:</span> <span class="p">.</span><span class="n">fade</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">deleteRows</span><span class="p">(</span><span class="nl">at</span><span class="p">:</span> <span class="p">[</span><span class="n">IndexPath</span><span class="p">(</span><span class="nl">row</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="nl">section</span><span class="p">:</span> <span class="mi">0</span><span class="p">)],</span> <span class="nl">with</span><span class="p">:</span> <span class="p">.</span><span class="n">fade</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">endUpdates</span><span class="p">()</span> <span class="c1">// 容易漏掉或者上面出现异常</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">func</span> <span class="nf">updateTableView2</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">beginUpdates</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">defer</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">endUpdates</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">insertRows</span><span class="p">(</span><span class="nl">at</span><span class="p">:</span> <span class="p">[</span><span class="n">IndexPath</span><span class="p">(</span><span class="nl">row</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="nl">section</span><span class="p">:</span> <span class="mi">0</span><span class="p">)],</span> <span class="nl">with</span><span class="p">:</span> <span class="p">.</span><span class="n">fade</span><span class="p">)</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">deleteRows</span><span class="p">(</span><span class="nl">at</span><span class="p">:</span> <span class="p">[</span><span class="n">IndexPath</span><span class="p">(</span><span class="nl">row</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="nl">section</span><span class="p">:</span> <span class="mi">0</span><span class="p">)],</span> <span class="nl">with</span><span class="p">:</span> <span class="p">.</span><span class="n">fade</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<p>利用noescape入参，我们可以将要操作的过程封装起来，使得上层看起来更规整</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="c1">// 扩展一下UITableView</span>
+</span><span class='line'><span class="k">extension</span> <span class="bp">UITableView</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">func</span> <span class="n">updateCells</span><span class="p">(</span><span class="nl">updateBlock</span><span class="p">:</span> <span class="p">(</span><span class="bp">UITableView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Void</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">beginUpdates</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">defer</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">endUpdates</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">updateBlock</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">func</span> <span class="n">updateTableView</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// 使用的时候</span>
+</span><span class='line'>    <span class="nb">self</span><span class="p">.</span><span class="n">tableView</span><span class="p">.</span><span class="n">updateCells</span> <span class="p">{</span> <span class="p">(</span><span class="n">tableView</span><span class="p">)</span> <span class="k">in</span>
+</span><span class='line'>        <span class="n">tableView</span><span class="p">.</span><span class="n">insertRows</span><span class="p">(</span><span class="nl">at</span><span class="p">:</span> <span class="p">[</span><span class="n">IndexPath</span><span class="p">(</span><span class="nl">row</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="nl">section</span><span class="p">:</span> <span class="mi">0</span><span class="p">)],</span> <span class="nl">with</span><span class="p">:</span> <span class="p">.</span><span class="n">fade</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">tableView</span><span class="p">.</span><span class="n">deleteRows</span><span class="p">(</span><span class="nl">at</span><span class="p">:</span> <span class="p">[</span><span class="n">IndexPath</span><span class="p">(</span><span class="nl">row</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="nl">section</span><span class="p">:</span> <span class="mi">0</span><span class="p">)],</span> <span class="nl">with</span><span class="p">:</span> <span class="p">.</span><span class="n">fade</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<p>函数作为入参就简单介绍到这里，下面看看函数作为返回值。</p>
+
+<h2>函数作为返回值</h2>
+
+<p>在大家的日常开发中，函数作为返回值的情况想必是少之又少。不过，如果能简单利用起来，就会让代码一下子清爽很多。</p>
+
+<p>首先没有争议的就是我们有很多的API都是需要函数作为入参的，无论是上一节提到过的escaping入参还是noescape入参。所以很多的时候，大家写的代码重复率会很高，例如：</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">let</span> <span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">801</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">array1</span> <span class="o">=</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span> <span class="p">{</span> <span class="err">$</span><span class="mi">0</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">3</span><span class="p">}</span>
+</span><span class='line'><span class="k">let</span> <span class="n">array2</span> <span class="o">=</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span> <span class="p">{</span> <span class="err">$</span><span class="mi">0</span> <span class="o">&gt;</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">4</span><span class="p">}</span>
+</span><span class='line'><span class="k">let</span> <span class="n">array3</span> <span class="o">=</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span> <span class="p">{</span> <span class="err">$</span><span class="mi">0</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">2</span><span class="p">}</span>
+</span><span class='line'><span class="k">let</span> <span class="n">array4</span> <span class="o">=</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span> <span class="p">{</span> <span class="err">$</span><span class="mi">0</span> <span class="o">&gt;</span> <span class="mi">5</span> <span class="o">*</span> <span class="mi">5</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<p>一段从数组中找到大于某个数平方的代码，如果不封装，看起来应该是这样的。为了简化，通常会封装成如下的两个样子：</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">func</span> <span class="n">biggerThanPowWith</span><span class="p">(</span><span class="nl">array</span><span class="p">:</span> <span class="p">[</span><span class="n">Int</span><span class="p">],</span> <span class="nl">value</span><span class="p">:</span> <span class="n">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="n">Int</span><span class="p">]</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span> <span class="p">{</span> <span class="err">$</span><span class="mi">0</span> <span class="o">&gt;</span> <span class="n">value</span> <span class="o">*</span> <span class="n">value</span><span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">array1</span> <span class="o">=</span> <span class="n">biggerThanPowWith</span><span class="p">(</span><span class="nl">array</span><span class="p">:</span> <span class="n">array</span><span class="p">,</span> <span class="nl">value</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class='line'><span class="k">let</span> <span class="n">array2</span> <span class="o">=</span> <span class="n">biggerThanPowWith</span><span class="p">(</span><span class="nl">array</span><span class="p">:</span> <span class="n">array</span><span class="p">,</span> <span class="nl">value</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span>
+</span><span class='line'><span class="k">let</span> <span class="n">array3</span> <span class="o">=</span> <span class="n">biggerThanPowWith</span><span class="p">(</span><span class="nl">array</span><span class="p">:</span> <span class="n">array</span><span class="p">,</span> <span class="nl">value</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'><span class="k">let</span> <span class="n">array4</span> <span class="o">=</span> <span class="n">biggerThanPowWith</span><span class="p">(</span><span class="nl">array</span><span class="p">:</span> <span class="n">array</span><span class="p">,</span> <span class="nl">value</span><span class="p">:</span> <span class="mi">5</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<p>如果用高阶函数的返回值函数，可以做成这样一个高阶函数：</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="c1">// 一个返回(Int)-&gt;Bool的函数</span>
+</span><span class='line'><span class="k">func</span> <span class="n">biggerThanPow2With</span><span class="p">(</span><span class="nl">value</span><span class="p">:</span> <span class="n">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Bool</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">{</span> <span class="err">$</span><span class="mi">0</span> <span class="o">&gt;</span> <span class="n">value</span> <span class="o">*</span> <span class="n">value</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">array1</span> <span class="o">=</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="n">biggerThanPow2With</span><span class="p">(</span><span class="nl">value</span><span class="p">:</span> <span class="mi">3</span><span class="p">))</span>
+</span><span class='line'><span class="k">let</span> <span class="n">array2</span> <span class="o">=</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="n">biggerThanPow2With</span><span class="p">(</span><span class="nl">value</span><span class="p">:</span> <span class="mi">4</span><span class="p">))</span>
+</span><span class='line'><span class="k">let</span> <span class="n">array3</span> <span class="o">=</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="n">biggerThanPow2With</span><span class="p">(</span><span class="nl">value</span><span class="p">:</span> <span class="mi">2</span><span class="p">))</span>
+</span><span class='line'><span class="k">let</span> <span class="n">array4</span> <span class="o">=</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="n">biggerThanPow2With</span><span class="p">(</span><span class="nl">value</span><span class="p">:</span> <span class="mi">5</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<p>你一定会说，两者看起来没啥区别。所以这里面需要讲一下使用高阶返回函数的几点好处</p>
+
+<h4>1. 不需要wrapper函数也不需要打开原始类</h4>
+
+<p>如同上面的简单封装，其实就是一个wrapper函数，把<code>array</code>作为入参带入进来。这样写代码和看代码的时候就稍微不爽一点，毕竟大家都喜欢OOP嘛。如果要OOP，那就势必要对原始类进行扩展，一种方式是加extension，或者直接给类加一个新的方法。</p>
+
+<h4>2. 阅读代码的时候一目了然</h4>
+
+<p>使用简单封装的时候，看代码的人并不知道内部使用了<code>filter</code>这个函数，必须要查看源码才能知道。但是用高阶函数的时候，一下子就知道了使用了系统库的<code>filter</code>。</p>
+
+<h4>3. 更容易复用</h4>
+
+<p>这也是最关键的一点，更细粒度的高阶函数，可以更方便的复用，例如我们知道Set<Int>也是有<code>filter</code>这个方法的，复用起来就这样：</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">let</span> <span class="kr">set</span> <span class="o">=</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Int</span><span class="o">&gt;</span><span class="p">(</span><span class="nl">arrayLiteral</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">801</span><span class="p">)</span>
+</span><span class='line'><span class="k">let</span> <span class="n">set1</span> <span class="o">=</span> <span class="kr">set</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="n">biggerThanPow2With</span><span class="p">(</span><span class="nl">value</span><span class="p">:</span> <span class="mi">3</span><span class="p">))</span>
+</span><span class='line'><span class="k">let</span> <span class="n">set2</span> <span class="o">=</span> <span class="kr">set</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="n">biggerThanPow2With</span><span class="p">(</span><span class="nl">value</span><span class="p">:</span> <span class="mi">9</span><span class="p">))</span> 
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<p>回忆下上面的简单封装，是不是就无法重用了呢？</p>
+
+<p>类似的返回函数的高阶函数还可以有很多例子，例如上面说过的builder，假如每次都需要定制成特殊的样子，但是某个字段不同，就可以用高阶函数很容易打造出来：</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">func</span> <span class="n">builerWithDifferentProp3</span><span class="p">(</span><span class="nl">prop3</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">SomeBuilder</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Void</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">{</span> <span class="n">builder</span> <span class="k">in</span>
+</span><span class='line'>        <span class="n">builder</span><span class="p">.</span><span class="n">prop1</span> <span class="o">=</span> <span class="mi">15</span>
+</span><span class='line'>        <span class="n">builder</span><span class="p">.</span><span class="n">prop2</span> <span class="o">=</span> <span class="nb">true</span>
+</span><span class='line'>        <span class="n">builder</span><span class="p">.</span><span class="n">prop3</span> <span class="o">=</span> <span class="n">prop3</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">someObj1</span> <span class="o">=</span> <span class="n">SomeObj</span><span class="p">.</span><span class="k">init</span><span class="p">(</span><span class="n">builerWithDifferentProp3</span><span class="p">(</span><span class="nl">prop3</span><span class="p">:</span> <span class="s">&quot;a&quot;</span><span class="p">))</span>
+</span><span class='line'><span class="k">let</span> <span class="n">someObj2</span> <span class="o">=</span> <span class="n">SomeObj</span><span class="p">.</span><span class="k">init</span><span class="p">(</span><span class="n">builerWithDifferentProp3</span><span class="p">(</span><span class="nl">prop3</span><span class="p">:</span> <span class="s">&quot;b&quot;</span><span class="p">))</span>
+</span><span class='line'><span class="k">let</span> <span class="n">someObj3</span> <span class="o">=</span> <span class="n">SomeObj</span><span class="p">.</span><span class="k">init</span><span class="p">(</span><span class="n">builerWithDifferentProp3</span><span class="p">(</span><span class="nl">prop3</span><span class="p">:</span> <span class="s">&quot;c&quot;</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<p>介绍完入参与返回值，还有另外的一个组合模式，那就是入参是一个函数，返回值也是一个函数的情况，我们来看看这种情况。</p>
+
+<h2>入参函数 &amp;&amp; 返回值函数</h2>
+
+<p>这样的一个函数看起来会很恐怖，swift会声明成<code>func someFunc&lt;A, B, C, D&gt;(_ a: (A) -&gt; B)-&gt; (C) -&gt; D</code>，objective-c会声明成<code>- (id (^)(id))someFunc:(id (^)(id))block</code>。让我们先从一个小的例子来讲起，回忆一下我们刚刚做的<code>biggerThanPow2With</code>这个函数，如果我们要一个<code>notBiggerThanPow2With</code>怎么办呢？你知道我一定不会说再写一个。所以我告诉你我会这样写：</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">func</span> <span class="n">not</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nl">origin_func</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Bool</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">{</span> <span class="o">!</span><span class="n">origin_func</span><span class="p">(</span><span class="err">$</span><span class="mi">0</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">array5</span> <span class="o">=</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="n">not</span><span class="p">(</span><span class="n">biggerThanPow2With</span><span class="p">(</span><span class="nl">value</span><span class="p">:</span> <span class="mi">9</span><span class="p">)))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<p>并不需要一个<code>notBiggerThanPow2With</code>函数，我们只需要实现一个<code>not</code>就可以了。它的入参是一个<code>(T) -&gt; Bool</code>，返回值也是<code>(T) -&gt; Bool</code>，只需要在执行block内部的时候用个取反就可以了。这样不单可以解决刚才的问题，还可以解决任何<code>(T) -&gt; Bool</code>类型函数的取反问题，比如我们有一个<code>odd(_: int)</code>方法来过滤奇数，那我们就可以用<code>even=not(odd)</code>得到一个过滤偶数的函数了。</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">func</span> <span class="n">odd</span><span class="p">(</span><span class="n">_</span> <span class="nl">value</span><span class="p">:</span> <span class="n">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Bool</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">value</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">array6</span> <span class="o">=</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="n">odd</span><span class="p">)</span>
+</span><span class='line'><span class="k">let</span> <span class="n">array7</span> <span class="o">=</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="n">not</span><span class="p">(</span><span class="n">odd</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">even</span> <span class="o">=</span> <span class="n">not</span><span class="p">(</span><span class="n">odd</span><span class="p">)</span>
+</span><span class='line'><span class="k">let</span> <span class="n">array8</span> <span class="o">=</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="n">even</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<p>大家可以看下上面的<code>biggerThanPow2With</code>时我们讨论过的，如果<code>biggerThanPow2With</code>不是一个返回函数的高阶函数，那它就不太容易用<code>not</code>函数来加工了。</p>
+
+<p>综上，如果一个入参和返回值都是函数的函数就是这样的一个转换函数，它能够让我们用更少的代码组合出更多的函数。另外需要注意一下，如果返回的函数里面闭包了入参的函数，那么入参函数就是escaping入参了。</p>
+
+<p>下面再展示给大家两个函数，一个交换参数的函数<code>exchangeParam</code>，另一个是柯里化函数<code>currying</code>：</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">func</span> <span class="n">exchangeParam</span><span class="o">&lt;</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nl">block</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">{</span> <span class="n">block</span><span class="p">(</span><span class="err">$</span><span class="mi">1</span><span class="p">,</span> <span class="err">$</span><span class="mi">0</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">func</span> <span class="n">currying</span><span class="o">&lt;</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nl">block</span><span class="p">:</span> <span class="p">@</span><span class="n">escaping</span> <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">,</span> <span class="n">_</span> <span class="nl">value</span><span class="p">:</span> <span class="n">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">{</span> <span class="n">block</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="err">$</span><span class="mi">0</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<p>第一个函数<code>exchangeParam</code>是交换一个函数的两个参数，第二个函数<code>currying</code>是给一个带两个参数的函数和一个参数，返回一个带一个参数的函数。那这两个函数究竟有什么用途呢？看一下下面的例子：</p>
+
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='Swift'><span class='line'><span class="k">let</span> <span class="n">array9</span> <span class="o">=</span> <span class="n">array</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="n">currying</span><span class="p">(</span><span class="n">exchangeParam</span><span class="p">(</span><span class="o">&gt;</span><span class="p">),</span> <span class="mi">9</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+
+<p>swift语言里面<code>&gt;</code>是一个入参(a, b)的函数，所以<code>&gt;(5, 3) == true</code>。我们使用<code>exchangeParam</code>交换参数就变成了(b, a)，这时<code>exchangeParam(&gt;)(5, 3)</code>就等于<code>false</code>了。</p>
+
+<p>而currying函数又把参数<code>b</code>固定为一个常量9，所以<code>currying(exchangeParam(&gt;), 9)</code>就是大于9的函数意思。</p>
+
+<p>这个例子里就利用了全部的预制函数和通用函数，没有借助任何的命令与业务函数声明实现了一个从数组中过滤大于9的子数组的需求。试想一下，如果我们更多的使用这样的高阶函数，代码中是不是很多的逻辑可以更容易的互相组合，而这就是函数式编程的魅力。</p>
+
+<h2>总结</h2>
+
+<p>高阶函数的引入，无论是从函数式编程还是从非函数式编程都带给我们代码一定程度的简化，使得我们的API更加简易可用，复用更充分。然而本文的例子不过是冰山一角，更多的内容还需要大家的不断尝试和创新，也可以通过学习更多的函数式编程范式来加深理解。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">臧成威</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-11-08T13:19:42+08:00" pubdate data-updated="true"></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/han-shu-shi-bian-cheng/'>函数式编程</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/11/07/liao-yi-liao-ioskai-fa-zhong-de-duo-xing-ji-suan/" title="Previous Post: 聊一聊iOS开发中的惰性计算">&laquo; 聊一聊iOS开发中的惰性计算</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="把玩高阶函数"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"WilliamZang"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END --></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+	关注我的微信公众平台，获取更多信息
+  <img src="/images/weixin.jpg" alt="关注微信公众平台，获取更多最新的信息"/>
+
+</section>
+<section>
+  <h1>最近文章</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/11/08/ba-wan-gao-jie-han-shu/">把玩高阶函数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/11/07/liao-yi-liao-ioskai-fa-zhong-de-duo-xing-ji-suan/">聊一聊iOS开发中的惰性计算</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/07/zhi-cheng-xu-yuan-de-jie-zhi-guan/">致程序员的价值观</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/06/27/ios-kai-fa-xia-de-han-shu-xiang-ying-shi-bian-cheng/">iOS开发下的函数响应式编程</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/18/talk-about-reactivecocoas-cold-signal-and-hot-signal/">细说ReactiveCocoa的冷信号与热信号</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+<h1>最近评论</h1>
+<ul class="ds-recent-comments" data-num-items="10" data-show-avatars="0" data-show-time="0" data-show-title="0" data-show-admin="0" data-excerpt-length="18"></ul>
+
+</section><section> 
+  <h1>文章分类</h1> 
+  <ul id="categories"> 
+    <li class='category'><a href='/blog/categories/ios/'>ios (7)</a></li>
+<li class='category'><a href='/blog/categories/raczhuan-lan/'>rac专栏 (3)</a></li>
+<li class='category'><a href='/blog/categories/han-shu-shi-bian-cheng/'>函数式编程 (2)</a></li>
+<li class='category'><a href='/blog/categories/kai-yuan-jie-shao/'>开源介绍 (1)</a></li>
+<li class='category'><a href='/blog/categories/jiao-cheng/'>教程 (1)</a></li>
+<li class='category'><a href='/blog/categories/za-tan/'>杂谈 (3)</a></li>
+<li class='category'><a href='/blog/categories/cheng-xu-yuan-ri-ji/'>程序员日记 (7)</a></li>
+ 
+  </ul> 
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - 臧成威 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+  var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F2e3325ddf89ac94d6dfff88ad90aa3ab' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+</body>
+</html>
