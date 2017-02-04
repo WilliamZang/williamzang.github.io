@@ -606,7 +606,7 @@ MapAndOutputErrorFunction transferToKeyChild(NSString *key)
     RACSignal *signal =
     [[[[[[RACSignal return:@1]
          repeat] take: 100]
-       aggregateWithStart:@0 reduce:^id(NSNumber *running,
+       scanWithStart:@0 reduce:^id(NSNumber *running,
                                         NSNumber *next) {
            return @(running.integerValue + next.integerValue);
        }]
