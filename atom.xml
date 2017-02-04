@@ -4,7 +4,7 @@
   <title><![CDATA[臧成威的博客]]></title>
   <link href="http://williamzang.com/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2016-11-21T01:21:03+08:00</updated>
+  <updated>2017-02-04T13:20:16+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -1725,7 +1725,7 @@
 </span><span class='line'>    RACSignal *signal =
 </span><span class='line'>    [[[[[[RACSignal return:@1]
 </span><span class='line'>         repeat] take: 100]
-</span><span class='line'>       aggregateWithStart:@0 reduce:^id(NSNumber *running,
+</span><span class='line'>       scanWithStart:@0 reduce:^id(NSNumber *running,
 </span><span class='line'>                                        NSNumber *next) {
 </span><span class='line'>           return @(running.integerValue + next.integerValue);
 </span><span class='line'>       }]

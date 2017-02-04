@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Objective-c | 臧成威的博客]]></title>
+  <link href="http://williamzang.com/blog/categories/objective-c/atom.xml" rel="self"/>
+  <link href="http://williamzang.com/"/>
+  <updated>2017-02-04T13:20:16+08:00</updated>
+  <id>http://williamzang.com/</id>
+  <author>
+    <name><![CDATA[臧成威]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[聊一聊iOS开发中的惰性计算]]></title>
+    <link href="http://williamzang.com/blog/2016/11/07/liao-yi-liao-ioskai-fa-zhong-de-duo-xing-ji-suan/"/>
+    <updated>2016-11-07T21:56:25+08:00</updated>
+    <id>http://williamzang.com/blog/2016/11/07/liao-yi-liao-ioskai-fa-zhong-de-duo-xing-ji-suan</id>
+    <content type="html"><![CDATA[<p>首先给大家讲一个笑话：</p>
+
+<blockquote><p>有一只小白兔，跑到蔬菜店里问老板：“老板，有100个胡萝卜吗？”。老板说：“没有那么多啊。”，小白兔失望的说道：“哎，连100个胡萝卜都没有。。。”。<br/>
+第二天小白兔又来到蔬菜店问老板：“今天有100个胡萝卜了吧？”，老板尴尬的说：“今天还是缺点，明天就能好了。”，小白兔又很失望的走了。<br/>
+第三天小白兔刚一推门，老板就高兴的说道：“有了有了，从前天就进货的100个胡萝卜到货了。”，小白兔说：“太好了，我要买2根！”。。。</p></blockquote>
+
+<p>不晓得笑话是否博您一笑，但是这里面确有一个点是和我们的主题惰性计算相关的。试想一下，假设蔬菜店是一个电商，你是老板，你挂商品数量的时候，是100个，1000个，还是真实的备货2个？显然做过淘宝的同学都知道这其中的玄机，就是先挂大的余量，有卖出再补货。所以，如果这个老板先回答有100个胡萝卜，再等它要2个的时候把自己备货的2个拿给它，是不是就免去了100个胡萝卜的物流？</p>
+
+<p>在程序开发中，我们也会经常的遇到这样的问题，明明创建了很大的一个对象，但是其实只用了一个字段；明明创建了一个500个的数组，其实只用了第0个和第1个元素。遇到这类问题，我们可以尝试使用惰性计算来解决。</p>
+
+<p>关于惰性计算，或者惰性求值。想必大家第一反应就是在getter里动态返回属性了。例如有一个很大的属性，你希望在有人调用的时候才创建，就可以这样写：</p>
+
+<pre><code class="objective-c">- (id)someBigProperty
+{
+    if (_someBigProperty == nil) {
+        NSMutableArray *someBigProperty = [NSMutableArray array];
+        for (int i = 0; i &lt; 100000; ++i) {
+            [someBigProperty addObject:@(i)];
+        }
+        _someBigProperty = [someBigProperty copy];
+    }
+
+    return _someBigProperty;
+}
+</code></pre>
+
+<p>本文当然不拘泥于大家耳熟能详的知识点进行阐述了。上述的代码虽然也能勉强叫惰性求值，但并非足够理想。为什么说是“勉强叫”呢？大家想想上面的笑话，其实这样做和老板的做法并无差别。首先店里没有100个胡萝卜，就好像这个对象没有<code>_someBigProperty</code>属性一样。一旦有人需要100个“胡萝卜”，就循环100000次创建这个<code>_someBigProperty</code>属性。然后可能使用者只需要第0个。</p>
+
+<p>另外在实际项目中这样的一个手段几乎被大家严重的乱用了，为什么说是乱用呢？除了创建非常大的属性、或者创建对象的时候有一些必要的副作用不能提前创建之外，几乎不应该使用惰性求值来处理类似逻辑。原因如下：</p>
+
+<ul>
+<li>如果真的是很大的属性，一般它比较重要，很可能会被访问，要不要在getter中写出来意义不大。</li>
+<li>@property的atomic、nonatomic、copy、strong等描述在有getter方法的属性上会失效，后人修改代码的时候可能只改了@property声明，并不会记得改getter，于是隐患就这样埋下了。</li>
+<li>代码含有了隐私操作，尤其getter中再混杂了各种逻辑，使得程序出现问题非常不好排查。后人哪会想到<code>someObj.someProperty</code>这样一个简简单单的取属性发生了很多奇妙的事。</li>
+<li>代码多，本来代码只需要在<code>init</code>方法中创建用上一两行，结果用了至少7行的一个getter方法才能写出来，想想一个程序轻则数百个属性，都这么搞，得多出多少行代码？另外代码格式几乎完全一样，不符合DRY原则。好的程序员不应该总是写重复的代码，不是么？（某人说一个程序里面，20-30个属性已经算非常多了，只能是眼界问题了）</li>
+<li>性能损耗，对于属性取值可能会非常的频繁，如果所有的属性取值之前都经过一个<code>if</code>判断，这不是平白浪费的性能？</li>
+</ul>
+
+
+<p>我们回到正题。既然简单改写一下getter不但解决不了问题还有这么多隐患，那我们该如何能够正确优雅的把惰性计算写好？下面给大家一些建议。</p>
+
+<p>观察上面的代码，你会发现_someBigProperty是一个非常规则的NSArray，它的item内容与下标相等。我们可以看出item的结果与index存在如下关系：</p>
+
+<blockquote><p>f(x) = x</p></blockquote>
+
+<p>类似的可以有很多，例如<code>&gt; 100</code>的为<code>@“world”</code>，<code>0 &lt;= x &lt;= 100</code>的为<code>@“hello”</code>；item为下标的平方；item为下标的数值转换成的字符串等。所以这类<code>NSArray</code>，基本需要一个count和一个函数就可以构成了。那我们现在就基于<code>NSArray</code>这个类簇，实现一个特殊的类吧！</p>
+
+<p>关于类簇，相信很多同学都有所了解，大概的说法是不可以直接继承一个<code>NSArray</code>、<code>NSNumber</code>、<code>NSString</code>这样的类。如果要继承需要实现全部的必要方法，在<code>NSArray</code>这个类簇来说，就是如下的方法：</p>
+
+<pre><code class="objective-c">@interface NSArray&lt;__covariant ObjectType&gt; : NSObject &lt;NSCopying, NSMutableCopying, NSSecureCoding, NSFastEnumeration&gt;
+
+@property (readonly) NSUInteger count;
+- (ObjectType)objectAtIndex:(NSUInteger)index;
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithObjects:(const ObjectType [])objects count:(NSUInteger)cnt NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;
+
+@end
+</code></pre>
+
+<p>当然除了<code>NSArray</code>类的基本方法，还有<code>NSCopying</code>、<code>NSMutableCopying</code>、<code>NSSecureCoding</code>这些协议需要实现，另外<code>NSFastEnumberation</code>协议已经默认实现完成，不需要额外处理。与惰性计算无关的细节大家可以自己填补，对于本例，我们只需要关心这几个方法的实现：</p>
+
+<pre><code class="objective-c">
+typedef id(^ItemBlock)(NSUInteger index);
+
+@interface ZDynamicArray : NSArray
+
+- (instancetype)initWithItemBlock:(ItemBlock)block count:(NSUInteger)cnt;
+- (id)objectAtIndex:(NSUInteger)index;
+- (NSUInteger)count;
+@end
+</code></pre>
+
+<p>按照上文的说法，对于这样一个特殊的<code>NSArray</code>，我们真正要储存的数据只有一个count值外加一个函数，所以我们用这两个作为<code>init</code>参数。实现也很简单：</p>
+
+<pre><code class="objective-c">@interface ZDynamicArray()
+
+@property (nonatomic, readonly) ItemBlock block;
+@property (nonatomic, readonly) NSUInteger cnt;
+@end
+
+@implementation ZDynamicArray
+
+- (instancetype)initWithItemBlock:(ItemBlock)block count:(NSUInteger)cnt
+{
+    if (self = [super init]) {
+        _block = block;
+        _cnt = cnt;
+    }
+    return self;
+}
+
+- (NSUInteger)count
+{
+    return self.cnt;
+}
+
+- (id)objectAtIndex:(NSUInteger)index
+{
+    if (self.block) {
+        return self.block(index);
+    } else {
+        return nil;
+    }
+}
+
+@end 
+</code></pre>
+
+<p>瞧，就这么简单的写好了。让我们试一下吧！</p>
+
+<pre><code class="objective-c">ZDynamicArray *array = [[ZDynamicArray alloc] initWithItemBlock:^id(NSUInteger index) {
+    return @(index);
+} count:100000];
+
+for (id v in array) {
+    NSLog(@"%@", v);
+}
+
+NSLog(@"%@", array[15]);
+</code></pre>
+
+<p>一个看似10w数据的数组，其实占用空间微乎其微，但是作用和最开始那样的代码效果一样。很不错吧。大家也可以动手实践，写一些自己需要用到的惰性计算代码，例如一个<code>Model</code>的数组，并非所有的<code>Model</code>都需要用到，我们也可以做成这样的一个数组，等用到的时候再从<code>NSDicitonary</code>转换成<code>Model</code>。就像这样：</p>
+
+<pre><code class="objective-c">NSArray *downloadData = @[@{}, @{}, @{}, @{}];
+
+NSArray *modelArray = [[ZDynamicArray alloc] initWithItemBlock:^id(NSUInteger index) {
+    return [SomeModel modelFromDictionary:downloadData[index]];
+} count:downloadData.count];    
+</code></pre>
+
+<p>好了，惰性计算就说到这里了。大家善加利用，一定可以写一些好玩的东西的。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[从另一个角度介绍下Block]]></title>
+    <link href="http://williamzang.com/blog/2014/09/09/cong-ling-yi-ge-jiao-du-jie-shao-xia-block/"/>
+    <updated>2014-09-09T10:27:24+08:00</updated>
+    <id>http://williamzang.com/blog/2014/09/09/cong-ling-yi-ge-jiao-du-jie-shao-xia-block</id>
+    <content type="html"><![CDATA[<p>群里有个小伙伴问我block的理解，我想网上那么多blog都写过iOS的block的介绍，说明，用法，如果还是不能理解，那就换个角度吧。所以，今天我们来聊一聊Block的前世今生，不谈block如何定义，不谈block有哪些坑，只谈它是怎么来的。</p>
+
+<p>首先block的使用，真的不必多说，想必大家google后也都会用。问题就在于，为什么要有block？有人觉得block方便，到底方便在哪里呢？这一切要从函数指针这个很老的概念谈起了。</p>
+
+<p>在C时代，面向过程一度成为程序开发的主流，在没有对象化的程序设计中，我们难免写出如下的程序：</p>
+
+<pre><code class="c">extern const char *GetMenu0();
+extern const char *GetMenu1();
+extern const char *GetMenu2();
+extern const char *GetMenu3();
+extern const char *GetMenu4();
+extern const char *GetMenu5();
+
+
+
+const char *GetMenuShow(int pos) {
+    switch (pos) {
+        case 0: return GetMenu0();
+        case 1: return GetMenu1();
+        case 2: return GetMenu2();
+        case 3: return GetMenu3();
+        case 4: return GetMenu4();
+        case 5: return GetMenu5();
+        default:
+            return NULL;
+    }
+}
+</code></pre>
+
+<p>随着程序的复杂度提高，这样的程序变得越来越长，这时函数指针可以来帮忙，于是函数就变成了这样：</p>
+
+<pre><code class="c">extern const char *GetMenu0();
+extern const char *GetMenu1();
+extern const char *GetMenu2();
+extern const char *GetMenu3();
+extern const char *GetMenu4();
+extern const char *GetMenu5();
+
+typedef const char *(*MenuMethodType)();
+
+static MenuMethodType g_methods[] = {
+  &amp;GetMenu0,
+  &amp;GetMenu1,
+  &amp;GetMenu2,
+  &amp;GetMenu3,
+  &amp;GetMenu4,
+  &amp;GetMenu5
+};
+
+
+const char *GetMenuShow(int pos) {
+    if (pos &lt; 0 || pos &gt;= (sizeof(g_methods) / sizeof(MenuMethodType))) {
+        return NULL;
+    }
+    return g_methods[pos]();
+}
+</code></pre>
+
+<p>这种写法也叫做跳转表，好处是以后GetMenu*这种函数的增长可以放到GetMenuShow这个函数外，减少了耦合。函数指针的另一个妙用就是回调函数，这个非常的普遍，也不需要再举例子了。</p>
+
+<p>函数指针给我们带来的新的开发思想，就是行为的变量化，因此，我们可以将不同的行为封装到统一的流程之外，作为可替换的组件。总之，它允许你把可变化的行为，注入到稳定的过程中，我们便获得了更好的扩展，把开发的中心放到变化而不是重复上。</p>
+
+<p>到了OC时代，OC有了一种比函数指针还高效而简单的东西，那就是selector。这个被称为选择器的工具，不仅可以让我们得到函数指针的一切便利，还可以动态的替换其指向的内容。于是我们有了很多<code>addTarget:action:</code>这样的API，使得我们可以把行为注入到已经非常稳定的Cocoa或CocoaTouch框架中。</p>
+
+<p>虽然有了一定的便利，但是程序员是不容易满足的。我们逐渐发现，这种基于action的写法有时很麻烦。主要是以下几点：</p>
+
+<ol>
+<li>就是很多时候，你注入的内容可能就一次，搞一个函数或者方法，浪费了不少的时间。</li>
+<li>你还要起名字，要知道，Phil Karlton就说过:“在计算机科学领域,有两大难题,如何验证缓存和如何给各种东西命名。”</li>
+<li>使得你原本可以在一个函数里实现的逻辑，分散到不同的部分，你难以专注的一次把你的逻辑写完。</li>
+</ol>
+
+
+<p>这时，我们的主角block就来帮助大家了。</p>
+
+<p>其实block还有很多别名，其中一个就是匿名函数。利用block，你可以在一个函数中，写上一小段代码，不用起名字，就可以传递过去。函数指针的用法，几乎都可以用匿名函数来替换。一举解决了碎片化，命名等问题。我们便有了这样的代码：</p>
+
+<pre><code class="objective-c">AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+[manager GET:@"http://example.com/resources.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSLog(@"JSON: %@", responseObject);
+} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    NSLog(@"Error: %@", error);
+}];
+</code></pre>
+
+<p>贪婪的程序员不仅仅满足于少起个名字和把代码写到一起，一旦程序员们发现，把一个函数写在另一个函数里很爽，就开始频繁的尝试。这时，又发现了几个小问题（以下仅是匿名函数的问题，block解决了这些问题）：</p>
+
+<ol>
+<li>匿名函数，到底还是一个函数，这个括号外面世界的变量，是不可以在里面使用的。</li>
+<li>由于只能传递一个函数，我们就没有了可操作的对象（即没有了self）。</li>
+</ol>
+
+
+<p>其实这两个是一样的问题，都是因为没有变量的传递。如果可以把self传递下来，第二个问题也解决了。</p>
+
+<p>想要解决这个问题，最简单的方法就是搞到全局域，于是代码就写成了这样：</p>
+
+<pre><code class="objective-c">static int g_sum = 0;
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    g_sum = 0;
+    [@[@1, @2, @3] enumerateObjectsUsingBlock:^(NSNumber *obj, NSUInteger idx, BOOL *stop) {
+        int val = [obj intValue];
+        g_sum += val;
+    }];
+    NSLog(@"sum = %d", g_sum);
+
+    // Override point for customization after application launch.
+    return YES;
+}
+</code></pre>
+
+<p>把想要在匿名函数中的部分先存到全局变量，然后再到匿名函数中取出来。我们原本想解决的碎片化问题，又回来了。这样情况下，我们不得不搞出好多的全局变量，给全局变量起名字的问题也回来了。聪明的工程师们很快发现了，这种传递有着很规律的行为，于是把这些行为封装起来，做成库。这种手段叫做“闭包”，block的又一个名字。</p>
+
+<p>把外面的对象，包在匿名函数中，封装起来，以备不时之需。OC利用编译器，在静态检查的时候，把用到的外部变量，都封装到block中。</p>
+
+<p>这使得匿名函数，有了新的活力。在大量的尝试后，发现这简直就是一种神奇，闭包不单使得你的逻辑更加的紧凑，还使得开发变得越来越有趣。nodejs尝试用大量的闭包铸成了一种单线程异步的神奇的库。ReactiveCocoa也用block改变了大家开发iOS的思路。</p>
+
+<p>有了block，我们可以更好的把变化抽取出来，可以更专注的实现逻辑，将异步的，碎片化的需求，快速的整合到一起。相比这些优点，block稍许复杂的语法，和一些可能出现的问题，是可以被原谅的。swift中，我们看到更多的闭包，可以看出block的写法对于开发有着多么深远的影响。</p>
+
+<p>此篇只是一个引子，block有很多需要学习的地方，用好容易，用得精巧，还需要大家更多的开阔思维。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[2014-8-15 周五 多云]]></title>
+    <link href="http://williamzang.com/blog/2014/08/15/2014-8-15-zhou-wu-duo-yun/"/>
+    <updated>2014-08-15T10:53:40+08:00</updated>
+    <id>http://williamzang.com/blog/2014/08/15/2014-8-15-zhou-wu-duo-yun</id>
+    <content type="html"><![CDATA[<p>巧用Objc的动态特性，会使你的工作变得有趣并且减少很多未来的工作量。以前也在论坛里提及过Objc的一些动态特性，当时就有很多朋友讲到，单纯知道这些特性，但是不知道如何应用。那么，今天就把我可以想到的几个小例子分享一下。</p>
+
+<p>很多时候，你的代码会变得极其相似。但是又有略微不同，这时你就会想，如果我可以把不同的部分分离出来该多好，但是往往事与愿违。你仍会发现很多的透传代码挡在你的面前，就算不停的优化，接口还是要一个一个导过去。</p>
+
+<pre><code class="objective-c">// 类OrdersViewModel
+- (BOOL)hasOrder
+{
+    return internalOrderManager.hasOrder;
+}
+
+- (NSInteger)orderCount
+{
+    return internalOrderManager.orderCount;
+}
+
+- (NSString *)orderNameForIndex:(NSInteger)index
+{
+    return [internalOrderManager orderNameForIndex:index];
+}
+
+// 以下略很多的透传
+</code></pre>
+
+<p>这样的封装很好的接口，却因为很多的透传让代码变得臃肿不堪。还存在一些后续维护的问题，当internalOrderManager的接口变化的时候，还需要记得把外面OrdersViewModel这个类也一起变了。</p>
+
+<p>这时就是动态特性大显身手的时候了，如果我们不实现这些方法，运行时会调用一系列的方法来寻求解决方案，这个例子里，最简单的方法就是<code>- (id)forwardingTargetForSelector:(SEL)aSelector</code>，也被称为快速转发，下面是实现。</p>
+
+<pre><code class="objective-c">// 类OrdersViewModel
+- (id)forwardingTargetForSelector:(SEL)aSelector
+{
+    if ([self.internalOrderManager respondsToSelector:aSelector]) {
+        return self.internalOrderManager;
+    }
+    return nil;
+}
+</code></pre>
+
+<p><em>这只是本人的一个日记而已，所以相关技术点请大家去Google一下吧。</em></p>
+
+<p>这么做之后，发现了一个小问题，就是类OrdersViewModel由于没有实现<code>hasOrder</code>,<code>orderCount</code>和<code>orderNameForIndex:</code>这三个方法所以有了Warning。消除的方法就是使用类别</p>
+
+<pre><code class="objective-c">@interface OrdersViewModel(Extended)
+- (BOOL)hasOrder;
+- (NSInteger)orderCount;
+- (NSString *)orderNameForIndex:(NSInteger)index;
+@end
+</code></pre>
+
+<p>这样就好了。</p>
+
+<p>然而很多时候，没有这么乐观和简单，例如下面的例子：</p>
+
+<pre><code class="objective-c">// 类OrdersViewModel
+- (NSString *)orderNameForIndex:(NSInteger)index
+{
+    return [self.orders[index] name];
+}
+
+- (CGFloat)orderPriceForIndex:(NSInteger)index
+{
+    return [self.orders[index] price];
+}
+- (NSString *)orderDescForIndex:(NSInteger)index
+{
+    return [self.orders[index] desc];
+}
+- (void)orderIncreasePrice:(NSNumber *)value forIndex:(NSInteger)index
+{
+    [self.orders[index] increasePrice:value];
+}
+// 以下略更多的透传
+</code></pre>
+
+<p>这个看起来，又是如此的相似，但是老办法却搞不定，难道我们注定就要透传和维护下去么？当然不是的。</p>
+
+<p>除了快速转发，还有标准消息转发，不过想要实现，还是需要费一番周章的。</p>
+
+<p>所谓的标准转发，就是实现<code>- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector</code>和<code>- (void)forwardInvocation:(NSInvocation *)anInvocation</code>这两个方法进行转发。</p>
+
+<p><code>NSMethodSignature</code>是方法签名，为什么要有这个腻？那是因为selector其实只是一个字符串，从它并不能知道参数的类型和返回值的类型，而方法签名实际上是用来描述参数的类型和返回值的类型的。也就是说，相同的返回值与参数的所有selector的签名其实是一致的。而Objc运行时要根据对象返回的这个签名来抓取参数，然后才会调用<code>- (void)forwardInvocation:(NSInvocation *)anInvocation</code>这个方法。</p>
+
+<p><code>NSInvocation</code>这个类，和我们平常用的<code>- (id)performSelector:(SEL)aSelector withObject:(id)object</code>的有相同的作用，不过更为多元化，可以管理参数和返回值。</p>
+
+<p>首先来实现<code>- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector</code>这个方法</p>
+
+<pre><code class="objective-c">- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
+{
+    NSMethodSignature* signature = nil;
+
+    NSString *selectorName = NSStringFromSelector(aSelector);
+
+    if ([self selectorNameCheck:selectorName] ) {
+        signature = [self targetMethodSignature:selectorName];
+    }
+
+    return signature;
+}
+
+- (BOOL)selectorNameCheck:(NSString *)selectorName
+{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF BEGINSWITH 'order' AND (SELF ENDSWITH 'forIndex:' OR SELF ENDSWITH 'ForIndex:')"];
+    return [predicate evaluateWithObject:selectorName];
+}
+
+- (NSMethodSignature *)targetMethodSignature:(NSString *)selectorName
+{
+    return [Order instanceMethodSignatureForSelector:[self targetSelector:selectorName]];
+}
+- (SEL)targetSelector:(NSString *)selectorName
+{
+    NSMutableString *newSelectorName = [selectorName mutableCopy];
+    [newSelectorName deleteCharactersInRange:[selectorName rangeOfString:@"forIndex:" options:NSCaseInsensitiveSearch|NSBackwardsSearch]];
+    [newSelectorName deleteCharactersInRange:[@"order" rangeOfString:className options:NSCaseInsensitiveSearch]];
+    return NSSelectorFromString(newSelectorName.uncapitalizedString); // uncapitalizedString是我通过类别加的新方法，就是把首字母小写，大家试的时候，随便实现以下就可以了。
+}
+</code></pre>
+
+<p>大功告成，我们先用Predicate匹配了是否以order开头，以forIndex或者ForIndex结尾，然后还把order和forIndex去掉，得到了正确的selector，并取得了新的signature。然后是调用部分。</p>
+
+<pre><code class="objective-c">- (void)forwardInvocation:(NSInvocation *)anInvocation
+{
+    SEL seletor = [anInvocation selector];
+    NSString *selectorName = NSStringFromSelector(seletor);
+    if ([self selectorNameCheck:selectorName] ) {
+        NSUInteger argCount = [anInvocation methodSignature].numberOfArguments;
+        NSInteger index = -1;
+        [anInvocation getArgument:&amp;index atIndex:argCount - 1];
+
+        id instance = self.orders[index];
+
+        NSMethodSignature *newSignature = [self targetMethodSignature:selectorName];
+        NSInvocation *newInvocation = [NSInvocation invocationWithMethodSignature:newSignature];
+        newInvocation.selector = [self targetSelector:selectorName];
+        for (int i = 2; i &lt; argCount - 1; ++i) {
+             NSObject *obj = nil;
+             [anInvocation getArgument:&amp;obj atIndex:i];
+             [newInvocation setArgument:&amp;obj atIndex:i];
+         }
+         [newInvocation invokeWithTarget:instance];
+         if (strcmp(newSignature.methodReturnType, "@") == 0) {
+             NSObject *returnValue = nil;
+             [newInvocation getReturnValue:&amp;returnValue];
+             [anInvocation setReturnValue:&amp;returnValue];
+         }
+
+        }
+    }
+}
+</code></pre>
+
+<p>调用的时候，先取得参数的个数，然后get最后一个参数，我们知道这个参数就是index，然后取得instance。并生成新的invocation，传递参数，传递返回值。一切看起都那么美好。<strong>但是，它是不工作的。</strong></p>
+
+<p>如果你跑一遍就会发现了，argCount是不对的，就算强制改对，你也会发现index取不回来。这是为什么呢？原因就出在<code>- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector</code>的实现上。刚才说了，<strong>Objc运行时要根据对象返回的这个签名来抓取参数</strong>，我们返回的签名，显然没有最后一个参数，所以invocation生成的时候，就没传过来，自然不会生效。可是要怎么解决呢？</p>
+
+<p>这里有一个难题，就是我们需要找到正确的签名，而参数的个数又是不确定的。我用了一个折中的办法，生成了许多假的方法，涵盖了许多的签名。</p>
+
+<pre><code class="objective-c">- (void)voidMethodforIndex:(NSInteger)index {}
+- (void)voidMethodParam:(id)_0 forIndex:(NSInteger)index {}
+- (void)voidMethodParam:(id)_0 Param:(id)_1 forIndex:(NSInteger)index {}
+- (void)voidMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 forIndex:(NSInteger)index {}
+- (void)voidMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 forIndex:(NSInteger)index {}
+- (void)voidMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 Param:(id)_4 forIndex:(NSInteger)index {}
+- (void)voidMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 Param:(id)_4 Param:(id)_5 forIndex:(NSInteger)index {}
+- (void)voidMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 Param:(id)_4 Param:(id)_5 Param:(id)_6 forIndex:(NSInteger)index {}
+- (void)voidMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 Param:(id)_4 Param:(id)_5 Param:(id)_6 Param:(id)_7 forIndex:(NSInteger)index {}
+- (void)voidMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 Param:(id)_4 Param:(id)_5 Param:(id)_6 Param:(id)_7 Param:(id)_8 forIndex:(NSInteger)index {}
+- (void)voidMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 Param:(id)_4 Param:(id)_5 Param:(id)_6 Param:(id)_7 Param:(id)_8 Param:(id)_9 forIndex:(NSInteger)index {}
+- (void)voidMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 Param:(id)_4 Param:(id)_5 Param:(id)_6 Param:(id)_7 Param:(id)_8 Param:(id)_9 Param:(id)_10 forIndex:(NSInteger)index {}
+
+- (id)idMethodforIndex:(NSInteger)index { return nil;}
+- (id)idMethodParam:(id)_0 forIndex:(NSInteger)index { return nil;}
+- (id)idMethodParam:(id)_0 Param:(id)_1 forIndex:(NSInteger)index { return nil;}
+- (id)idMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 forIndex:(NSInteger)index { return nil;}
+- (id)idMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 forIndex:(NSInteger)index { return nil;}
+- (id)idMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 Param:(id)_4 forIndex:(NSInteger)index { return nil;}
+- (id)idMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 Param:(id)_4 Param:(id)_5 forIndex:(NSInteger)index { return nil;}
+- (id)idMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 Param:(id)_4 Param:(id)_5 Param:(id)_6 forIndex:(NSInteger)index { return nil;}
+- (id)idMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 Param:(id)_4 Param:(id)_5 Param:(id)_6 Param:(id)_7 forIndex:(NSInteger)index { return nil;}
+- (id)idMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 Param:(id)_4 Param:(id)_5 Param:(id)_6 Param:(id)_7 Param:(id)_8 forIndex:(NSInteger)index { return nil;}
+- (id)idMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 Param:(id)_4 Param:(id)_5 Param:(id)_6 Param:(id)_7 Param:(id)_8 Param:(id)_9 forIndex:(NSInteger)index { return nil;}
+- (id)idMethodParam:(id)_0 Param:(id)_1 Param:(id)_2 Param:(id)_3 Param:(id)_4 Param:(id)_5 Param:(id)_6 Param:(id)_7 Param:(id)_8 Param:(id)_9 Param:(id)_10 forIndex:(NSInteger)index { return nil;}
+</code></pre>
+
+<p>看起来好眼晕的说，哈哈。这种方法在C++的模板里也有类似的应用，就是预生成一些内容，考虑一个假定临界值，把所有的可能写出来。有了这些我们就可以这样修改<code>- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector</code>这个方法了。</p>
+
+<pre><code class="objective-c">- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
+{
+    NSMethodSignature* signature = nil;
+
+    NSString *selectorName = NSStringFromSelector(aSelector);
+
+    if ([self selectorNameCheck:selectorName] ) {
+        signature = [self targetMethodSignature:selectorName];
+        if (signature != nil) {
+            int argCount = signature.numberOfArguments;
+            NSMutableString *selfSelectorName = nil;
+            NSUInteger insertLoc = 0;
+            if (strcmp(signature.methodReturnType, "v") == 0) {
+                selfSelectorName = @"voidMethodforIndex:".mutableCopy;
+                insertLoc = 10;
+            } else if (strcmp(signature.methodReturnType, "@") == 0) {
+                selfSelectorName = @"idMethodforIndex:".mutableCopy;
+                insertLoc = 8;
+            } else {
+                NSAssert(NO, @"Class %@ method %@ return a value neither void or id", NSStringFromClass(self.proxyClass), selectorName);
+            }
+            for (int i = 2; i &lt; argCount; ++i) {
+                [selfSelectorName insertString:@"Param:" atIndex:insertLoc];
+            }
+            signature = [self.class instanceMethodSignatureForSelector:NSSelectorFromString(selfSelectorName)];
+        }
+    }
+
+    return signature;
+}
+</code></pre>
+
+<p>拿到正确的signature之后，我们根据返回值的类型和参数的个数，生成一个selector的字符串，并根据这个得到新的signature。至此，这个改造总算完成了。我们的新的方法可以不用修改代码而实现了。</p>
+
+<p>这时，可能你就会问了，这样搞起来，不是比原来的代码还多了么？事实确实如此，但是我们用这个应付了以后的种种变化。经过合理的封装，不难得到一个可以复用的例子，我也打算开一个新的开源项目<a href="https://github.com/WilliamZang/ZFastProxy">ZFastProxy</a>，把可复用的组件分享出去。</p>
+
+<p>很多时候，用动态特性可以让代码变得“神奇”起来，它更加的智能，也让你的开发变得越来越有趣，因为我们是为了未来而开发，而不是当下。以一种以不变应万变的思维来做事是快乐的，它同时也锻炼我们更高层次的抽象和提高了我们开发的技巧。</p>
+
+<p>希望我的例子可以起到抛砖引玉的作用，让更多的人创造出更好的可复用组件。</p>
+]]></content>
+  </entry>
+  
+</feed>
