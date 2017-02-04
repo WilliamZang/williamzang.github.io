@@ -3,7 +3,7 @@ layout: post
 title: "从另一个角度介绍下Block"
 date: 2014-09-09 10:27:24 +0800
 comments: true
-categories: iOS 程序员日记
+categories: iOS 程序员日记 Objective-C
 description: 从另一个角度介绍下Block
 keywords: block 匿名函数 闭包 iOS
 

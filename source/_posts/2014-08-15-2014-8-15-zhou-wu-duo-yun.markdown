@@ -3,7 +3,7 @@ layout: post
 title: "2014-8-15 周五 多云"
 date: 2014-08-15 10:53:40 +0800
 comments: true
-categories: 程序员日记
+categories: 程序员日记 Objective-C iOS
 description: 来讲一讲Objc动态特性的应用
 keywords: iOS 动态特性
 ---

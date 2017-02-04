@@ -3,7 +3,7 @@ layout: post
 title: "聊一聊iOS开发中的惰性计算"
 date: 2016-11-07 21:56:25 +0800
 comments: true
-categories: iOS 函数式编程
+categories: iOS 函数式编程 Objective-C
 description: 聊一聊iOS开发中的惰性计算
 keywords: 惰性计算 iOS 函数式编程
 ---
