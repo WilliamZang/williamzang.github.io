@@ -304,6 +304,14 @@ ViewClassHelper* alloc_a(Class aClass){
 @property (nonatomic, copy) UIView* (^intoView)(UIView *superView);
 @end
 
+#define AllocA(aClass)  alloc_a([aClass class])
+
+ViewMaker* alloc_a(Class aClass){
+    ViewMaker *maker = ViewMaker.new;
+    maker.viewClass = aClass;
+    return maker;
+}
+
 @implementation ViewMaker
 
 - (instancetype)init
