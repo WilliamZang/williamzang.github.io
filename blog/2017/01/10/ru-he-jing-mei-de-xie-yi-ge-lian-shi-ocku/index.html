@@ -413,6 +413,9 @@
 <span class='line-number'>27</span>
 <span class='line-number'>28</span>
 <span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
 </pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">ViewMaker</span> : <span class="bp">NSObject</span>
 </span><span class='line'><span class="c1">// ...</span>
 </span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="n">ViewMaker</span><span class="o">*</span> <span class="p">(</span><span class="o">^</span><span class="n">position</span><span class="p">)(</span><span class="n">CGFloat</span> <span class="n">x</span><span class="p">,</span> <span class="n">CGFloat</span> <span class="n">y</span><span class="p">);</span>
@@ -429,14 +432,17 @@
 </span><span class='line'>        <span class="n">_position</span> <span class="o">=</span> <span class="o">^</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">(</span><span class="n">CGFloat</span> <span class="n">x</span><span class="p">,</span> <span class="n">CGFloat</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
 </span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
 </span><span class='line'>        <span class="p">};</span>
 </span><span class='line'>        <span class="n">_size</span> <span class="o">=</span> <span class="o">^</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">(</span><span class="n">CGFloat</span> <span class="n">x</span><span class="p">,</span> <span class="n">CGFloat</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
 </span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
 </span><span class='line'>        <span class="p">};</span>
 </span><span class='line'>        <span class="n">_bgColor</span> <span class="o">=</span> <span class="o">^</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
 </span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
 </span><span class='line'>        <span class="p">};</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
@@ -564,6 +570,9 @@
 <span class='line-number'>54</span>
 <span class='line-number'>55</span>
 <span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
 </pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">ViewMaker</span> : <span class="bp">NSObject</span>
 </span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="kt">Class</span> <span class="n">viewClass</span><span class="p">;</span>
 </span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="bp">CGPoint</span> <span class="n">position</span><span class="p">;</span>
@@ -593,14 +602,17 @@
 </span><span class='line'>        <span class="n">_position</span> <span class="o">=</span> <span class="o">^</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">(</span><span class="n">CGFloat</span> <span class="n">x</span><span class="p">,</span> <span class="n">CGFloat</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
 </span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
 </span><span class='line'>        <span class="p">};</span>
 </span><span class='line'>        <span class="n">_size</span> <span class="o">=</span> <span class="o">^</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">(</span><span class="n">CGFloat</span> <span class="n">x</span><span class="p">,</span> <span class="n">CGFloat</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
 </span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
 </span><span class='line'>        <span class="p">};</span>
 </span><span class='line'>        <span class="n">_bgColor</span> <span class="o">=</span> <span class="o">^</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
 </span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
 </span><span class='line'>        <span class="p">};</span>
 </span><span class='line'>        <span class="n">_intoView</span> <span class="o">=</span> <span class="o">^</span><span class="bp">UIView</span> <span class="o">*</span><span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="n">superView</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
