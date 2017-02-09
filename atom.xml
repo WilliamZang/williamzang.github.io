@@ -4,7 +4,7 @@
   <title><![CDATA[臧成威的博客]]></title>
   <link href="http://williamzang.com/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2017-02-04T13:41:11+08:00</updated>
+  <updated>2017-02-10T00:34:45+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -12,6 +12,535 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[如何利用Objective-C写一个精美的DSL]]></title>
+    <link href="http://williamzang.com/blog/2017/01/10/ru-he-jing-mei-de-xie-yi-ge-lian-shi-ocku/"/>
+    <updated>2017-01-10T13:22:49+08:00</updated>
+    <id>http://williamzang.com/blog/2017/01/10/ru-he-jing-mei-de-xie-yi-ge-lian-shi-ocku</id>
+    <content type="html"><![CDATA[<h2>背景</h2>
+
+<p>在程序开发中，我们总是希望能够更加简洁、更加语义化地去表达自己的逻辑，链式调用是一种常见的处理方式。我们常用的 Masonry、 Expecta 等第三方库就采用了这种处理方式。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// Masonry</span>
+</span><span class='line'><span class="p">[</span><span class="n">view1</span> <span class="nl">mas_makeConstraints</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="n">MASConstraintMaker</span> <span class="o">*</span><span class="n">make</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">make</span><span class="p">.</span><span class="n">top</span><span class="p">.</span><span class="n">equalTo</span><span class="p">(</span><span class="n">superview</span><span class="p">.</span><span class="n">mas_top</span><span class="p">).</span><span class="n">with</span><span class="p">.</span><span class="n">offset</span><span class="p">(</span><span class="n">padding</span><span class="p">.</span><span class="n">top</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">make</span><span class="p">.</span><span class="n">left</span><span class="p">.</span><span class="n">equalTo</span><span class="p">(</span><span class="n">superview</span><span class="p">.</span><span class="n">mas_left</span><span class="p">).</span><span class="n">with</span><span class="p">.</span><span class="n">offset</span><span class="p">(</span><span class="n">padding</span><span class="p">.</span><span class="n">left</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">make</span><span class="p">.</span><span class="n">bottom</span><span class="p">.</span><span class="n">equalTo</span><span class="p">(</span><span class="n">superview</span><span class="p">.</span><span class="n">mas_bottom</span><span class="p">).</span><span class="n">with</span><span class="p">.</span><span class="n">offset</span><span class="p">(</span><span class="o">-</span><span class="n">padding</span><span class="p">.</span><span class="n">bottom</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">make</span><span class="p">.</span><span class="n">right</span><span class="p">.</span><span class="n">equalTo</span><span class="p">(</span><span class="n">superview</span><span class="p">.</span><span class="n">mas_right</span><span class="p">).</span><span class="n">with</span><span class="p">.</span><span class="n">offset</span><span class="p">(</span><span class="o">-</span><span class="n">padding</span><span class="p">.</span><span class="n">right</span><span class="p">);</span>
+</span><span class='line'><span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="c1">// Expecta</span>
+</span><span class='line'><span class="n">expect</span><span class="p">(</span><span class="s">@&quot;foo&quot;</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="s">@&quot;foo&quot;</span><span class="p">);</span> <span class="c1">// `to` is a syntactic sugar and can be safely omitted.</span>
+</span><span class='line'><span class="n">expect</span><span class="p">(</span><span class="n">foo</span><span class="p">).</span><span class="n">notTo</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'><span class="n">expect</span><span class="p">([</span><span class="n">bar</span> <span class="n">isBar</span><span class="p">]).</span><span class="n">to</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="nb">YES</span><span class="p">);</span>
+</span><span class='line'><span class="n">expect</span><span class="p">(</span><span class="n">baz</span><span class="p">).</span><span class="n">to</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="mf">3.14159</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>像这种用于特定领域的表达方式，我们叫做 DSL (Domain Specific Language)，本文就介绍一下如何实现一个链式调用的 DSL.</p>
+
+<h2>链式调用的实现</h2>
+
+<p>我们举一个具体的例子，比如我们用链式表达式来创建一个 UIView，设置其 frame、backgroundColor， 并添加至某个父 View。
+对于最基本的 Objective-C (在 iOS4 block 出现之前)，如果要实现链式调用，只能是这个样子的：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">UIView</span> <span class="o">*</span><span class="n">aView</span> <span class="o">=</span> <span class="p">[[[[</span><span class="bp">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">aFrame</span><span class="p">]</span> <span class="nl">bgColor</span><span class="p">:</span><span class="n">aColor</span><span class="p">]</span> <span class="nl">intoView</span><span class="p">:</span><span class="n">aSuperView</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>有了 block，我们可以把中括号的这种写法改为点语法的形式</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">UIView</span> <span class="o">*</span><span class="n">aView</span> <span class="o">=</span> <span class="n">AllocA</span><span class="p">(</span><span class="bp">UIView</span><span class="p">).</span><span class="n">with</span><span class="p">.</span><span class="n">position</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">).</span><span class="n">size</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">).</span><span class="n">bgColor</span><span class="p">(</span><span class="n">aColor</span><span class="p">).</span><span class="n">intoView</span><span class="p">(</span><span class="n">aSuperView</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 当x和y为默认值0和0或者width和height为默认值0的时候，还可以省略</span>
+</span><span class='line'><span class="bp">UIView</span> <span class="o">*</span><span class="n">bView</span> <span class="o">=</span> <span class="n">AllocA</span><span class="p">(</span><span class="bp">UIView</span><span class="p">).</span><span class="n">with</span><span class="p">.</span><span class="n">size</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">).</span><span class="n">bgColor</span><span class="p">(</span><span class="n">aColor</span><span class="p">).</span><span class="n">intoView</span><span class="p">(</span><span class="n">aSuperView</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看出，链式语法的语义性很明确，后者的语法更加紧凑，下面我们从两个角度看一下后者的实现。</p>
+
+<h3>1. 从语法层面来看</h3>
+
+<p>链式调用可以用两种方式来实现：</p>
+
+<ol>
+<li><p>在返回值中使用属性来保存方法中的信息</p>
+
+<p>比如，Masonry 中的 <code>.left .right .top .bottom</code> 等方法，调用时会返回一个 <code>MASConstraintMaker</code> 类的实例，里面有 <code>left/right/top/bottom</code> 等属性来保存每次调用时的信息；</p>
+
+<pre><code class="objective-c">make.left.equalTo(superview.mas_left).with.offset(15);
+</code></pre>
+
+<p>再比如，Expecta 中的方法 <code>.notTo</code> 方法会返回一个 <code>EXPExpect</code> 类的实例，里面有个 BOOL 属性 <code>self.negative</code> 来记录是否调用了 <code>.notTo</code>；</p>
+
+<pre><code class="objective-c">expect(foo).notTo.equal(1);
+</code></pre>
+
+<p>再比如，上例中的 .with 方法，我们可以直接 <code>return self;</code></p></li>
+<li><p>使用 block 类型的属性来接受参数</p>
+
+<p>比如 Masonry 中的 <code>.offset(15)</code> 方法，接收一个 CGFloat 作为参数，可以在 <code>MASConstraintMaker</code> 类中添加一个 block 类型的属性：</p>
+
+<pre><code class="objective-c">@property (nonatomic, copy) MASConstraintMaker* (^offset)(CGFloat);
+</code></pre>
+
+<p>比如例子中的 <code>.position(x, y)</code>，可以给的某类中添加一个属性：</p>
+
+<pre><code class="objective-c">@property (nonatomic, copy) ViewMaker* (^position)(CGFloat x, CGFloat y);
+</code></pre>
+
+<p>在调用 <code>.position(x, y)</code> 方法时，执行这个block，返回 ViewMaker 的实例保证链式调用得以进行。</p></li>
+</ol>
+
+
+<h3>2. 从语义层面来看</h3>
+
+<p>从语义层面上，需要界定哪些是助词，哪些是需要接受参数的。为了保证链式调用能够完成，需要考虑传入什么，返回什么。</p>
+
+<p>还是以上面的例子来讲：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="bp">UIView</span> <span class="o">*</span><span class="n">aView</span> <span class="o">=</span> <span class="n">AllocA</span><span class="p">(</span><span class="bp">UIView</span><span class="p">).</span><span class="n">with</span><span class="p">.</span><span class="n">position</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">).</span><span class="n">size</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">).</span><span class="n">bgColor</span><span class="p">(</span><span class="n">aColor</span><span class="p">).</span><span class="n">intoView</span><span class="p">(</span><span class="n">aSuperView</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>分步来看一下，这个 DSL 表达式需要描述的是一个祈使句，以 Alloc 开始，以 intoView 截止。在 intoView 终结语之前，我们对 UIView 进行一定的修饰，利用 <code>position</code> <code>size</code> <code>bgColor</code> 这些。</p>
+
+<p>下面我们分别从四段来看，如何实现这样一个表达式：</p>
+
+<h4>(1) 宾语</h4>
+
+<p>在 AllocA(UIView) 的语义中，我们确定了宾语是 a UIVIew。由于确定 UIView 是在 intoView 截止那时，所以我们需要创建一个中间类来保存所有的中间条件，这里我们用 ViewMaker 类。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">ViewMaker</span> : <span class="bp">NSObject</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="kt">Class</span> <span class="n">viewClass</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="bp">CGPoint</span> <span class="n">position</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="bp">CGPoint</span> <span class="n">size</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>另外我们可以注意到AllocA是一个函数，而UIView无法直接传递到这个函数中，语法就要变成 <code>AllocA([UIView class])</code> 而失去了简洁性。所以我们需要先定义一个宏来“吞”掉中括号和 <code>class</code> 这个方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="cp">#define AllocA(aClass)  alloc_a([aClass class])</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">ViewMaker</span><span class="o">*</span> <span class="nf">alloc_a</span><span class="p">(</span><span class="kt">Class</span> <span class="n">aClass</span><span class="p">){</span>
+</span><span class='line'>    <span class="n">ViewMaker</span> <span class="o">*</span><span class="n">maker</span> <span class="o">=</span> <span class="n">ViewMaker</span><span class="p">.</span><span class="n">new</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">maker</span><span class="p">.</span><span class="n">viewClass</span> <span class="o">=</span> <span class="n">aClass</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">maker</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>(2) 助词</h4>
+
+<p>很多时候，为了让 DSL 的语法看起来更加连贯，我们需要一些助词来帮助，例如 Masonry 里面的 make.top.equalTo(superview.mas_top).<strong>with</strong>.offset(padding.top) 这句中的 with 就是这样一个助词。</p>
+
+<p>而这个助词和我们学过的语法一样，通常没有什么实际效果，简单返回self就可以。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">ViewMaker</span> : <span class="bp">NSObject</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="kt">Class</span> <span class="n">viewClass</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="bp">CGPoint</span> <span class="n">position</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="bp">CGPoint</span> <span class="n">size</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">readonly</span><span class="p">)</span> <span class="n">ViewMaker</span> <span class="o">*</span><span class="n">with</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewMaker</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">)</span><span class="nf">with</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>需要注意的是，返回自己，就没有办法阻止用户不断调用自己 <code>.with.with.with</code> ，为了避免这种情况，可以新生成一个类，每个类都拥有自己所在层次的方法，避免跃层调用。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">ViewMaker</span> : <span class="bp">NSObject</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="kt">Class</span> <span class="n">viewClass</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="bp">CGPoint</span> <span class="n">position</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="bp">CGPoint</span> <span class="n">size</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewClassHelper</span> : <span class="bp">NSObject</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="kt">Class</span> <span class="n">viewClass</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">readonly</span><span class="p">)</span> <span class="n">ViewMaker</span> <span class="o">*</span><span class="n">with</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define AllocA(aClass)  alloc_a([aClass class])</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">ViewClassHelper</span><span class="o">*</span> <span class="n">alloc_a</span><span class="p">(</span><span class="kt">Class</span> <span class="n">aClass</span><span class="p">){</span>
+</span><span class='line'>    <span class="n">ViewClassHelper</span> <span class="o">*</span><span class="n">helper</span> <span class="o">=</span> <span class="n">ViewClassHelper</span><span class="p">.</span><span class="n">new</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">helper</span><span class="p">.</span><span class="n">viewClass</span> <span class="o">=</span> <span class="n">aClass</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">helper</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewClassHelper</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">)</span><span class="nf">with</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">ViewMaker</span> <span class="o">*</span><span class="n">maker</span> <span class="o">=</span> <span class="n">ViewMaker</span><span class="p">.</span><span class="n">new</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">maker</span><span class="p">.</span><span class="n">viewClass</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">viewClass</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">maker</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就有效防止了，<code>.with.with.with</code>这样的语法。但是实际上，我们要根据真实的需要来进行开发，使用 DSL 的用户是为了更好的表达性，所以并不会写出<code>.with.with.with</code>这样的代码，这样的防护性措施就显得有点不必要了。</p>
+
+<p>不过使用类来区分助词还有另外几个小好处，就是它可以确保在语法提示的时候，<code>ViewClassHelper</code>这个类只有<code>.with</code>这样一个语法提示，而<code>ViewMaker</code>不出现<code>.with</code>语法提示；并且同时确保<code>.with</code>一定要出现。</p>
+
+<p>不过为了简化文章，我们都使用前者，既<code>.with</code>返回<code>self</code>来继续下文：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">ViewMaker</span> : <span class="bp">NSObject</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="kt">Class</span> <span class="n">viewClass</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="bp">CGPoint</span> <span class="n">position</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="bp">CGPoint</span> <span class="n">size</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">readonly</span><span class="p">)</span> <span class="n">ViewMaker</span> <span class="o">*</span><span class="n">with</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewMaker</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">)</span><span class="nf">with</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>(3) 修饰部分——定语</h4>
+
+<p>像例子中的<code>position</code> <code>size</code> <code>bgColor</code>这些都是定语部分，用来修饰UIView，他们以属性的形势存在于<code>ViewMaker</code>的实例中，为了支持链式表达，所以实现的时候，都会继续返回<code>self</code>。</p>
+
+<p>我们来试着实现下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">ViewMaker</span> : <span class="bp">NSObject</span>
+</span><span class='line'><span class="c1">// ...</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="n">ViewMaker</span><span class="o">*</span> <span class="p">(</span><span class="o">^</span><span class="n">position</span><span class="p">)(</span><span class="n">CGFloat</span> <span class="n">x</span><span class="p">,</span> <span class="n">CGFloat</span> <span class="n">y</span><span class="p">);</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="n">ViewMaker</span><span class="o">*</span> <span class="p">(</span><span class="o">^</span><span class="n">size</span><span class="p">)(</span><span class="n">CGFloat</span> <span class="n">x</span><span class="p">,</span> <span class="n">CGFloat</span> <span class="n">y</span><span class="p">);</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="n">ViewMaker</span><span class="o">*</span> <span class="p">(</span><span class="o">^</span><span class="n">bgColor</span><span class="p">)(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">);</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewMaker</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">init</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="n">init</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">@</span><span class="n">weakify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">_position</span> <span class="o">=</span> <span class="o">^</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">(</span><span class="n">CGFloat</span> <span class="n">x</span><span class="p">,</span> <span class="n">CGFloat</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">};</span>
+</span><span class='line'>        <span class="n">_size</span> <span class="o">=</span> <span class="o">^</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">(</span><span class="n">CGFloat</span> <span class="n">x</span><span class="p">,</span> <span class="n">CGFloat</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">};</span>
+</span><span class='line'>        <span class="n">_bgColor</span> <span class="o">=</span> <span class="o">^</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">};</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>(4) 终结词</h4>
+
+<p>“终结词”这个实在是在现代语法里面找不到对应关系了，但是在 DSL 中，这一段尤为重要。<code>ViewMaker</code>的实例从头至尾收集了很多的修饰，需要最后的一个表达词语来产生最后的结果，这里就称为”终结词”。例如在 Expecta 这个开源库里面的 <code>equal</code> 就是把真正的行为表现出来的时候，<code>to</code> 和 <code>notTo</code> 都不会真正触发行为。</p>
+
+<p>在我们的例子里，终结词<code>.intoView(aSuperViwe)</code>可以这样实现：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">ViewMaker</span> : <span class="bp">NSObject</span>
+</span><span class='line'><span class="c1">// ...</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="bp">UIView</span><span class="o">*</span> <span class="p">(</span><span class="o">^</span><span class="n">intoView</span><span class="p">)(</span><span class="bp">UIView</span> <span class="o">*</span><span class="n">superView</span><span class="p">);</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewMaker</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">init</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="n">init</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">@</span><span class="n">weakify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>        <span class="c1">// ...</span>
+</span><span class='line'>        <span class="n">_intoView</span> <span class="o">=</span> <span class="o">^</span><span class="bp">UIView</span> <span class="o">*</span><span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="n">superView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>            <span class="bp">CGRect</span> <span class="n">rect</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="nb">self</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="p">,</span>
+</span><span class='line'>                         <span class="nb">self</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="nb">self</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
+</span><span class='line'>            <span class="bp">UIView</span> <span class="o">*</span><span class="n">view</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'>            <span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">color</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">superView</span> <span class="nl">addSubView</span><span class="p">:</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">view</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">};</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样，一个终结词就写好了。</p>
+
+<p>最终代码的汇总：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+</pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">ViewMaker</span> : <span class="bp">NSObject</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="kt">Class</span> <span class="n">viewClass</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="bp">CGPoint</span> <span class="n">position</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="bp">CGPoint</span> <span class="n">size</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="bp">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">readonly</span><span class="p">)</span> <span class="n">ViewMaker</span> <span class="o">*</span><span class="n">with</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="n">ViewMaker</span><span class="o">*</span> <span class="p">(</span><span class="o">^</span><span class="n">position</span><span class="p">)(</span><span class="n">CGFloat</span> <span class="n">x</span><span class="p">,</span> <span class="n">CGFloat</span> <span class="n">y</span><span class="p">);</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="n">ViewMaker</span><span class="o">*</span> <span class="p">(</span><span class="o">^</span><span class="n">size</span><span class="p">)(</span><span class="n">CGFloat</span> <span class="n">x</span><span class="p">,</span> <span class="n">CGFloat</span> <span class="n">y</span><span class="p">);</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="n">ViewMaker</span><span class="o">*</span> <span class="p">(</span><span class="o">^</span><span class="n">bgColor</span><span class="p">)(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">);</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="bp">UIView</span><span class="o">*</span> <span class="p">(</span><span class="o">^</span><span class="n">intoView</span><span class="p">)(</span><span class="bp">UIView</span> <span class="o">*</span><span class="n">superView</span><span class="p">);</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewMaker</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">init</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="n">init</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">@</span><span class="n">weakify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">_position</span> <span class="o">=</span> <span class="o">^</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">(</span><span class="n">CGFloat</span> <span class="n">x</span><span class="p">,</span> <span class="n">CGFloat</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">};</span>
+</span><span class='line'>        <span class="n">_size</span> <span class="o">=</span> <span class="o">^</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">(</span><span class="n">CGFloat</span> <span class="n">x</span><span class="p">,</span> <span class="n">CGFloat</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">};</span>
+</span><span class='line'>        <span class="n">_bgColor</span> <span class="o">=</span> <span class="o">^</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>            <span class="nb">self</span><span class="p">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">};</span>
+</span><span class='line'>        <span class="n">_intoView</span> <span class="o">=</span> <span class="o">^</span><span class="bp">UIView</span> <span class="o">*</span><span class="p">(</span><span class="bp">UIView</span> <span class="o">*</span><span class="n">superView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+</span><span class='line'>            <span class="bp">CGRect</span> <span class="n">rect</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="nb">self</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="p">,</span>
+</span><span class='line'>                         <span class="nb">self</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="nb">self</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
+</span><span class='line'>            <span class="bp">UIView</span> <span class="o">*</span><span class="n">view</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'>            <span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="n">color</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">superView</span> <span class="nl">addSubView</span><span class="p">:</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">view</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">};</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">-</span> <span class="p">(</span><span class="n">ViewMaker</span> <span class="o">*</span><span class="p">)</span><span class="nf">with</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>总结</h2>
+
+<p>这种链式调用能够使程序更加清晰，在特定场景下使程序的可读性更强。这种手段在Swift也是相同道理，大家可以善加利用，让自己的代码更加美观。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[把玩高阶函数]]></title>
