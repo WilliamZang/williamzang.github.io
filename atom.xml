@@ -4,7 +4,7 @@
   <title><![CDATA[臧成威的博客]]></title>
   <link href="http://williamzang.com/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2017-02-10T00:34:45+08:00</updated>
+  <updated>2017-02-10T00:45:44+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -485,6 +485,14 @@
 <span class='line-number'>46</span>
 <span class='line-number'>47</span>
 <span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
 </pre></td><td class='code'><pre><code class='objective-c'><span class='line'><span class="k">@interface</span> <span class="nc">ViewMaker</span> : <span class="bp">NSObject</span>
 </span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">strong</span><span class="p">)</span> <span class="kt">Class</span> <span class="n">viewClass</span><span class="p">;</span>
 </span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">assign</span><span class="p">)</span> <span class="bp">CGPoint</span> <span class="n">position</span><span class="p">;</span>
@@ -496,6 +504,14 @@
 </span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="n">ViewMaker</span><span class="o">*</span> <span class="p">(</span><span class="o">^</span><span class="n">bgColor</span><span class="p">)(</span><span class="bp">UIColor</span> <span class="o">*</span><span class="n">color</span><span class="p">);</span>
 </span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span> <span class="k">copy</span><span class="p">)</span> <span class="bp">UIView</span><span class="o">*</span> <span class="p">(</span><span class="o">^</span><span class="n">intoView</span><span class="p">)(</span><span class="bp">UIView</span> <span class="o">*</span><span class="n">superView</span><span class="p">);</span>
 </span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define AllocA(aClass)  alloc_a([aClass class])</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">ViewMaker</span><span class="o">*</span> <span class="n">alloc_a</span><span class="p">(</span><span class="kt">Class</span> <span class="n">aClass</span><span class="p">){</span>
+</span><span class='line'>    <span class="n">ViewMaker</span> <span class="o">*</span><span class="n">maker</span> <span class="o">=</span> <span class="n">ViewMaker</span><span class="p">.</span><span class="n">new</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">maker</span><span class="p">.</span><span class="n">viewClass</span> <span class="o">=</span> <span class="n">aClass</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">maker</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewMaker</span>
 </span><span class='line'>

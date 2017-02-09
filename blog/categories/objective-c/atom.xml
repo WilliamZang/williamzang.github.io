@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Objective-c | 臧成威的博客]]></title>
   <link href="http://williamzang.com/blog/categories/objective-c/atom.xml" rel="self"/>
   <link href="http://williamzang.com/"/>
-  <updated>2017-02-10T00:34:45+08:00</updated>
+  <updated>2017-02-10T00:45:44+08:00</updated>
   <id>http://williamzang.com/</id>
   <author>
     <name><![CDATA[臧成威]]></name>
@@ -292,6 +292,14 @@ ViewClassHelper* alloc_a(Class aClass){
 @property (nonatomic, copy) ViewMaker* (^bgColor)(UIColor *color);
 @property (nonatomic, copy) UIView* (^intoView)(UIView *superView);
 @end
+
+#define AllocA(aClass)  alloc_a([aClass class])
+
+ViewMaker* alloc_a(Class aClass){
+    ViewMaker *maker = ViewMaker.new;
+    maker.viewClass = aClass;
+    return maker;
+}
 
 @implementation ViewMaker
 
