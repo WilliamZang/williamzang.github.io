@@ -236,14 +236,17 @@ ViewClassHelper* alloc_a(Class aClass){
         _position = ^ViewMaker *(CGFloat x, CGFloat y) {
             @strongify(self)
             self.position = CGPointMake(x, y);
+            return self;
         };
         _size = ^ViewMaker *(CGFloat x, CGFloat y) {
             @strongify(self)
             self.size = CGPointMake(x, y);
+            return self;
         };
         _bgColor = ^ViewMaker *(UIColor *color) {
             @strongify(self)
             self.color = color;
+            return self;
         };
     }
     return self;
@@ -321,14 +324,17 @@ ViewMaker* alloc_a(Class aClass){
         _position = ^ViewMaker *(CGFloat x, CGFloat y) {
             @strongify(self)
             self.position = CGPointMake(x, y);
+            return self;
         };
         _size = ^ViewMaker *(CGFloat x, CGFloat y) {
             @strongify(self)
             self.size = CGPointMake(x, y);
+            return self;
         };
         _bgColor = ^ViewMaker *(UIColor *color) {
             @strongify(self)
             self.color = color;
+            return self;    
         };
         _intoView = ^UIView *(UIView *superView) {
             @strongify(self)
